@@ -13,7 +13,7 @@ description: "Forthcoming"
 
 # About this book
 
-This book is an open source document, hosted on the [GitLab](https://about.gitlab.com/) platform ([project page](https://gitlab.com/ConorIA/man_ccia)), and [published](https://ConorIA.gitlab.io/man_ccia/) using [GitLab Pages](https://pages.gitlab.io/), where you are probably reading it now. The book is automatically updated and republished every time changes are committed to the project, using the GitLab multi runner CI engine, and a [Docker image](https://hub.docker.com/continuumio/anaconda3) with a distribution of [Anaconda](https://www.anaconda.com/), including Python 3.6 and R. The book is built using the bookdown package [@xie_bookdown_2016;@xie_bookdown_2017] in R, and pandoc. The version of the book that you are reading, was built from commit `r system('git rev-parse --short --verify master', intern = TRUE)`.
+This book is an open source document, hosted on the [GitLab](https://about.gitlab.com/) platform ([project page](https://gitlab.com/ConorIA/man_ccia)), and [published](https://ConorIA.gitlab.io/man_ccia/) using [GitLab Pages](https://pages.gitlab.io/), where you are probably reading it now. The book is automatically updated and republished every time changes are committed to the project, using the GitLab multi runner CI engine, and a [Docker image](https://hub.docker.com/continuumio/anaconda3) with a distribution of [Anaconda](https://www.anaconda.com/), including Python 3.6 and R. The book is built using the bookdown package [@R-bookdown] in R, and pandoc. The version of the book that you are reading, was built from commit `r system('git rev-parse --short --verify master', intern = TRUE)`.
 
 We invite your contributions to this book by submitting a [merge request](https://gitlab.com/ConorIA/man_ccia/merge_requests) to the above project, or, if you are unfamiliar with Git-based revisioning, by email to conor.anderson@utoronto.ca. Please note that any contributions must be licensed under the [Creative Commons Attribution-ShareAlike 4.0 International License](http://creativecommons.org/licenses/by-sa/4.0/). For more information, see "License" below. Corrections should be made via the project's [issues page](https://gitlab.com/ConorIA/man_ccia/issues).
 
@@ -26,3 +26,8 @@ This project is coordinated by Conor I. Anderson, and Karen L. Smith. As of this
 This work is licensed under a [Creative Commons Attribution-ShareAlike 4.0 International License](http://creativecommons.org/licenses/by-sa/4.0/). You are free to copy, redistribute, and share this book, in any medium, or format. You may also adapt the book, improve it, and re-use it in your own materials. However, keep in mind that you must give credit where credit is due, and any works that you produce based on this work are subject to the same license. For more details, click the badge below. 
 
 <center><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons Licence" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a><br /></center>
+
+```{r include=FALSE}
+# automatically create a bib database for R packages
+knitr::write_bib(c(.packages(), 'bookdown', 'knitr', 'rmarkdown'), 'packages.bib')
+```

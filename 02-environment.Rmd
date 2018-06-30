@@ -1,4 +1,4 @@
-# Preparting your Environment {#enviro}
+# Preparing your Environment {#enviro}
 
 During the labs in this manual, we will make use of a number of different pieces of software. Chiefly among these is Python. We will take for granted that you have already installed Python on your computer, but if you have not, please follow the [instructions to install Anaconda](https://docs.anaconda.com/anaconda/install/) on your operating system.
 
@@ -10,41 +10,40 @@ In addition to Python, we will be using two shell utilities, namely `bash` and `
 
 #### Option 1: The Windows Linux Subsystem
 
-If you are running a recent version of Windows 10 (build 16215 or later), you may wish to install the [Windows Linux Subsystem](https://docs.microsoft.com/en-us/windows/wsl/install-win10]. To install Linux on Windows, find PowerShell in your start menu, and run it with administrator priviledges. When the shell opens, run:
+If you are running a recent version of Windows 10 (build 16215 or later), you may wish to install the [Windows Linux Subsystem](https://docs.microsoft.com/en-us/windows/wsl/install-win10). To install Linux on Windows, find PowerShell in your start menu, and run it with administrator priviledges. When the shell opens, run:
 
-```{PowerShell}
+```
 Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux
 ```
 
-Once you have enabled the Windows Linux Subsystem, restart your machine, and install your Linux disitrbution of choice from the Windows Store, for example, [Ubuntu](https://www.microsoft.com/en-ca/p/ubuntu/9nblggh4msv6). When the install has completed, click Launch and choose a username for your Linux user account when prompted. 
+Once you have enabled the Windows Linux Subsystem, restart your machine, and install your Linux disitrbution of choice from the Windows Store, for example, [Ubuntu](https://www.microsoft.com/en-ca/p/ubuntu/9nblggh4msv6). When the install has completed, click "Launch" and choose a username for your Linux user account when prompted. 
 
-The linux distribution that you install should include bash and wget. Refer to the "Installing on Linux" section, below, to confirm. 
+The Linux distribution that you install should include `bash` and `wget`. Refer to the ["Installing on Linux"](@envinstlin) section, below, to confirm. 
 
 #### Option 2: Via Cygwyn
 
-If you are running an earlier version of Windows, you should use [Cygwin](https://cygwin.com/).
+If you are running an earlier version of Windows, you should use [Cygwin](https://cygwin.com/), a collection of open source tools that implement a small subset of Linux functionality on Windows.
 
 You can install Cygwin directly from the Cygwin website, or via the Chocolatey package manager. To install directly, follow these steps:
 
-1. Download the latest installer from the [Cygwin download page](https://cygwin.com/install.html)
-2. Run the installer; you can leave most options at their default.
-3. When prompted, set the local package repository to somewhere where you don't mind a bit of clutter.
-4. When given the option to install more packages, search for wget.
-5. Click the "wget" entry that appears under "Internet", and ensure that the "bin" box is selected
+1. Download and run the latest installer from the [Cygwin download page](https://cygwin.com/install.html)
+2. When prompted, set the local package repository to somewhere where you don't mind a bit of clutter.
+3. When given the option to install more packages, search for wget.
+4. Click the "wget" entry that appears under "Internet", and ensure that the "bin" box is selected
 
 If you prefer to install via Chocolately, find the `cmd.exe` command on your start menu, and run that program as an administration. Enter the following commands (one at a time) to install Choclatey, Cygwin, and wget. 
 
-```{console}
+```
 # Install Chocolately
 @"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))" && SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin"
-
-# Use Chocolatey to install Cygwin and cyg-get
-choco install cygwin cyg-get
-
-# Use cyg-get to install wget
-cyg-get install wget
 ```
 
+Now open an instance of Windows Powershell with administrator priviledges and run:
+
+```
+choco install cygwin cyg-get
+cyg-get install wget
+```
 
 ### Installing on MacOS
 
@@ -62,13 +61,13 @@ brew install wget
 
 If you prefer to install wget manually, you can download the latest version of the source code from the [GNU website](http://ftp.gnu.org/pub/gnu/wget/). Extract the archive, and run the following commands in the Terminal app;
 
-```{bash}
+```{bash, eval = FALSE}
 ./configure 
 make
 sudo make install
 ```
 
-### Installing on Linux
+### Installing on Linux {#envinstlin}
 
 If you are running Linux, you almost certainly already have both of these utilities. You can check for the presence of these executables by opening a shell and typing:
 
@@ -83,7 +82,7 @@ which wget
 If either of those commands says `no <command> in (/usr/local/sbin:/usr/local/bin:/usr/bin)`, then you will need to install. Installing programs varies widely by distribution, so refer to your distribution's package manager to find the `wget` and `bash` packages. 
 
 On Ubuntu, for instance, you could run:
-```{bash}
+```{bash, eval = FALSE}
 sudo apt-get update
 sudo apt-get install wget
 ```
@@ -92,8 +91,54 @@ sudo apt-get install wget
 
 Many people consider R and Python to be mutually excusive: you either use one, or the other. While it is true that there are many things that you can do in either of the two languages, each has its own idiosyncrasies. R was developed as a staistical programming language, and many of the methods that we will use in this course have been implemented efficiently in R. Indeed, _Conjuntool_, which we will use extensively in the Labs in this manual is written in R Shiny. The instructions below will help you to install R on your system. 
 
-### Option 1: 
+### Option 1: Installing via Anaconda
 
+If you already have an Anaconda environment set up, and wish to install R, you can do this easily via Anaconda. To create a new Anaconda environment, and install everything you'll need to work in R, run the following command. (_Note: More packages are coming for Windows and Mac, I hope!_)
 
+```{bash, eval = FALSE}
+conda create -n r34 r-base r-essential
+```
+
+If you want to use R from within Python, you could add R to an exisiting environment instead: 
+
+```{bash, eval = FALSE}
+conda install -n <name of existing environment> r-base r-essential rpy2
+```
+
+Or alternatively, add Python to the newly created R environment.
+
+```{bash, eval = FALSE}
+conda install -n r34 pandas python rpy2
+```
 
 ### Option 2: 
+
+If you would like to install R directly, follow the install instructions from [CRAN](https://cloud.r-project.org/). 
+
+Once you have R installed, you will probably want to add the IRkernel so that you can use R within Jupyter Notebook. To do so, open R, and run the following commands: 
+
+```{r, eval = FALSE}
+install.packages(c('repr', 'IRdisplay', 'evaluate', 'crayon', 'pbdZMQ', 'devtools', 'uuid', 'digest'), repos = "https://cloud.r-project.org/")
+devtools::install_github('IRkernel/IRkernel')
+IRkernel::installspec()
+```
+
+### Getting the canadaHCDx package
+
+You will have the option to complete Lab 1 using either shell commands, or an R package within Python. If you want to use the R package, you will have to install it. This is relatively simple. 
+
+If you are running a 64-bit version of Linux, you can install via conda using the following commands:
+
+```{bash, eval = FALSE}
+conda config --append channels ConorIA
+conda config --prepend channels conda-forge
+conda install -n <name of existing environment> r-canadahcdx
+```
+
+If you installed R directly, you can install via `devtools`, which we installed when we installed `IRkernel`.
+
+```{r, eval = FALSE}
+devtools::install_git("https://gitlab.com/ConorIA/canadaHCDx")
+devtools::install_github("ConorIA/canadaHCD@patched")
+```
+
