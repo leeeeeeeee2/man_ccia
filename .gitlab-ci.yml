@@ -2,7 +2,7 @@ image: registry.gitlab.com/conoria/man_ccia:latest
 
 pages:
   script:
-  - R -q -e 'bookdown::render_book("index.Rmd", "bookdown::gitbook")'
+  - bash -c "source activate book && Rscript -e 'bookdown::render_book(\"index.Rmd\", \"bookdown::gitbook\")'"
   - mv _book public
   artifacts:
     paths:
