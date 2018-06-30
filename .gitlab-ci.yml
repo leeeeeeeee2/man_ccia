@@ -1,4 +1,4 @@
-image: conoria/anaconda:book
+image: registry.gitlab.com/conoria/man_ccia:latest
 
 pages:
   script:
