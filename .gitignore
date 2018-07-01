@@ -1,4 +1,4 @@
-\.R*
+*\.R*
 _book
 l*f*.png
 man_ccia.Rmd

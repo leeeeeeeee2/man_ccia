@@ -14,6 +14,7 @@ from matplotlib import pyplot as plt
 plt.switch_backend('agg') # Might be overkill
 import numpy as np
 import pandas as pd
+pd.set_option('display.max_columns', 10)
 import scipy.stats as stats
 ```
 
@@ -40,7 +41,7 @@ Environment and Climate Change Canada (ECCC) makes data available over an intern
   <summary>Click here for instructions.</summary>
 ECCC makes data available over an [FTP site](ftp://client_climate@ftp.tor.ec.gc.ca/Pub/Get_More_Data_Plus_de_donnees/), and gives instructions for downloading data manually via `bash` and `wget`. You can find instructions for using the command line to download data [here](ftp://client_climate@ftp.tor.ec.gc.ca/Pub/Get_More_Data_Plus_de_donnees/Readme.txt).
 
-### A scripted solution
+#### A scripted solution
 
 For convenience, I have written a script, called `eccc` to perform this downloading. You can get the latest version of this script from [GitLab](https://gitlab.com/ConorIA/shell-scripts/raw/master/eccc/eccc).
 
@@ -58,7 +59,7 @@ This command prints out help information for using the script. To download daily
 
 This will download the individual year-by-year `.csv` files for daily data at Toronto, crop the first 24 lines from them, and the glue them all together in a single file. In this case. That file is called "`r list.files(pattern = "5051.*csv")`".
 
-### Cleaning the data in Python
+#### Cleaning the data in Python
 
 Now that we have the data that we need, we need to start working with it. Fire up your installation of Python, and follow along with the following commands. 
 
@@ -112,14 +113,14 @@ It looks like we're missing data as of July 2003. Indeed, in 2003 the "Toronto" 
 
 We'll have to return to `bash` for a moment to get the data that we're missing. Let's grab the data for the new station code from 2000 to 2010. 
 
-**Really, run this in bash, not Python**
+<center>**Really, run this in bash, not Python**<\center>
 ```{bash, eval = FALSE}
 ./eccc -y 2000:2010 -s 31688 -x 24 -g
 ```
 
 Now let's return to Python. 
 
-**Back to Python**
+<center>**Back to Python**<\center>
 ```{python}
 tor2 = pd.read_csv("31688-daily.csv")
 tor2 = tor2.rename(columns={'Date/Time': 'Date', 'Max Temp (°C)': 'MaxTemp', 'Min Temp (°C)': 'MinTemp', 'Mean Temp (°C)': 'MeanTemp', 'Total Precip (mm)': 'TotalPrecip'})
@@ -380,7 +381,7 @@ We can plot this easily. Note, this book is generated on a machine with no displ
 ```{python}
 tor_trop.plot()
 ```
-```{python}
+```{python, include=FALSE}
 plt.savefig('l1f1.png')
 plt.clf()
 ```
