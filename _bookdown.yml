@@ -1,2 +1,3 @@
 book_filename: "man_ccia"
 chapter_name: "Sec. "
+delete_merged_file: true

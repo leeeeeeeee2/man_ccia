@@ -18,7 +18,7 @@ Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-L
 
 Once you have enabled the Windows Linux Subsystem, restart your machine, and install your Linux disitrbution of choice from the Windows Store, for example, [Ubuntu](https://www.microsoft.com/en-ca/p/ubuntu/9nblggh4msv6). When the install has completed, click "Launch" and choose a username for your Linux user account when prompted. 
 
-The Linux distribution that you install should include `bash` and `wget`. Refer to the ["Installing on Linux"](@envinstlin) section, below, to confirm. 
+The Linux distribution that you install should include `bash` and `wget`. Refer to the "Installing on Linux" (Section \@ref(@envinstlin)), below, to confirm. 
 
 #### Option 2: Via Cygwyn
 

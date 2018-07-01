@@ -1,9 +1,11 @@
-FROM continuumio/anaconda3
+FROM continuumio/miniconda3
 
 MAINTAINER Conor I. Anderson <conor@conr.ca>
 
 RUN apt-get update -qq &&\
-    apt-get -y install make &&\
+    apt-get -y install --no-install-recommends \
+      libgl1-mesa-dev \
+      make &&\
     apt-get clean &&\
     rm -rf /tmp/* /var/lib/apt/lists/*
 
@@ -12,11 +14,13 @@ RUN conda config --append channels ConorIA &&\
 
 RUN conda create -y \
           -n book \
+          matplotlib \
           pandas \
           python \
           r-base \
-          r-bookdown=0.7 \
+          "r-bookdown>=0.7" \
           r-canadaHCDx \
           r-reticulate \
-          rpy2 &&\
+          rpy2 \
+          scipy &&\
           conda clean -ya

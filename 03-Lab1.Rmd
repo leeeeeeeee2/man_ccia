@@ -1,11 +1,20 @@
 # Lab exercise 1: Understanding the past {#lab1}
 
-In this lab, we will look at the past trends. 
-
 ```{r setup, include=FALSE}
 library(reticulate)
 conda <- ifelse(file.exists("/opt/conda/bin/conda"), "/opt/conda/bin/conda", "/opt/anaconda/bin/conda")
 use_condaenv("book", conda = conda, required = TRUE)
+```
+
+```{python py_setup, include=FALSE}
+import matplotlib as mpl
+mpl.use("agg") # Needed for the book only
+mpl.rc('font', size = 12)
+from matplotlib import pyplot as plt
+plt.switch_backend('agg') # Might be overkill
+import numpy as np
+import pandas as pd
+import scipy.stats as stats
 ```
 
 
@@ -16,10 +25,19 @@ chmod a+x eccc
 ./eccc -y 2000:2010 -s 31688 -x 24 -g
 ```
 
+One of the first steps of a climate change impact assessment (CCIA) is to establish a climatological baseline  for the climate variable of interest (either an exposure unit or the climate variable most directly linked to the exposure unit). 
+
+An __exposure unit__ is an element or variable that is directly or indirectly affected by the changes in climate. In this exercise you will acquire Canadian climate data for Toronto and perform an analysis of an exposure unit that will be assigned to you. Refer to the Appendix (\@ref(appendix)) for a list of some example exposure units. 
+
+What do we mean by baseline? A baseline period is needed to define the observed climate. This observed climate information is combined with GCM output of climate change to determine the climate change impact for a given future climate scenario (e.g. Representative Concentration Pathway (RCP)). When using climate model output, the baseline also serves as the reference period from which the modelled future change in climate is calculated. Future climate change is defined by comparing the years in the baseline period with the similar number of years in the future for a given future climate scenario.
+
 Environment and Climate Change Canada (ECCC) makes data available over an internet portal. You can [visit this page](https://climate.weather.gc.ca/), and donwload data manually, but that is a _very_ tedious process. In this lab, I will present you with two options for downloading Canadian climate data: the command-line, and via an R package. 
 
-## Option 1: One the CLI
+## Getting the data
 
+### Option 1: On the command line
+<details>
+  <summary>Click here for instructions.</summary>
 ECCC makes data available over an [FTP site](ftp://client_climate@ftp.tor.ec.gc.ca/Pub/Get_More_Data_Plus_de_donnees/), and gives instructions for downloading data manually via `bash` and `wget`. You can find instructions for using the command line to download data [here](ftp://client_climate@ftp.tor.ec.gc.ca/Pub/Get_More_Data_Plus_de_donnees/Readme.txt).
 
 ### A scripted solution
@@ -46,7 +64,7 @@ Now that we have the data that we need, we need to start working with it. Fire u
 
 First, let's import the libraries we are going to need to manipulate our data. 
 
-```{python}
+```{python, eval = FALSE}
 import numpy as np
 import pandas as pd
 ```
@@ -155,9 +173,15 @@ print(tor.head())
 print(tor.tail())
 ```
 
-## Option 2: Using the `canadaHCD` package in R
+```{bash cleanup, include=FALSE}
+rm eccc* *.csv
+```
+</details>
 
-For those of us who work often in R, the `canadaHCD` package by Gavin S. Simpson is the first stop for Canadian climate data. We can take advantage of this package in Python too, thanks to the `rpy2` Python module. Of course, you are free to run any of the R commands in the code below directly in R.
+### Option 2: Using the `canadaHCD` package in R
+<details>
+<summary>Click here for instructions.</summary>
+For those of us who work often in R, the `canadaHCD` package [@R-canadaHCD] is the first stop for Canadian climate data. We can take advantage of this package in Python too, thanks to the `rpy2` Python module. We will also use an expansion pack that I have written based on `canadaHCD`, called `canadaHCDx` [@R-canadaHCDx]. Of course, you are free to run any of the R commands in the code below directly in R.
 
 [//]: # (It seems (understandably), that calling rpy2 through reticulate causes all sorts of trouble)
 
@@ -310,11 +334,153 @@ print(tor.tail())
 ```
 
 There you have it! We just downloaded 30 years of data from Environment Canada in Python via R!
+</details>
 
-```{bash cleanup, include=FALSE}
-rm eccc* *.csv
+## Analyzing the data
+
+Now let's take a look at our data. We will require some additional libraries.
+
+```{python, eval=FALSE}
+import matplotlib as mpl
+mpl.rc('font', size = 12)
+import numpy as np
+import pandas as pd
+from matplotlib import pyplot as plt
+import scipy.stats as stats
 ```
 
-Questions:
+As we mentioned in the introduction, an exposure unit is often the "unit" of our analysis when we want to perform an impact assessment. In this section, we'll calculate two exposure units, starting with a rather simple Boolean (True/False) unit. 
 
-How does the choice of "Join points" affect results?
+As I write this section, the temperature outside is a sweltering 32 °C (36 with the humidex), so what better exposure unit to consider than "tropical nights", nights with a minimum temperature above 20 °C. We will limit our analysis to the summer months.
+
+This code requires that your "Date" column is recognized as such by Python. If you get an error, try the following expression in Python, `tor.Date = pd.to_datetime(tor.Date)`.
+
+Let's start by adding a new column to our table called "TropNight", which will be a True/False value.
+
+```{python}
+tor['TropNight'] = ((tor.MinTemp > 20) & (tor.Date.dt.month.isin([6, 7, 8])))
+print(tor.head())
+```
+
+Since our value is Boolean, we can use that column as an index. Let's double-check to make sure that we got the results that we were expecting.
+
+```{python}
+print(tor[tor.TropNight].head())
+```
+
+Now let's get an aggregate data set by grouping by the year. 
+
+```{python}
+tor_trop = tor[['Date', 'TropNight']].groupby(tor.Date.dt.year).sum()
+print(tor_trop.head())
+```
+
+We can plot this easily. Note, this book is generated on a machine with no display, if you want to see the plot, run `plot.show()` or set the option `%matplotlib inline` if you are using Jupyter Notebook.
+
+```{python}
+tor_trop.plot()
+```
+```{python}
+plt.savefig('l1f1.png')
+plt.clf()
+```
+
+![](l1f1.png)
+
+The grouping operation has changed our table index to the years from 1981 to 2010. We want to keep this information in the table, so we can reset our index like this:
+
+```{python}
+tor_trop.reset_index(level = 0, inplace = True)
+print(tor_trop.head())
+```
+
+Now let's make another plot, this time with a trendline. 
+
+```{python}
+plt.plot(tor_trop.Date, tor_trop.TropNight)
+plt.plot(tor_trop.Date, np.polyval(np.polyfit(tor_trop.Date, tor_trop.TropNight, 1), tor_trop.Date))
+plt.title("Tropical Nights (JJA) at Toronto (1981‒2010)")
+plt.xlabel("Year")
+```
+```{python, include = FALSE}
+plt.savefig('l1f2.png')
+plt.clf()
+```
+
+![](l1f2.png)
+
+Let's try for a slightly more complicated exposure unit: Winter heating degree days (HDDs). The HDDs represent the difference between the mean temperature and the base temperature of 18 °C. Since HDDs can't be negative, they are only calculated when the mean temperature is below 18 °C. They are used as an indirect measure of energy demand. 
+
+We can apply an anonymous (lambda) function to our `MinTemp` column to capture the following pseudocode expression:
+
+<center>`return 0 if the mean temperature was above 18, otherwise, return the difference between 18 and the mean temperature`</center>
+
+```{python}
+tor['HDD'] = tor.MinTemp.apply(lambda x: 0 if x >= 18 else 18 - x)
+```
+
+We have one more challenge to overcome. A common mistake when performing seasonal analysis on the winter is to simply group December, January, and February by year. This is an easy logical jump to make. Remember, when we refer to winter, we mean the _continuous_ winter season that stretches from the December of the previous year to February of the current year. The easiest way to control for this is to add 1 to the year for any December.
+
+```{python}
+tor['Year'] = (lambda x: tor.Date.dt.year if x.equals(12) else tor.Date.dt.year + 1)(tor.Date.dt.month)
+```
+
+Now we can aggregate our heating degree days. Pay close attention to the code below. Here we are selecting two columns, filtering to just our winter months, and aggregating by `sum()`. 
+
+```{python}
+tor_hdd = tor[['Year', 'HDD']][tor.Date.dt.month.isin([12, 1, 2])].groupby('Year').sum()
+tor_hdd.reset_index(level = 0, inplace = True)
+print(tor_hdd.head())
+```
+
+```{python}
+plt.plot(tor_hdd.Year, tor_hdd.HDD)
+plt.plot(tor_hdd.Year, np.polyval(np.polyfit(tor_hdd.Year, tor_hdd.HDD, 1), tor_hdd.Year))
+plt.title("Winter HDD at Toronto (1981‒2010)")
+plt.xlabel("Year")
+plt.ylabel("HDD")
+```
+```{python, include = FALSE}
+plt.savefig('l1f3.png')
+plt.clf()
+```
+
+![](l1f3.png)
+
+Let's see if we can detect any trends in our baseline values. For convenience, I am going to create a function that will spit out the relevant values. You can run these commands directly, but this might save you time when you get to the exercises (Hint!).
+
+```{python}
+def test_trends(years, values):
+    slope, intercept, r_value, p_value, std_err = stats.linregress(years, values)
+    print("The regression coefficients are", np.round(slope, 3), "for the slope and",
+          np.round(intercept, 1), "for the intercept\n")
+
+    t_crit = stats.t.ppf(0.975, len(years) - 1)
+    confidence_interval = t_crit * std_err
+    print("The true value of the slope is then", np.round(slope, 3), "+/-",
+          np.round(confidence_interval, 3),"\n")
+
+    pearsons_corrcoef, p_corr = stats.pearsonr(years,  values)
+    print("The correlation is", np.round(pearsons_corrcoef, 3), "with a p-value of",
+          np.round(p_corr, 5), ("(significant)!\n" if p_corr < 0.05 else "(not significant)!\n"))
+
+    print("The variance in", values.name, "explained by the linear trend is quantified by the",
+          "R²: R² =", np.round(100 * pearsons_corrcoef**2, 3), '%.\n')
+```
+
+
+```{python}
+test_trends(tor_trop.Date, tor_trop.TropNight)
+```
+
+```{python}
+test_trends(tor_hdd.Year, tor_hdd.HDD)
+```
+
+## Exercises (what to submit)
+
+- You have been assigned an exposure unit and period. Write a brief description of the exposure unit, whether there were any missing or suspicious data, and how these data were treated. [2 marks] 
+- Include the time series plots with fitted trend lines for your exposure unit and for the relevant temperature variable, e.g. MeanTemp for freezing degree days. [2 marks] 
+- Include a table with the summary statistics for your exposure unit and temperature variable. [2 marks] 
+- Read both of the "methods" sections above, for obtaining Canadian climate data. You will notice that we have chosen different dates at which to "append" the `Tor2` object to `Tor1` in each example. Repeat your analysis using the other merge date. Have your results changed? Briefly (one sentence is fine) discuss the selection of an appropriate merge date when working with separate data sets. [2 marks] 
+- Be sure to clearly label your plots and table and include concise figure and table captions. [2 marks]

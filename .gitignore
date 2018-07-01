@@ -1,7 +1,5 @@
-*.Rproj
-.Rbuildignore
-.Rproj.user
-man_ccia.Rmd
+\.R*
 _book
+l*f*.png
+man_ccia.Rmd
 public
-.Rhistory
