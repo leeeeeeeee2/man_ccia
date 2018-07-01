@@ -15,7 +15,7 @@ RUN conda create -y \
           pandas \
           python \
           r-base \
-          r-bookdown \
+          r-bookdown=0.7 \
           r-canadaHCDx \
           r-reticulate \
           rpy2 &&\

@@ -127,7 +127,7 @@ IRkernel::installspec()
 
 You will have the option to complete Lab 1 using either shell commands, or an R package within Python. If you want to use the R package, you will have to install it. This is relatively simple. 
 
-If you are running a 64-bit version of Linux, you can install via conda using the following commands:
+If you are running a 64-bit operating system, you can install via conda using the following commands. Note that I built the packages under Windows and Linux. The MacOS package was converted from Mac and hasn't been tested. I'll remove this line from this manual once I've heard from some users about whether it works or not!
 
 ```{bash, eval = FALSE}
 conda config --append channels ConorIA
@@ -135,7 +135,7 @@ conda config --prepend channels conda-forge
 conda install -n <name of existing environment> r-canadahcdx
 ```
 
-If you installed R directly, you can install via `devtools`, which we installed when we installed `IRkernel`.
+If you installed R directly (or if the above packages fail), you can install the package directly in R via `devtools`, which we installed when we installed `IRkernel`.
 
 ```{r, eval = FALSE}
 devtools::install_git("https://gitlab.com/ConorIA/canadaHCDx")
