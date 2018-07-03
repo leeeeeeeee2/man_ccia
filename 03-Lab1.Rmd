@@ -2,7 +2,7 @@
 
 ```{r setup, include=FALSE}
 library(reticulate)
-conda <- ifelse(file.exists("/opt/conda/bin/conda"), "/opt/conda/bin/conda", "/opt/anaconda/bin/conda")
+conda <- ifelse(file.exists("/opt/conda/bin/conda"), "/opt/conda/bin/conda", "/data/home-ext/miniconda3/bin/conda")
 use_condaenv("book", conda = conda, required = TRUE)
 ```
 
@@ -186,7 +186,9 @@ For those of us who work often in R, the `canadaHCD` package [@R-canadaHCD] is t
 
 [//]: # (It seems (understandably), that calling rpy2 through reticulate causes all sorts of trouble)
 
+```{block, type='rmdcomment'}
 In the interest of full disclosure, it should be noted that your output might look slightly different to what you see below. This book was written in R. As you might imagine, it is not possible to run R via Python via R! I have, therefore, provided the code below in the context of Python to R, but am using R "under the hood" to generate the data. 
+```
 
 First we need to import our Python libraries.
 
@@ -462,11 +464,15 @@ def test_trends(years, values):
           np.round(confidence_interval, 3),"\n")
 
     pearsons_corrcoef, p_corr = stats.pearsonr(years,  values)
+    levels = [0.001, 0.01, 0.05, 0.1]
+    lvl = [i for i in levels if p_corr < i]
     print("The correlation is", np.round(pearsons_corrcoef, 3), "with a p-value of",
-          np.round(p_corr, 5), ("(significant)!\n" if p_corr < 0.05 else "(not significant)!\n"))
+          np.round(p_corr, 5), "(not significant)\n" if lvl == [] else
+          "(significant at the " + str(min(lvl)) + " level)\n")
 
-    print("The variance in", values.name, "explained by the linear trend is quantified by the",
-          "R²: R² =", np.round(100 * pearsons_corrcoef**2, 3), '%.\n')
+    print("The variance in", values.name, "explained by the linear trend is",
+          "quantified by the R²: R² =",
+          np.round(100 * pearsons_corrcoef**2, 3), '%.\n')
 ```
 
 
