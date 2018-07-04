@@ -1,1 +1,1 @@
-This is a book! Read it here: http://conoria.gitlab.io/EES1117_lab_manual
+This is a book! Read it here: http://claut.gitlab.io/man_ccia
