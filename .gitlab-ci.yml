@@ -1,4 +1,4 @@
-image: registry.gitlab.com/conoria/man_ccia:latest
+image: registry.gitlab.com/claut/man_ccia:latest
 
 pages:
   script:
