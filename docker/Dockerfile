@@ -13,7 +13,7 @@ RUN conda config --append channels ConorIA &&\
     conda config --prepend channels conda-forge
 
 RUN conda create -y \
-          -n book \
+          -n man_ccia \
           matplotlib \
           pandas \
           python \

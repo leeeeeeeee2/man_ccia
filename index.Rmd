@@ -8,14 +8,14 @@ documentclass: book
 bibliography: [book.bib, packages.bib]
 biblio-style: apalike
 link-citations: yes
-description: "Forthcoming"
+description: "A lab manual for students of Climate Change Impact Assessment"
 ---
 
 # About this book
 
-This book is an open source document, hosted on the [GitLab](https://about.gitlab.com/) platform ([project page](https://gitlab.com/ConorIA/man_ccia)), and [published](https://ConorIA.gitlab.io/man_ccia/) using [GitLab Pages](https://pages.gitlab.io/), where you are probably reading it now. The book is automatically updated and republished every time changes are committed to the project, using the GitLab multi runner CI engine, and a [Docker image](https://gitlab.com/ConorIA/man_ccia/blob/master/docker/Dockerfile) with a distribution of [Miniconda](https://conda.io/miniconda.html), including Python 3 and R. The book is built using the bookdown package [@R-bookdown] in R, and pandoc. The version of the book that you are reading, was built from commit `r system('git rev-parse --short --verify master', intern = TRUE)`.
+This book is an open source document, hosted on the [GitLab](https://about.gitlab.com/) platform ([project page](https://gitlab.com/claut/man_ccia)), and [published](https://claut.gitlab.io/man_ccia/) using [GitLab Pages](https://pages.gitlab.io/), where you are probably reading it now. The book is automatically updated and republished every time changes are committed to the project, using the GitLab multi runner CI engine, and a [Docker image](https://gitlab.com/claut/man_ccia/blob/master/docker/Dockerfile) with a distribution of [Miniconda](https://conda.io/miniconda.html), including Python 3 and R. The book is built using the **bookdown** package [@R-bookdown] in R, and pandoc. Most of the code is executed in Python from within R using the **reticulate** package [@R-reticulate]. The version of the book that you are reading, was built from commit `r system('git rev-parse --short --verify master', intern = TRUE)`.
 
-We invite your contributions to this book by submitting a [merge request](https://gitlab.com/ConorIA/man_ccia/merge_requests) to the above project, or, if you are unfamiliar with Git-based revisioning, by email to conor.anderson@utoronto.ca. Please note that any contributions must be licensed under the [Creative Commons Attribution-ShareAlike 4.0 International License](http://creativecommons.org/licenses/by-sa/4.0/). For more information, see "License" below. Corrections should be made via the project's [issues page](https://gitlab.com/ConorIA/man_ccia/issues).
+We invite your contributions to this book by submitting a [merge request](https://gitlab.com/claut/man_ccia/merge_requests) to the above project, or, if you are unfamiliar with Git-based revisioning, by email to conor.anderson@utoronto.ca. Please note that any contributions must be licensed under the [Creative Commons Attribution-ShareAlike 4.0 International License](http://creativecommons.org/licenses/by-sa/4.0/). For more information, see "License" below. Corrections should be made via the project's [issues page](https://gitlab.com/claut/man_ccia/issues).
 
 ## Contributors
 
@@ -29,5 +29,5 @@ This work is licensed under a [Creative Commons Attribution-ShareAlike 4.0 Inter
 
 ```{r include=FALSE}
 # automatically create a bib database for R packages
-knitr::write_bib(c(.packages(), 'bookdown', 'canadaHCD', 'canadaHCDx'), 'packages.bib')
+knitr::write_bib(c(.packages(), 'bookdown', 'canadaHCD', 'canadaHCDx', 'reticulate'), 'packages.bib')
 ```

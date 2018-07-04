@@ -18,8 +18,8 @@
 |                    | Wet days              | No. of days with > 1 mm precipitation       | days          |
 |                    | Drought risk          | More than 10 consecutive dry days           | No. of alerts |
 
-## Seasons
- - **DJF**: Winter
- - **MAM**: Spring
- - **JJA**: Summer
- - **SON**: Autumn
+### Seasons
+ - DJF: Winter
+ - MAM: Spring
+ - JJA: Summer
+ - SON: Autumn

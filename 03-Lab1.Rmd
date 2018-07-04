@@ -1,9 +1,9 @@
-# Lab exercise 1: Understanding the past {#lab1}
+# Lab exercise 1: Understanding the recent past {#lab1}
 
 ```{r setup, include=FALSE}
 library(reticulate)
 conda <- ifelse(file.exists("/opt/conda/bin/conda"), "/opt/conda/bin/conda", "/data/home-ext/miniconda3/bin/conda")
-use_condaenv("book", conda = conda, required = TRUE)
+use_condaenv("man_ccia", conda = conda, required = TRUE)
 ```
 
 ```{python py_setup, include=FALSE}
@@ -32,7 +32,7 @@ An __exposure unit__ is an element or variable that is directly or indirectly af
 
 What do we mean by baseline? A baseline period is needed to define the observed climate. This observed climate information is combined with GCM output of climate change to determine the climate change impact for a given future climate scenario (e.g. Representative Concentration Pathway (RCP)). When using climate model output, the baseline also serves as the reference period from which the modelled future change in climate is calculated. Future climate change is defined by comparing the years in the baseline period with the similar number of years in the future for a given future climate scenario.
 
-Environment and Climate Change Canada (ECCC) makes data available over an internet portal. You can [visit this page](https://climate.weather.gc.ca/), and donwload data manually, but that is a _very_ tedious process. In this lab, I will present you with two options for downloading Canadian climate data: the command-line, and via an R package. 
+Environment and Climate Change Canada (ECCC) makes data available over an internet portal. You can [visit this page](https://climate.weather.gc.ca/), and download data manually, but that is a _very_ tedious process. In this lab, I will present you with two options for downloading Canadian climate data: the command-line, and via an R package. 
 
 ## Getting the data
 
@@ -57,7 +57,7 @@ This command prints out help information for using the script. To download daily
 ./eccc -y 1981:2010 -s 5051 -x 24 -g
 ```
 
-This will download the individual year-by-year `.csv` files for daily data at Toronto, crop the first 24 lines from them, and the glue them all together in a single file. In this case. That file is called "`r list.files(pattern = "5051.*csv")`".
+This will download the individual year-by-year _csv_ files for daily data at Toronto, crop the first 24 lines from them, and the glue them all together in a single file. In this case. That file is called "_`r list.files(pattern = "5051.*csv")`_".
 
 #### Cleaning the data in Python
 
@@ -70,7 +70,7 @@ import numpy as np
 import pandas as pd
 ```
 
-Now read the `.csv` files into Python. 
+Now read the _csv_ files into Python. 
 
 ```{python}
 tor = pd.read_csv("5051-daily.csv")
@@ -98,7 +98,7 @@ print(tor.head())
 print(tor.tail())
 ```
 
-Uhh ohh! It looks like we are missing all of our temperature data at the end of our `.csv` file. We can test this theory by using an enumerator. The following will tell us the index at which all three of our temperature variables of interest are missing for the first time. 
+Uhh ohh! It looks like we are missing all of our temperature data at the end of our _csv_ file. We can test this theory by using an enumerator. The following will tell us the index at which all three of our temperature variables of interest are missing for the first time. 
 ```{python}
 print(next(i for i, x in enumerate(tor.loc[:, 'MaxTemp':'MeanTemp'].isnull().all(axis=1)) if x) - 1)
 ```
@@ -174,19 +174,25 @@ print(tor.head())
 print(tor.tail())
 ```
 
+Save your new data set to _csv_ by:
+
+```{python, eval=FALSE}
+tor.to_csv("tor.csv")
+```
+
 ```{bash cleanup, include=FALSE}
 rm eccc* *.csv
 ```
 </details>
 
-### Option 2: Using the `canadaHCD` package in R
+### Option 2: Using the **canadaHCD** package in R
 <details>
 <summary>Click here for instructions.</summary>
-For those of us who work often in R, the `canadaHCD` package [@R-canadaHCD] is the first stop for Canadian climate data. We can take advantage of this package in Python too, thanks to the `rpy2` Python module. We will also use an expansion pack that I have written based on `canadaHCD`, called `canadaHCDx` [@R-canadaHCDx]. Of course, you are free to run any of the R commands in the code below directly in R.
+For those of us who work often in R, the **canadaHCD** package [@R-canadaHCD] is the first stop for Canadian climate data. We can take advantage of this package in Python too, thanks to the **rpy2** Python module. We will also use an expansion pack that I have written based on **canadaHCD**, called **canadaHCDx** [@R-canadaHCDx]. Of course, you are free to run any of the R commands in the code below directly in R.
 
 [//]: # (It seems (understandably), that calling rpy2 through reticulate causes all sorts of trouble)
 
-```{block, type='rmdcomment'}
+```{block, type='rmddisclaimer'}
 In the interest of full disclosure, it should be noted that your output might look slightly different to what you see below. This book was written in R. As you might imagine, it is not possible to run R via Python via R! I have, therefore, provided the code below in the context of Python to R, but am using R "under the hood" to generate the data. 
 ```
 
@@ -235,7 +241,7 @@ search = pandas2ri.ri2py(search)
 
 You can also automatically convert all subsequent R objects to Python by running `pandas2ri.activate()`.
 
-So, we have a _very_ long list of stations, but we have no idea about the kinds of data that are available. `canadaHCDx` includes some more advanced search options.
+So, we have a _very_ long list of stations, but we have no idea about the kinds of data that are available. **canadaHCDx** includes some more advanced search options.
 
 ```{python, eval=FALSE}
 r('find_station("Toronto", baseline = 1981:2010, type = "daily")')
@@ -335,6 +341,13 @@ print(tor.head())
 ```{python}
 print(tor.tail())
 ```
+
+You can save your new data set to _csv_ by:
+
+```{python, eval=FALSE}
+tor.to_csv("tor.csv")
+```
+
 
 There you have it! We just downloaded 30 years of data from Environment Canada in Python via R!
 </details>
@@ -486,8 +499,10 @@ test_trends(tor_hdd.Year, tor_hdd.HDD)
 
 ## Exercises (what to submit)
 
+```{block, type='rmdassignment'}
 - You have been assigned an exposure unit and period. Write a brief description of the exposure unit, whether there were any missing or suspicious data, and how these data were treated. [2 marks] 
 - Include the time series plots with fitted trend lines for your exposure unit and for the relevant temperature variable, e.g. MeanTemp for freezing degree days. [2 marks] 
 - Include a table with the summary statistics for your exposure unit and temperature variable. [2 marks] 
 - Read both of the "methods" sections above, for obtaining Canadian climate data. You will notice that we have chosen different dates at which to "append" the `Tor2` object to `Tor1` in each example. Repeat your analysis using the other merge date. Have your results changed? Briefly (one sentence is fine) discuss the selection of an appropriate merge date when working with separate data sets. [2 marks] 
 - Be sure to clearly label your plots and table and include concise figure and table captions. [2 marks]
+```

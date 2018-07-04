@@ -13,18 +13,67 @@ pre code {
   white-space: inherit;
 }
 
-.rmdcomment {
+.rmddisclaimer {
   padding: 1em 1em 1em 4em;
   margin-bottom: 10px;
-  background: #f5f5f5;
+  background: #ffb4b4;
+  position:relative;
+}
+
+.rmddisclaimer:before {
+  content: "\f12a";
+  font-family: FontAwesome;
+  left:22px;
+  position:absolute;
+  top:0;
+  font-size: 45px;
+}
+
+.rmdtip {
+  padding: 1em 1em 1em 4em;
+  margin-bottom: 10px;
+  background: #b4b4ff;
+  position:relative;
+}
+
+.rmdtip:before {
+  content: "\f00c";
+  font-family: FontAwesome;
+  left:10px;
+  position:absolute;
+  top:0;
+  font-size: 45px;
+}
+ 
+ .rmdcomment {
+  padding: 1em 1em 1em 4em;
+  margin-bottom: 10px;
+  background: #e6e6e6;
   position:relative;
 }
 
 .rmdcomment:before {
-    content: "\f075";
-    font-family: FontAwesome;
-    left:10px;
-    position:absolute;
-    top:0px;
-    font-size: 45px;
- }
+  content: "\f075";
+  font-family: FontAwesome;
+  left:10px;
+  position:absolute;
+  top:0;
+  font-size: 45px;
+}
+ 
+.rmdassignment {
+  padding: 1em 1em 1em 4em;
+  margin-bottom: 10px;
+  background: #e6e6e6;
+  position:relative;
+}
+
+.rmdassignment:before {
+  content: "\f0a4";
+  font-family: FontAwesome;
+  left:10px;
+  position:absolute;
+  top:0;
+  font-size: 45px;
+}
+ 

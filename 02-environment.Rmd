@@ -18,7 +18,7 @@ Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-L
 
 Once you have enabled the Windows Linux Subsystem, restart your machine, and install your Linux disitrbution of choice from the Windows Store, for example, [Ubuntu](https://www.microsoft.com/en-ca/p/ubuntu/9nblggh4msv6). When the install has completed, click "Launch" and choose a username for your Linux user account when prompted. 
 
-The Linux distribution that you install should include `bash` and `wget`. Refer to the "Installing on Linux" (Section \@ref(@envinstlin)), below, to confirm. 
+The Linux distribution that you install should include `bash` and `wget`. Refer to the "Installing on Linux" (Section \@ref(installing-on-linux)), below, to confirm. 
 
 #### Option 2: Via Cygwyn
 
@@ -67,7 +67,7 @@ make
 sudo make install
 ```
 
-### Installing on Linux {#envinstlin}
+### Installing on Linux {#installing-on-linux}
 
 If you are running Linux, you almost certainly already have both of these utilities. You can check for the presence of these executables by opening a shell and typing:
 
@@ -96,13 +96,13 @@ Many people consider R and Python to be mutually excusive: you either use one, o
 If you already have an Anaconda environment set up, and wish to install R, you can do this easily via Anaconda. To create a new Anaconda environment, and install everything you'll need to work in R, run the following command. (_Note: More packages are coming for Windows and Mac, I hope!_)
 
 ```{bash, eval = FALSE}
-conda create -n r34 r-base r-essential
+conda create -n r34 r-base r-essentials
 ```
 
 If you want to use R from within Python, you could add R to an exisiting environment instead: 
 
 ```{bash, eval = FALSE}
-conda install -n <name of existing environment> r-base r-essential rpy2
+conda install -n <name of existing environment> r-base r-essentials rpy2
 ```
 
 Or alternatively, add Python to the newly created R environment.
@@ -111,11 +111,16 @@ Or alternatively, add Python to the newly created R environment.
 conda install -n r34 pandas python rpy2
 ```
 
+```{block, type='rmdtip'}
+If you want to run all of the code used in this book, you can intall a copy of the environment used by running **`conda env create ConorIA/man_ccia`**. That will install all of the packages that were used in this book!
+```
+
+
 ### Option 2: 
 
 If you would like to install R directly, follow the install instructions from [CRAN](https://cloud.r-project.org/). 
 
-Once you have R installed, you will probably want to add the IRkernel so that you can use R within Jupyter Notebook. To do so, open R, and run the following commands: 
+Once you have R installed, you will probably want to add the **IRkernel** so that you can use R within Jupyter Notebook. To do so, open R, and run the following commands: 
 
 ```{r, eval = FALSE}
 install.packages(c('repr', 'IRdisplay', 'evaluate', 'crayon', 'pbdZMQ', 'devtools', 'uuid', 'digest'), repos = "https://cloud.r-project.org/")
@@ -123,7 +128,7 @@ devtools::install_github('IRkernel/IRkernel')
 IRkernel::installspec()
 ```
 
-### Getting the canadaHCDx package
+### Getting the **canadaHCDx** package
 
 You will have the option to complete Lab 1 using either shell commands, or an R package within Python. If you want to use the R package, you will have to install it. This is relatively simple. 
 
@@ -135,7 +140,7 @@ conda config --prepend channels conda-forge
 conda install -n <name of existing environment> r-canadahcdx
 ```
 
-If you installed R directly (or if the above packages fail), you can install the package directly in R via `devtools`, which we installed when we installed `IRkernel`.
+If you installed R directly (or if the above packages fail), you can install the package directly in R via **devtools**, which we installed when we installed **IRkernel**.
 
 ```{r, eval = FALSE}
 devtools::install_git("https://gitlab.com/ConorIA/canadaHCDx")
