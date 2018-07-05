@@ -1,9 +1,20 @@
 image: registry.gitlab.com/claut/man_ccia:latest
 
+test:
+  script:
+  - make book
+  artifacts:
+    expire_in: 1d
+    paths:
+    - public
+  except:
+  - master
+
 pages:
   script:
   - make book
   artifacts:
+    expire_in: 1h
     paths:
     - public
   only:
