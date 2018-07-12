@@ -4,7 +4,7 @@ _Last update: `r file.info("04-modelling.Rmd")$mtime`_
 
 In Lab 1, we learned how to acquire data for the past, and perform a basic baseline analysis. In Lab 2, we will be looking the other direction, towards the future. Before we begin, this chapter serves as a primer on (or, hopefully, review of) basic climate modelling. 
 
-Since we scientists do not have a crystal ball to tell the future of our climate system, we rely on models to provide us with one or many "possible futures". Unlike fortune telling, climate modelling is based our scientific understanding of the Earth's climate system. Indeed, the most important point to be made for climate modelling is that, in principle, all climate models are based in the laws of physics: conservation of energy, conservation of mass, and conservation of momentum. As such, climate models provide a mathematical representation of the interactions among the distinct components of the Earth's climate system.
+Since we scientists do not have a crystal ball to tell the future of our climate system, we rely on models to provide us with one of many "possible futures". Unlike fortune telling, climate modelling is based on our scientific understanding of the Earth's climate system. Indeed, the most important point to be made for climate modelling is that, in principle, all climate models are based in the laws of physics: conservation of energy, conservation of mass, and conservation of momentum. As such, climate models provide a mathematical representation of the interactions among the distinct components of the Earth's climate system.
 
 ## Climate model hierarchy
 
@@ -35,7 +35,7 @@ Where $x = \sin\phi$, $\phi$ is the latitude. $D$ is the horizontal transport of
 
 ### 3-D models
 
-Chances are, if you consider about a climate model today, you are probably thinking about a 3-D model, specifically about a General Circulation Model (GCM). Three-dimensional models are based on some important laws of physics: the conservation of energy, the conservation of momentum (atmospheric and oceanic flows), and the conservation of mass (atmospheric gasses, water vapour, and salt in the oceans). These models require, at a minimum, a system of governing mathematical equations that represent out understanding of the Earth's climate system, methods for solving these equations, quality observed data to initialize the model, and (without fail) considerable computing resources.
+Chances are, if you consider a climate model today, you are probably thinking about a 3-D model, specifically about a General Circulation Model (GCM). Three-dimensional models are based on some important laws of physics: the conservation of energy, the conservation of momentum (atmospheric and oceanic flows), and the conservation of mass (atmospheric gasses, water vapour, and salt in the oceans). These models require, at a minimum, a system of governing mathematical equations that represent out understanding of the Earth's climate system, methods for solving these equations, quality observed data to initialize the model, and (without fail) considerable computing resources.
 
 ```{block, type="rmdtip"}
 You may have noticed that we left out 2-D models, above. A two-dimensional climate model starts out as a 3-D model, but removes one of the dimensions (often longitude). By removing a dimension, we reduce the resources needed to compute the model. While 2-D models can be efficient for modelling simple processes, they have become less relevant as the cost of computing resources continues to decline.
@@ -43,7 +43,7 @@ You may have noticed that we left out 2-D models, above. A two-dimensional clima
 
 GCMs are sometimes referred to as CGCMs (Coupled General Circulation Models), because they are often comprised of an array of models that represent some component of the climate system (atmosphere, ocean, cryosphere, land surface), which are coupled together. These components influence one another, and together make up the larger overall GCM. 
 
-Throughout the lab exercises, we will make use of model output from the models that formed part of the Coupled Model Intercomparison Project, Phase 5 (CMIP5). CMIP5 involved 29 modelling teams and more than 60 individual models. You can find more information about CMIP5 [here](https://pcmdi.llnl.gov/mips/cmip5/index.html)
+Throughout the lab exercises, we will make use of model output from the models that formed part of the Coupled Model Intercomparison Project, Phase 5 (CMIP5). CMIP5 involved 29 modelling teams and more than 60 individual models. You can find more information about CMIP5 [here](https://pcmdi.llnl.gov/mips/cmip5/index.html).
 
 ## Climate Change Scenarios: The Representative Concentration Pathways
 
@@ -51,7 +51,7 @@ A model by itself can't project the future without a little guidance. This is wh
 
 In this lab manual, we will focus on the Representative Concentration Pathways [@moss2010next], the current generation of climate scenarios which were developed for the IPCC's fifth assessment report [@pachauri2014climate]. These scenarios, abbreviated as RCPs, are a set of consistent climate projections, however, they are not integrated scenarios. They provide the first step for further analysis. Unlike past scenarios, the RCPs focus on greenhouse gas _concentrations_, not emissions.
 
-Each of the four RCP scenarios was developed based on scenarios in the climate literature, with the goal that the four scenarios would, together, provide a full range of the scenarios that were present in the literature at the time of their development. RCP8.5 was based on the A2 "business as usual" scenario from the Special Report on Emissions Scenarios (SRES) from the IPCC's fourth assessment report. It is characterized by high energy usage, rapid population growth, low technological development, and poor global political cooperation. RCPs 2.6, 4.5, and 6.0, on the other hand, are based on energy use of between 750 and 900 EJ (1 EJ = 1_e_18 J) by 2100. These scenarios place a higher focus on alternative and renewable energy. A key difference between these scenarios is the projected population growth and GPD. The four scenarios are summarized in the following table. 
+Each of the four RCP scenarios was developed based on scenarios in the climate literature, with the goal that the four scenarios would, together, provide a full range of the scenarios that were present in the literature at the time of their development. RCP8.5 was based on the A2 "business as usual" scenario from the Special Report on Emissions Scenarios (SRES) from the IPCC's fourth assessment report. It is characterized by high energy usage, rapid population growth, low technological development, and poor global political cooperation. RCPs 2.6, 4.5, and 6.0, on the other hand, are based on energy use of between 750 and 900 EJ (1 EJ = 1<i>e<\i>18 J) by 2100. These scenarios place a higher focus on alternative and renewable energy. A key difference between these scenarios is the projected population growth and GPD. The four scenarios are summarized in the following table. 
 
 
 | Name   | Radiative Forcing      | Concentration (ppm)           | Path          | Model   |
@@ -66,4 +66,4 @@ Adapted from @moss2010next.
 The RCPs are not policy prescriptive. The socioeconomic scenarios used to generate the RCPs are not internally consistent, nor unique. The RCPs should not be interpreted as forecasts, nor even as absolute bounds for the future. 
 ```
 
-If you would like to see some example of the four RCPs and climate model data, poke around the "plots" tab of [_Conjuntool_](https://shiny.conr.ca/conjuntool/), which we will be using in upcoming labs. In [Lab 2](@lab2), you will learn how obtain and navigate these data from the Earth System Grid Federation (ESGF).
+If you would like to see some examples of the four RCPs and climate model data, poke around the "plots" tab of [_Conjuntool_](https://shiny.conr.ca/conjuntool/), which we will be using in upcoming labs. In Lab 2 (\@ref(lab2)), you will learn how obtain these data from the Earth System Grid Federation (ESGF). In Lab3 (\@ref(lab3)), we will learn to read the data form these files. 
