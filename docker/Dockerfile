@@ -15,6 +15,7 @@ RUN conda config --append channels ConorIA &&\
 RUN conda create -y \
           -n man_ccia \
           matplotlib \
+          netCDF4 \
           pandas \
           python \
           r-base \

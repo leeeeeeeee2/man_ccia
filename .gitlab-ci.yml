@@ -1,5 +1,9 @@
 image: registry.gitlab.com/claut/man_ccia:latest
 
+before_script:
+  - apt-get update && apt-get -y install libgfortran-6-dev
+  - ln -s /usr/lib/gcc/x86_64-linux-gnu/6/libgfortran.so /usr/lib/x86_64-linux-gnu/libgfortran.so.4
+
 test:
   script:
   - make book

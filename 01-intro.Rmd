@@ -1,5 +1,7 @@
 # Introduction {#intro}
 
+_Last update: `r file.info("01-intro.Rmd")$mtime`_
+
 Forthcoming
 
 ## Syntax used in this manual

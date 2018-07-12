@@ -1,0 +1,99 @@
+# Lab exercise 2: Downloading Climate Data {#lab2}
+
+_Last update: `r file.info("05-Lab2.Rmd")$mtime`_
+
+The climate data that we need is made available through the Earth System Grid Federation (ESGF), a federated network of academic and government data centres in the USA, Europe, and Asia. This is a one-stop shop for all of the climate data from the CMIP5 and (soon, as of the time of writing, CMIP6). In this lab, we will focus on the CMIP5 data output. 
+
+To begin, visit the [ESGF website](https://esgf-node.llnl.gov/projects/esgf-llnl/). I am using the Lawrence-Livermore National Laboratory node, but you could, theoretically, choose any of the other nodes listed on the home page, which look something like this: 
+
+<center><img src="https://screenshotscdn.firefoxusercontent.com/images/a4e37ee9-1d9a-4912-a4e7-3e208a437081.png?download=Screenshot_2018-07-12%20ESGF-LLNL%20-%20Home%20ESGF-CoG.png" alt="overview" width="800px"/></center><br>
+
+## New user sign-up and registration 
+
+You will need to complete a few monotonous steps before you can get at the data you need. First, create an account by clicking on the account in the top-right corner. Enter your complete details including your contact information and institution. 
+
+Next, you will need to register in the "CMIP5 Research" group. Return to the [ESGF home page](https://esgf-node.llnl.gov/projects/esgf-llnl/) and scroll down until you see the following: 
+
+<center><img src="https://screenshotscdn.firefoxusercontent.com/images/33a09492-a98b-4678-9563-c3f97f45b399.png?download=Screenshot_2018-07-12%20ESGF-LLNL%20-%20Home%20ESGF-CoG.png" alt="group reg" width="800px"/></center><br>
+
+A direct link to the above is [here](https://esgf-node.llnl.gov/ac/subscribe/CMIP5%20Research/). 
+
+If at any point during the login/registration procress, you are asked for an OpenID, you can click the arrow to the left of the text box and select the node with which you have registered. This will take you to a conventional username/password login page. 
+
+## Data search 
+
+To the left of the CMIP5 registration link, is the link to the [CMIP search interface](https://esgf-node.llnl.gov/projects/esgf-llnl/).
+
+
+<center><img src="https://screenshotscdn.firefoxusercontent.com/images/37d2a4d8-f8e5-4b9f-b1e6-acdadde3afe9.png?download=Screenshot_2018-07-12%20CMIP5%20Data%20Search%20CMIP5%20ESGF-CoG.png" alt="searchhome" width="800px"/></center><br>
+
+In the sidebar on the left, you will see a series of search options. We will only make use of a few of these in this Lab. The options that are of interest to us are summarized in the following table. 
+
+| Criteria       | Value                                  |
+|----------------|----------------------------------------|
+| Projects       | CMIP5                                  | 
+| Experiments    | historical, rcp26, rcp45, rcp60, rcp85 |
+| Time Frequency | mon (monthly)                          |
+| Realm          | atmos                                  |
+| CMIP Table     | Amon                                   |
+| Variable       | tas(max/min)                           |
+
+We are interested in three temperature variables in this Lab: "tas", which is the Near-Surface Air Temperature; "tasmax", which is the Daily Maximum Near-Surface Air Temperature, and "tasmin", the Daily Minimum Near-Surface Air Temperature.
+
+In addition, you may be curious about the 'ensemble' filters. The CMIP5 climate models were compared in a sed of ensembled coded as r<N>i<M>p<L>. First, "r" refers to the model run, different runs are used when a model starts with different run conditions that are equally realistic. Second, "i" refers to the initialization parameters. This number is changed when the model is started using different _methods_. Finally, "p" refers to the perturbed physics used in the model. A different number represents different configurations of the physical parameters for the model ensemble. 
+
+```{block, type='rmdassignment'}
+Try setting your filters as they are in the above table and hit search. You should come up with somewhere around 393 distint results! In my screenshots, I have used a different set of filters to narrow-in on a single data file. Don't be alarmed that our results will look different! 
+```
+
+<center><img src="https://screenshotscdn.firefoxusercontent.com/images/eedbb101-b756-41b0-9866-1bf77415906e.png?download=Screenshot_2018-07-12%20CMIP5%20Data%20Search%20CMIP5%20ESGF-CoG.png" alt="searchresults" width="800px"/></center><br>
+
+If you are satisfied with your search results, you can select the "Add all displayed results to Data Cart", and then proceed to your data cart. 
+
+## The data cart
+
+Once inside your data cart, you should see a list of results for each individual model-ensemble-scenario. Note, however, that even though we only searched for temperature variables, the ESGF interface gives us a list of files with _all_ available variables. This is more data than we need (and probably more bandwidth than we're willing to expend.)
+
+<center><img src="https://screenshotscdn.firefoxusercontent.com/images/7eaa9b5c-68d9-459c-99e5-67427463dc38.png?download=Screenshot_2018-07-12%20ESGF-CoG.png" alt="datacart" width="800px"/></center><br>
+
+Using the filter box to the top-right of the data results to narrow down the files that you will download. Note that the box does not support globbing, and expects whole words, that is to say "tas" will not match "tasmax" or "tasmin". If you want all three variables, you will need to filter each individually. 
+
+<center><img src="https://screenshotscdn.firefoxusercontent.com/images/122bb498-82ad-4586-9eea-948b4a3ffc5c.png?download=Screenshot_2018-07-12%20ESGF-CoG.png&sig=hl1KN5CLZ_YwJ2yEuyLOf4GakeQ" alt="filtered datacart" width="800px"/></center><br>
+
+```{block, type='rmddisclaimer'}
+You should also pay attention to the data period that you are interested in: historical data is (in most cases) either from 1850-01 to 2005-12 or 1961-01 to 2005-12. Most of the future data is from 2005-01 to 2100-12 or from 2006-01 to 2100-12. There is also some long-term projected data from 2101-01 to 2300-12. There are, of course, some exceptions to the above, including annual or decadal files. 
+```
+
+### Download options
+
+There are a few options on the ESGF for data download. If you want to download files one-by-one, you can click the "list files" link, and choose "HTTP download" to download the file through your browser. 
+
+```{block, type='rmdtip'}
+The NetCDF files form the ESGF use a standardized file format that looks something like this: 
+
+<center>`variable_period_model_experiment_ensemble_period.nc`</center>
+
+Consider the following file: `tasmax_Amon_CanESM2_historical_r1i1p1_185001-200512.nc`
+
+Without even looking at the files contents, we can already determine a great deal of information from the file name. This file contains monthly data for maxium temperture, as projected by the Canadian CanESM2 model as part of ensemble r1i1p1. The data were hindcast historical data (1850&ndash;2005).
+```
+
+Downloading files one-by-one can be cumbersome. Instead, we will use **wget** to speed up the process. You should already have **wget** installed, so we can make use of the "wget script" option. _Make sure you have filtered your files_, check the box to "Select All Datasets", and the click the "wget script" button. This will download a script which you can execute in **bash**. 
+
+```{bash, eval=FALSE}
+bash wget-20180711205236.sh
+```
+
+The script is user-authenticated, so you will be asked to log in. Enter your credentials, and the script should run. If, for any reason, the wget process stops or has an error, you can try running it again. The script has some built-in hash checking to avoid downloading the same file multiple times. Double check that the files that you downloaded are as expected (I have found that sometimes stray variable can creep into the download scripts). Also make sure that you have all the files that you need (there is a limit to the number of files per script. You may need to split you searches to generate smaller batches of files.
+
+## Exercises (what to submit)
+
+```{block, type='rmdassignment'}
+- What is a NetCDF file? Why is it superior to _.csv_ file or a spreadsheet? [2 marks]
+- What can you ascertain about the data contained in the file _prc_Amon_MIROC5_rcp85_r1i1p1_200601-210012.nc_? [2 marks]
+- You should download at least one NetCDF file to your computer. Describe the steps that you took to download the file, e.g. what filters did you use? [2 marks]
+- To save you some hard drive space, we will be using the _Conjuntool_ to pre-process and subset our data. Visit [_Conjuntool_](https://shiny.conr.ca/conjuntool/) and familiarize yourself with the interface. Find the data corresponding to the file named above, and export a time series plot and an overlay map. [2 marks] 
+- You will have been assigned a specific set of filters. Generate a **wget** for the requested filter set and submit it as part of your work. This script will be used to ensure that _Conjuntool_ is fully populated. [2 marks]
+
+_Note: If you plan to perform a CCIA related to a variable that is not present in the Conjuntool, you should submit a wget script for your variable of interest as well._ 
+```

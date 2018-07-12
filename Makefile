@@ -19,3 +19,7 @@ build_book:
 
 package_book:
 	mv _book public
+
+clean:
+	chown -R 1000:1000 .;\
+        git clean -fdx
