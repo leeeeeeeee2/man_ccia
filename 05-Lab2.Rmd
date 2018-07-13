@@ -91,7 +91,7 @@ The script is user-authenticated, so you will be asked to log in. Enter your cre
 ```{block, type='rmdassignment'}
 - What is a NetCDF file? Why is it superior to a _.csv_ file or a spreadsheet? [2 marks]
 - What can you ascertain about the data contained in the file _prc_Amon_MIROC5_rcp85_r1i1p1_200601-210012.nc_? [2 marks]
-- You should download at least one NetCDF file to your computer. Describe the steps that you took to download the file, e.g. what filters did you use? [2 marks]
+- Download at least two NetCDF files to your computer (one historical file and once "forced" file from the same model). What are the filenames? Describe the steps that you took to download the file, e.g. what filters did you use? [2 marks]
 - To save you some hard drive space, we will be using the _Conjuntool_ to pre-process and subset our data. Visit [_Conjuntool_](https://shiny.conr.ca/conjuntool/) and familiarize yourself with the interface. Find the data corresponding to the file named above, and export a time series plot and an overlay map. [2 marks] 
 - You will have been assigned a specific set of filters. Generate a wget script for the requested filter set and submit it as part of your work. This script will be used to ensure that _Conjuntool_ is fully populated. [2 marks]
 
