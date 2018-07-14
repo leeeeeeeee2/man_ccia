@@ -23,5 +23,6 @@ RUN conda create -y \
           r-canadaHCDx \
           r-reticulate \
           rpy2 \
-          scipy &&\
+          scipy \
+          seaborn &&\
           conda clean -ya

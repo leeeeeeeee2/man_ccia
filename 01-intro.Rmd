@@ -8,11 +8,11 @@ Forthcoming
 
 The help you navigate this book, we will use a specific syntax.
 
-**bold** is used to Python libraries or R packages.
-_italic_ indicates filenames, and file extensions. 
-`constant width` is used to indicate code, commands, or output, as well as variable names and the names of executabes.
-**`constant width bold`** code should be typed exactly as it appears.
-_`constant width italic`_ code may have user-defined variables or filenames that need to be replaced by you.
+- **bold** is used for the names of Python libraries or R packages.
+- _italic_ is used when referencing things like filenames, URLs, email addresses and file extensions. 
+- `constant width` is used to indicate code, commands, or output, as well as variable names and the names of executabes.
+- **`constant width bold`** code should be typed exactly as it appears.
+- _`constant width italic`_ code may have user-defined variables or filenames that need to be replaced by you.
 
 ```{block, type='rmdassignment'}
 This is work that you should complete to check your understanding of the material presented in each lab.
