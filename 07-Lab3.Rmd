@@ -102,7 +102,7 @@ We are used to using negatives for western longitudes (i.e. 180°W to 180°E), b
 
 ```{python}
 if target['lon'] < 0:
-    target['lon'] = 180 - target['lon']
+    target['lon'] = 360 + target['lon']
 
 print(target['lon'])
 ```
@@ -306,7 +306,7 @@ plt.clf()
 
 In out next lab, we are going to use change factors to describe changes in our baseline climate. The change factor method (sometimes called $\Delta T$) calculates the projected temperature by adding the observed, baseline temperature time series to the change in the temperature projected by a CGM integration (typically using monthly GCM data). This process removes the bias in the GCM baseline climatology, and represents a simplified form of downscaling. Change factors are described by the following equation:  
 
-<center>$T_{\mathrm{FUTURE}} = T_{\mathrm{OBSERVED}} + \Delta T_{\mathrm{GCM}}$</center>
+<center>$$T_{\mathrm{FUTURE}} = T_{\mathrm{OBSERVED}} + \Delta T_{\mathrm{GCM}}$$</center>
 
 The first step for a change factor analysis is to calculate the change projected by a GCM over its baseline period. To do so, we will use 30-year "tridecades", including our baseline (1981-2010), and three common climate change tridecades: the 2020s (2011--2040), the 2050s (2041--2070), and the 2080s (2071--2100). 
 
