@@ -343,6 +343,8 @@ print(pd.DataFrame({"Model": np.repeat("CanESM2", 4),
                     "2080s": np.repeat([''], 4)}))
 ```
 
+## Exercises (what to submit)
+
 ```{block, type='rmdassignment'}
 - In the table above, the 2020s change factor for the RCP 2.6 scenario was _higher_ than that of the RCP 8.5 scenario. How can that be? Explain the "narrative" quality of the RCP scenarios. [2 marks]
 - Complete the table, above, for the model that you have used throughout this lab. [2 marks]
