@@ -334,20 +334,20 @@ cf2020s_rcp85 = df_2020s[df_2020s.Experiment == "rcp85"].MeanTemp.mean() - bsln8
 We can summarize these data in a table like so:
 
 ```{python}
-print(pd.DataFrame({"Model": np.repeat("CanESM2", 4),
-                    "Ensemble": np.repeat("r1i1p1", 4),
-                    "Scenario": ["RCP2.6", "RCP4.5", "RCP6.0", "RCP8.5"],
-                    "Baseline (°C)": [bsln26, '', '', bsln85],
-                    "2020s": [cf2020s_rcp26, '', '', cf2020s_rcp85],
-                    "2050s": np.repeat([''], 4),
-                    "2080s": np.repeat([''], 4)}))
+print(pd.DataFrame({"Model": np.repeat("CanESM2", 3),
+                    "Ensemble": np.repeat("r1i1p1", 3),
+                    "Scenario": ["RCP2.6", "RCP4.5", "RCP8.5"],
+                    "Baseline (°C)": [bsln26, '', bsln85],
+                    "2020s": [cf2020s_rcp26, '', cf2020s_rcp85],
+                    "2050s": np.repeat([''], 3),
+                    "2080s": np.repeat([''], 3)}))
 ```
 
 ## Exercises (what to submit)
 
 ```{block, type='rmdassignment'}
-- In the table above, the 2020s change factor for the RCP 2.6 scenario was _higher_ than that of the RCP 8.5 scenario. How can that be? Explain the "narrative" quality of the RCP scenarios. [2 marks]
-- Complete the table, above, for the model that you have used throughout this lab. [2 marks]
+- Complete a table similar to the one above for the model that you have used throughout this lab. [2 marks]
+- In the table above, the baseline temperature forced by the RCP 2.6 scenario is _higher_ than that of the RCP 8.5 scenario. How can the "best case scenario" be warmer than the "worst case"? Explain this, making reference to the "narrative" quality of the RCP scenarios. [2 marks]
 - Using [_Conjuntool_](https://shiny.conr.ca/conjuntool/), create a _.csv_ file for all of the models that are available for ensemble r1i1p1. [2 marks]
   - Click on the "GCM Anomalies" tab.
   - Under "1: Def. params", enter the coordinates for Toronto in the "Location" box.
