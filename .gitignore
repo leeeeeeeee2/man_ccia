@@ -1,6 +1,9 @@
-*\.R*
 _book
 l*f*.png
 man_ccia.Rmd
+packages.bib
 public
+.Rbuildignore
+.Rhistory
+*.Rpro*
 .Rproj.user

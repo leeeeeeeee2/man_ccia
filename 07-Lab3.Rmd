@@ -1,4 +1,4 @@
-# Lab exercise 3: Navigating across three dimensions of data
+# Lab exercise 3: Navigating across three dimensions of data {#lab3}
 
 _Last update: `r file.info("07-Lab3.Rmd")$mtime`_
 
@@ -23,7 +23,7 @@ import re
 from netCDF4 import Dataset, date2index, num2date, date2num
 ```
 
-In this lab, we are going to be exploring three dimensional data contained in NetCDF files. It is strongly recommended that you have a browser tab open with the **netCDF4** library [documentation](http://unidata.github.io/netcdf4-python/) for reference.
+In this lab, we are going to be exploring three dimensional data contained in netCDF files. It is strongly recommended that you have a browser tab open with the **netCDF4** library [documentation](http://unidata.github.io/netcdf4-python/) for reference.
 
 We begin, as always, by importing the libraries that we will need.
 
@@ -36,7 +36,7 @@ from matplotlib import pyplot as plt
 from netCDF4 import Dataset, date2index, num2date, date2num
 ```
 
-Now, create a list of the NetCDF files that we will examine. We have created some miniature NetCDF files for use in this book, but you should substitute the directories and filenames below with paths leading to the NetCDF files that you downloaded in Lab 2.  
+Now, create a list of the netCDF files that we will examine. We have created some miniature netCDF files for use in this book, but you should substitute the directories and filenames below with paths leading to the netCDF files that you downloaded in Lab 2.  
 
 ```{python}
 past = "data/tas_Amon_CanESM2_historical_r1i1p1_198001-200512_mini.nc"
@@ -45,7 +45,7 @@ future = ["data/tas_Amon_CanESM2_rcp26_r1i1p1_200601-204012_mini.nc", "data/tas_
 
 ## The past
 
-We will begin by looking at our "historical" NetCDF file. We can load this file into memory using the `Dataset()` function that we imported from **netCDF4**.
+We will begin by looking at our "historical" netCDF file. We can load this file into memory using the `Dataset()` function that we imported from **netCDF4**.
 
 ```{python}
 nc = Dataset(past)
@@ -57,7 +57,7 @@ First, we recommend that you get familiar with your data set. For instance, what
 print(nc.dimensions)
 ```
 
-Notice that we have three-dimensional data, stored along X (longitude), Y (latitude), and T (time). Some NetCDF files also have a Z dimension (e.g. height). There is no hard limit to the number of dimensions a NetCDF file can have, though [it is suggested](https://www.unidata.ucar.edu/software/netcdf/docs/group__dimensions.html) not to exceed 1024. Rest assured, it is unlikely that you will encounter a 1024-D file in the wild.
+Notice that we have three-dimensional data, stored along X (longitude), Y (latitude), and T (time). Some netCDF files also have a Z dimension (e.g. height). There is no hard limit to the number of dimensions a netCDF file can have, though [it is suggested](https://www.unidata.ucar.edu/software/netcdf/docs/group__dimensions.html) not to exceed 1024. Rest assured, it is unlikely that you will encounter a 1024-D file in the wild.
 
 You can get a list of variables stored in your file using `nc.variables.get()`. The output is very long, so we will omit it here. You can query a specific variable as well, e.g. `time`.
 
@@ -122,7 +122,7 @@ lon_cell = np.argmin(np.abs(nc_lon - target['lon']))
 ```
 
 ```{block, type='rmdtip'}
-The minimal NetCDF files that we've created for this book do not include "bounds" variables, however, these can be useful. It is not always clear what the "latitude" and "longitude" of a cell refers to: is the centre point? Is it the top-left corner of the grid box? This is where the bounds variables are really useful. The latitude bounds provide the latitude of the top and bottom of each grid box. The longitude bounds provide the right and left sides of the box. Using the bounds can be a safer way to identify the grid box that we are interested in. Depending on the model you have selected, look for a variable called `lat_bnds` or `lat_bounds`.
+The minimal netCDF files that we've created for this book do not include "bounds" variables, however, these can be useful. It is not always clear what the "latitude" and "longitude" of a cell refers to: is the centre point? Is it the top-left corner of the grid box? This is where the bounds variables are really useful. The latitude bounds provide the latitude of the top and bottom of each grid box. The longitude bounds provide the right and left sides of the box. Using the bounds can be a safer way to identify the grid box that we are interested in. Depending on the model you have selected, look for a variable called `lat_bnds` or `lat_bounds`.
 
 `nc_lat_bnds = nc.variables.get("lat_bnds")[:].data`<br>
 `lat_cell = np.where((nc_lat_bnds[:,0] < target['lat']) & (nc_lat_bnds[:,1] > target['lat']))[0][0]`<br>
@@ -132,7 +132,7 @@ The minimal NetCDF files that we've created for this book do not include "bounds
 
 ### Getting the data
 
-Now that we know the indices of X, Y, and T that we are interested in, we can pull these out of the NetCDF file. 
+Now that we know the indices of X, Y, and T that we are interested in, we can pull these out of the netCDF file. 
 
 ```{python}
 dat = nc.variables['tas'][time_start:(time_end + 1), lat_cell, lon_cell]
@@ -199,14 +199,14 @@ plt.clf()
 
 ![](l2f1.png)
 
-It is always a good idea to close our NetCDF file when we are done with it. 
+It is always a good idea to close our netCDF file when we are done with it. 
 ```{python}
 nc.close()
 ```
 
 ## The future
 
-I will condense the above process into a quick `for` loop across the two NetCDF files that contain projections. In your case, you may have three or four such files. Also note that I will only extract data to 2040, but you should use 2100 as your upper date. A reminder of the contents of `future`:
+I will condense the above process into a quick `for` loop across the two netCDF files that contain projections. In your case, you may have three or four such files. Also note that I will only extract data to 2040, but you should use 2100 as your upper date. A reminder of the contents of `future`:
 
 ```{python}
 print(future)

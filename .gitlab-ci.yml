@@ -1,11 +1,25 @@
-image: registry.gitlab.com/claut/man_ccia:latest
+stages:
+  - tikz
+  - book
 
-before_script:
-  - apt-get update && apt-get -y install libgfortran-6-dev
-  - ln -s /usr/lib/gcc/x86_64-linux-gnu/6/libgfortran.so /usr/lib/x86_64-linux-gnu/libgfortran.so.4
-
-test:
+tikz:
+  image: registry.gitlab.com/claut/man_ccia/tinytex
+  stage: tikz
   script:
+    - cd tikz
+    - for D in 0 1 2 3; do pdflatex -shell-escape "${D}d.tex"; done
+    - mkdir ../img
+    - cp *.png ../img/
+  artifacts:
+    expire_in: 1h
+    paths:
+      - img
+  
+test:
+  image: registry.gitlab.com/claut/man_ccia/book
+  stage: book
+  script:
+  - make patches
   - make book
   artifacts:
     expire_in: 1d
@@ -15,7 +29,10 @@ test:
   - master
 
 pages:
+  image: registry.gitlab.com/claut/man_ccia/book
+  stage: book
   script:
+  - make patches
   - make book
   artifacts:
     expire_in: 1h

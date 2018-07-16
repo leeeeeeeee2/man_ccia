@@ -2,16 +2,32 @@ SHELL := /bin/bash
 
 .PHONY: book
 
-docker: docker_build docker_push
+docker: docker_book docker_tinytex
+
+docker_book: docker_book_build docker_book_push
+
+docker_tinytex: docker_tinytex_build docker_tinytex_push
 
 book: build_book package_book
 
-docker_build:
-	cd docker;\
-	docker build -t registry.gitlab.com/claut/man_ccia .
+docker_book_build:
+	cd docker/book;\
+	docker build -t registry.gitlab.com/claut/man_ccia/book .
 
-docker_push:
-	docker push registry.gitlab.com/claut/man_ccia
+docker_book_push:
+	docker push registry.gitlab.com/claut/man_ccia/book
+
+docker_tinytex_build:
+	cd docker/tinytex;\
+	docker build -t registry.gitlab.com/claut/man_ccia/tinytex .
+
+docker_tinytex_push:
+	docker push registry.gitlab.com/claut/man_ccia/tinytex
+
+patches:
+	apt-get update;\
+	apt-get install -y --no-install-recommends libgfortran-6-dev;\
+	ln -s /usr/lib/gcc/x86_64-linux-gnu/6/libgfortran.so /usr/lib/x86_64-linux-gnu/libgfortran.so.4
 
 build_book:
 	source activate man_ccia;\
