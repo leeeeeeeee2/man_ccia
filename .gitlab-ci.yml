@@ -7,14 +7,14 @@ tikz:
   stage: tikz
   script:
     - cd tikz
-    - for D in 0 1 2 3; do pdflatex -shell-escape "${D}d.tex"; done
+    - for D in 0 1 2 3 4; do pdflatex -shell-escape "${D}d.tex"; done
     - mkdir ../img
     - cp *.png ../img/
   artifacts:
     expire_in: 1h
     paths:
       - img
-  
+
 test:
   image: registry.gitlab.com/claut/man_ccia/book
   stage: book

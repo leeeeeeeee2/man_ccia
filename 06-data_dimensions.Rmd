@@ -6,7 +6,7 @@ _Last update: `r file.info("06-data_dimensions.Rmd")$mtime`_
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-## The dimensions on data
+## The dimensions of data
 
 In Section \@ref(modelling), we discussed climate models in terms of the dimensions of the model. We can also express the dimensions of our data in analogous terms. When we refer to a dimension, we are referring to some characteristic of our data that will influence the value of a variable of interest. A dimension could be temporal (e.g. hour of the day), spatial (e.g. latitude), or even categorical (treatment type). The most important quality of the dimension is that it should be composed of unique, non-overlapping values. In the following subsections, we will we will provide a brief overview of dimensionality, and provide visual examples of 0-, 1-, 2-, and 3-D data. ^[Some of the code used in the graphics in this chapter was modified from the [SWAN wave model](http://www.texample.net/tikz/examples/swan-wave-model/) and [Using signed distance functions to embed contours in discrete grids](http://www.texample.net/tikz/examples/contours-grids/) TikZ examples.] 
 
@@ -22,7 +22,7 @@ knitr::include_graphics("img/0d.png")
 
 One dimensional data provides us with an additional piece of information: how does our variable of interest vary over some dimension. We can consider each column of the observed data that we collected in Lab 1 (\@ref(lab1)) as a good example of 1-D data. We are interested in determining how our variable of interest (`MeanTemp`, for instance) varies over time. Don't be confused by the table format that we use to layout our observed data. The `Date` column in our data set amounts to metadata describing the time (T) dimension. Figure \@ref(fig:1d) provides a visual approximation of one-dimensional data.
 
-```{r 1d, fig.cap="1-D (vector) data", out.width='50%', fig.align="center"}
+```{r 1d, fig.cap="1-D (vector) data", out.width='40%', fig.align="center"}
 knitr::include_graphics("img/1d.png")
 ```
 
@@ -30,7 +30,7 @@ knitr::include_graphics("img/1d.png")
 
 You are probably most accustomed to working with two-dimensional data sets. In 2-D (rectangular) data, we have a mix of two dimensions of variation. In the case of the data that we collected in Lab 1, we can consider our two dimensions as time (T) and variable. Another common pair of dimensions are latitude and longitude, for instance, the "Overlay Map" that you generated on _Conjuntool_ in Lab 2 (\@ref(lab2)) is an example of 2-D data: we include latitude, and longitude, but removed the time dimension by averaging. Refer to Figure \@ref(fig:2d) for a visualization of 2-D data.
 
-```{r 2d, fig.cap="2-D (rectangular) data", out.width='65%', fig.align="center"}
+```{r 2d, fig.cap="2-D (rectangular) data", out.width='55%', fig.align="center"}
 knitr::include_graphics("img/2d.png")
 ```
 
@@ -44,7 +44,11 @@ knitr::include_graphics("img/3d.png")
 
 ### Data with four or more dimensions
 
-While we won't work with data of four or more dimensions in this course, it is important to note that there is by no means a limit of 3 dimensions to any data set. As we add more dimensions, our data becomes harder for us to visualize. A four-dimensional system, for instance, may include time (T), latitude (Y), longitude (X), and altitude (Z). Imagine if each layer of \@ref(fig:3d) contained an additional 20 layers in the Z dimension. As we add more dimensions, the shape of our data becomes more and more theoretical, and beyond my capabilities to illustrate! 
+While we won't work with data of four or more dimensions in the exercises in this manual, it is important to note that there is by no means a limit of 3 dimensions to any data set. As we add more dimensions, our data becomes harder for us to visualize. A four-dimensional system, for instance, may include time (T), latitude (Y), longitude (X), and altitude (Z). In Figure \@ref(fig:4d), for instance, we've modelled a four-dimensional data set, where each layer of the Z dimension shown in Figure \@ref(fig:3d) contains several additional layers in H (altitude) dimension. As we add more dimensions, the shape of our data becomes more and more theoretical, and beyond my capabilities to illustrate! 
+
+```{r 4d, fig.cap="4-D (layered grid) data", out.width='70%', fig.align="center"}
+knitr::include_graphics("img/4d.png")
+```
 
 ## The netCDF file format
 
