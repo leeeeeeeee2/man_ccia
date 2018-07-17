@@ -71,7 +71,7 @@ There are a few options on the ESGF for data download. If you want to download f
 ```{block, type='rmdtip'}
 The netCDF files from the ESGF use a standardized filename format that looks something like this: 
 
-<center>`variable_time_model_experiment_ensemble_period.nc`</center>
+<center>`variable_time_model_experiment_ensemble_period.nc`</center><br>
 
 Consider the following file: `tasmax_Amon_CanESM2_historical_r1i1p1_185001-200512.nc`
 
