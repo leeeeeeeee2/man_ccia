@@ -4,6 +4,13 @@ _Last update: `r file.info("06-data_dimensions.Rmd")$mtime`_
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
+library(reticulate)
+conda <- ifelse(file.exists("/opt/conda/bin/conda"), "/opt/conda/bin/conda", "/data/home-ext/miniconda3/bin/conda")
+use_condaenv("man_ccia", conda = conda, required = TRUE)
+```
+
+```{bash, include=FALSE}
+curl -L -o ncdump.py https://gitlab.com/claut/man_ccia/snippets/1734337/raw 
 ```
 
 ## The dimensions of data
@@ -73,4 +80,23 @@ Finding solutions to these challenges falls within the mandate of the [Unidata p
 
 The above benefits of netCDF files have led to the format being endorsed by a number of significant government and academic agencies dedicated to the management of geoscience data. For more details on the netCDF file format, you can visit the [netCDF documentation](https://www.unidata.ucar.edu/software/netcdf/docs/index.html).
 
+The `ncdump` program is a command-line utility (run in `bash`) that is a useful tool to begin to understand the contents of your netCDF files. The command will output information on the dimensions of your data set, the size of each dimension, and additional metadata like units and variable names. The following, for instance, is the output of that command when run on some miniature netCDF files that we have created for this book. You will surely see much more output if you run the tool on the files that you downloaded in Lab 2!
+
+```{bash, echo=TRUE}
+ncdump -h data/tas_Amon_CanESM2_historical_r1i1p1_198001-200512_mini.nc
+```
+
+You can check to see if `ncdump` is available on your computer by running `which ncdump`. If it is not installed, fear not! We have written an analogous utility for Python, which you can find [here](https://gitlab.com/claut/man_ccia/snippets/1734337/raw). Download it to your computer import the file, and run it like this:
+
+```{r, include=FALSE}
+source_python('ncdump.py')
+```
+```{python, echo=TRUE}
+ncdump("data/tas_Amon_CanESM2_historical_r1i1p1_198001-200512_mini.nc")
+```
+
 In Lab 3 (Sec. \@ref(lab3)), you will learn how to read data from a netCDF file in Python. In that lab, we will focus on a single grid box, but keep in mind that the netCDF files that you acquired in Lab 2 contain much more data, and you can re-use the same files for future analyses of other areas, entire regions or even the entire globe! 
+
+```{bash cleanup, include=FALSE}
+rm ncdump.py
+```

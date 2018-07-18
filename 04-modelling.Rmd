@@ -28,14 +28,14 @@ One dimensional models add a spatial dimension to the 0-D models. Examples of 1-
 The energetic equilibrium model can be summarized by the following equation: 
 $$
 \textrm{Incoming} - \textrm{Outgoing} = \textrm{Redistribution}\\
-S(x, T_s) - F(x, T_s) = D(x, T_s)\\
+S(x,\alpha(T_s)) - F(x, T_s) = D(x, T_s)\\
 $$
-Where $x = \sin\phi$, $\phi$ is the latitude. $D$ is the horizontal transport of energy. 
+Where $x = \sin\phi$, $\phi$ is the latitude, and $\alpha$ is albedo. $D$ repersents the horizontal transport of energy. 
 ```
 
 ### 3-D models
 
-Chances are, if you consider a climate model today, you are probably thinking about a 3-D model, specifically about a General Circulation Model (GCM). Three-dimensional models are based on some important laws of physics: the conservation of energy, the conservation of momentum (atmospheric and oceanic flows), and the conservation of mass (atmospheric gasses, water vapour, and salt in the oceans). These models require, at a minimum, a system of governing mathematical equations that represent out understanding of the Earth's climate system, methods for solving these equations, quality observed data to initialize the model, and (without fail) considerable computing resources.
+Chances are, if you consider a climate model today, you are probably thinking about a 3-D model, specifically about a General Circulation Model (GCM). Three-dimensional models are based on some important laws of physics: the conservation of energy, the conservation of momentum (atmospheric and oceanic flows), and the conservation of mass (atmospheric gasses, water vapour, and salt in the oceans). These models require, at a minimum, a system of governing mathematical equations that represent our understanding of the Earth's climate system, methods for solving these equations, good observational data of the boundary conditions (e.g. GHGs, aerosols, insolation, orography, etc.), and (without fail) considerable computing resources.
 
 ```{block, type="rmdtip"}
 You may have noticed that we left out 2-D models, above. A two-dimensional climate model starts out as a 3-D model, but removes one of the dimensions (often longitude). By removing a dimension, we reduce the resources needed to compute the model. While 2-D models can be efficient for modelling simple processes, they have become less relevant as the cost of computing resources continues to decline.
@@ -49,9 +49,9 @@ Throughout the lab exercises, we will make use of model output from the models t
 
 A model by itself can't project the future without a little guidance. This is where climate change scenarios come in. A scenario is the description of some "possible future". Usually, scenarios will consider how the future of the world will look in terms of: socioeconomics, technology, the environment, and geopolitics. Scenarios are not predictions of the future. Instead, they can help us to understand the unknown such that we can come to robust, informed decisions in the face of a range of possible outcomes. 
 
-In this lab manual, we will focus on the Representative Concentration Pathways [@moss2010next], the current generation of climate scenarios which were developed for the IPCC's fifth assessment report [@pachauri2014climate]. These scenarios, abbreviated as RCPs, are a set of consistent climate projections, however, they are not integrated scenarios. They provide the first step for further analysis. Unlike past scenarios, the RCPs focus on greenhouse gas _concentrations_, not emissions.
+In this lab manual, we will focus on the Representative Concentration Pathways [@moss2010next], the current generation of climate scenarios which were developed for the IPCC's fifth assessment report [@pachauri2014climate]. These scenarios, abbreviated as RCPs, are a set of consistent climate projections, however, they are not integrated scenarios. They provide the first step for further analysis.
 
-Each of the four RCP scenarios was developed based on scenarios in the climate literature, with the goal that the four scenarios would, together, provide a full range of the scenarios that were present in the literature at the time of their development. RCP8.5 was based on the A2 "business as usual" scenario from the Special Report on Emissions Scenarios (SRES) from the IPCC's fourth assessment report. It is characterized by high energy usage, rapid population growth, low technological development, and poor global political cooperation. RCPs 2.6, 4.5, and 6.0, on the other hand, are based on energy use of between 750 and 900 EJ (1 EJ = 1<i>e<\i>18 J) by 2100. These scenarios place a higher focus on alternative and renewable energy. A key difference between these scenarios is the projected population growth and GPD. The four scenarios are summarized in the following table. 
+Each of the four RCP scenarios was developed based on scenarios in the climate literature, with the goal that the four scenarios would, together, provide a full range of the scenarios that were present in the literature at the time of their development. RCP8.5 was based on the A2 "business as usual" scenario from the Special Report on Emissions Scenarios (SRES) from the IPCC's fourth assessment report. It is characterized by high energy usage, rapid population growth, low technological development, and poor global political cooperation. RCPs 2.6, 4.5, and 6.0, on the other hand, are based on energy use of between 750 and 900 EJ ($1$ EJ = $1 \times 10^{18}$J) by 2100. These scenarios place a higher focus on alternative and renewable energy. A key difference between these scenarios is the projected population growth and GPD. The four scenarios are summarized in the following table. 
 
 
 | Name   | Radiative Forcing      | Concentration (ppm)           | Path          | Model   |

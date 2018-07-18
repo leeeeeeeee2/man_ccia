@@ -40,7 +40,7 @@ In the sidebar on the left, you will see a series of search options. We will onl
 
 We are interested in three temperature variables in this Lab: "tas", which is the Near-Surface Air Temperature; "tasmax", which is the Daily Maximum Near-Surface Air Temperature, and "tasmin", the Daily Minimum Near-Surface Air Temperature.
 
-In addition, you may be curious about the 'ensemble' filters. The CMIP5 climate models were compared in a series of ensembles coded as r&lt;N&gt;i&lt;M&gt;p&lt;L&gt;. First, "r" refers to the model run, a different number here indicates that the model was started with a different set of equally realistic run conditions. Second, "i" refers to the initialization parameters. This number is changed when the model is started using different _methods_. Finally, "p" refers to the perturbed physics used in the model. A different number represents different configurations of the physical parameters for the model ensemble. 
+In addition, you may be curious about the 'ensemble' filters. The CMIP5 climate models were compared in a series of ensembles coded as r&lt;N&gt;i&lt;M&gt;p&lt;L&gt;. First, "r" refers to the model run, a different number here indicates that the model was started with a different set of equally realistic initial conditions. Second, "i" refers to the initialization parameters. This number is changed when the model is started using different _methods_. Finally, "p" refers to the perturbed physics used in the model. A different number represents different configurations of the physical parameters for the model ensemble. 
 
 ```{block, type='rmdassignment'}
 Try setting your filters as they are in the above table and hit search. You should come up with somewhere around 393 distinct results! In my screenshots, I have used a different set of filters to narrow-in on a single data file. Don't be alarmed that our results will look different! 
@@ -90,9 +90,11 @@ The script is user-authenticated, so you will be asked to log in. Enter your cre
 
 ```{block, type='rmdassignment'}
 - What is a netCDF file? Why is it superior to a _.csv_ file or a spreadsheet? [2 marks]
-- What can you ascertain about the data contained in the file _prc_Amon_MIROC5_rcp85_r1i1p1_200601-210012.nc_? [2 marks]
+- Given a file named _prc_Amon_MIROC5_rcp85_r1i1p1_200601-210012.nc_, what can you ascertain about the data the file contains? [2 marks]
 - Download the netCDF files for at least one variable from one model in one ensemble. Make sure to include the historical and projected values. How many files did you download? What are the filenames? Describe the steps that you took to download the file, e.g. what filters did you use? [2 marks]
-- To save you some hard drive space, we will be using the _Conjuntool_ to pre-process and subset our data. Visit [_Conjuntool_](https://shiny.conr.ca/conjuntool/) and familiarize yourself with the interface. Find the data corresponding to the file named above, and export a time series plot and an overlay map. [2 marks] 
+- To save you time and hard drive space, we will be using _Conjuntool_ to pre-process and subset our data. Visit [_Conjuntool_](https://shiny.conr.ca/conjuntool/) and familiarize yourself with the interface. For the model corresponding to the file named in question 2:
+  - Export a time series plot of the entire range of the data.
+  - Create overlay maps for two periods: 2011 to 2040 and 2071 to 2100.  [2 marks] 
 - You will have been assigned a specific set of filters. Generate a wget script for the requested filter set and submit it as part of your work. This script will be used to ensure that _Conjuntool_ is fully populated. [2 marks]
 
 _Note: If you plan to perform a CCIA related to a variable that is not present in the Conjuntool, you should submit a wget script for your variable of interest as well._ 
