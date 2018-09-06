@@ -115,14 +115,14 @@ It looks like we're missing data as of July 2003. Indeed, in 2003 the "Toronto" 
 
 We'll have to return to `bash` for a moment to get the data that we're missing. Let's grab the data for the new station code from 2000 to 2010. 
 
-<center>**Really, run this in bash, not Python**<\center>
+<center>**Really, run this in bash, not Python**</center>
 ```{bash, eval = FALSE}
 ./eccc -y 2000:2010 -s 31688 -x 24 -g
 ```
 
 Now let's return to Python. 
 
-<center>**Back to Python**<\center>
+<center>**Back to Python**</center>
 ```{python}
 tor2 = pd.read_csv("31688-daily.csv")
 tor2 = tor2.rename(columns={'Date/Time': 'Date', 'Max Temp (°C)': 'MaxTemp', 'Min Temp (°C)': 'MinTemp', 'Mean Temp (°C)': 'MeanTemp', 'Total Precip (mm)': 'TotalPrecip'})
@@ -434,27 +434,26 @@ We can apply an anonymous (lambda) function to our `MinTemp` column to capture t
 <center>`return 0 if the mean temperature was above 18, otherwise, return the difference between 18 and the mean temperature`</center>
 
 ```{python}
-tor['HDD'] = tor.MinTemp.apply(lambda x: 0 if x >= 18 else 18 - x)
+tor['HDD'] = tor.MeanTemp.apply(lambda x: 0 if x >= 18 else 18 - x)
 ```
 
-We have one more challenge to overcome. A common mistake when performing seasonal analysis on the winter is to simply group December, January, and February by year. This is an easy logical jump to make. Remember, when we refer to winter, we mean the _continuous_ winter season that stretches from the December of the previous year to February of the current year. The easiest way to control for this is to add 1 to the year for any December.
+We have one more challenge to overcome. A common mistake when performing seasonal analysis on the winter is to simply group December, January, and February by year. This is an easy logical jump to make. Remember, when we refer to winter, we mean the _continuous_ winter season that stretches from the December of the previous year to February of the current year. The easiest way to control for this is to add 1 to the year for any December. Winter 1981/82, for example will then appear with `'Year'` 1982 in the data frame. 
 
 ```{python}
-tor['Year'] = (lambda x: tor.Date.dt.year if x.equals(12) else tor.Date.dt.year + 1)(tor.Date.dt.month)
+tor['Year'] = tor.Date.apply(lambda x: x.year + 1 if x.month == 12 else x.year)
 ```
 
-Now we can aggregate our heating degree days. Pay close attention to the code below. Here we are selecting two columns, filtering to just our winter months, and aggregating by `sum()`. 
+Now we can aggregate our heating degree days. Pay close attention to the code below. First, I use two conditional filters in the square brackets. The first drops the two winters that I know are incomplete: winter 1980/81 (which is missing December 1980), and winter 2010/2011, which is really just December 2010 here. A better solution for the first issue would be to download data including December 1980. The second condition filter to just our winter months, 12, 1, and 2. Next, I select only the two columns that are of interest, group them by `'Year'` and aggregate by `sum()`. Finally, I reset the index. 
 
 ```{python}
-tor_hdd = tor[['Year', 'HDD']][tor.Date.dt.month.isin([12, 1, 2])].groupby('Year').sum()
-tor_hdd.reset_index(level = 0, inplace = True)
+tor_hdd = tor[tor.Year.isin(range(1982, 2011)) & tor.Date.dt.month.isin([12, 1, 2])][['Year', 'HDD']].groupby('Year').sum().reset_index()
 print(tor_hdd.head())
 ```
 
 ```{python}
 plt.plot(tor_hdd.Year, tor_hdd.HDD)
 plt.plot(tor_hdd.Year, np.polyval(np.polyfit(tor_hdd.Year, tor_hdd.HDD, 1), tor_hdd.Year))
-plt.title("Winter HDD at Toronto (1981‒2010)")
+plt.title("Winter HDD at Toronto (1981/82‒2009/10)")
 plt.xlabel("Year")
 plt.ylabel("HDD")
 ```
