@@ -134,7 +134,7 @@ print(urls[0])
 Now you can proceed to download these files by looping over the `filenames` and `urls` objects. Note that, at the time of writing, the download speeds were _very_ slow (< 500 bits/second or about 0.0625 kb/s). As such, we have mirrored the data necessary for this assignment at [insert link here](example.com).
 
 ```{python, eval=FALSE}
-for i in range(len(urls):
+for i in range(len(urls)):
     urllib.request.urlretrieve(urls[i], filenames[i])
 ```
 
