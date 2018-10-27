@@ -10,7 +10,7 @@ use_condaenv("man_ccia", conda = conda, required = TRUE)
 
 We can improve upon our estimate of the impact of climate change on our exposure unit of interest by downscaling GCM data using more sophisticated statistical downscaling techniques.
 
-In this exercise, we will use data that has been downscaled using a bias-corrected constructed analogs method (BCCAQ; Werner & Cannon 2015). One of the advantages of this method is that we can bias-correct and downscale daily GCM data.
+In this exercise, we will use data that has been downscaled using a bias-corrected constructed analogs method (BCCAQ; see @werner2016hydrologic). One of the advantages of this method is that we can bias-correct and downscale daily GCM data.
 
 The data was provided by @pcic2014statistically, and is downscaled based on a high-quality gridded observed dataset (~10 km grid size) developed by NRCan (ANUSPLIN300). PCIC provides an excellent overview of their downscaling methodology, with citations made to the relevant articles, [here](https://
 www.pacificclimate.org/data/statistically-downscaled-climate-scenarios). You should read the entirety of that page before continuing this preface and before starting lab 5.
@@ -131,13 +131,11 @@ print(filenames[0])
 print(urls[0])
 ```
 
-Now you can proceed to download these files by looping over the `filenames` and `urls` objects. Note that, at the time of writing, the download speeds were _very_ slow (< 500 bits/second or about 0.0625 kb/s). As such, we have mirrored the data necessary for this assignment at [insert link here](example.com).
+Now you can proceed to download these files by looping over the `filenames` and `urls` objects. Note that, at the time of writing, the download speeds were _very_ slow (< 500 bits/second or about 0.0625 kb/s). In addition, it seems that subsetting in the time dimension causes downloads to fail after about 3kb are downloaded, so you may in fact need to download the entire time series. Given these current issues, you may prefer to download the data from [this book's repository](https://gitlab.com/claut/man_ccia/tree/master/data/pcic_data).
 
 ```{python, eval=FALSE}
 for i in range(len(urls)):
     urllib.request.urlretrieve(urls[i], filenames[i])
 ```
 
-
-
-Now that you have the data
+Now that you have the data, we can proceed to analyze it. In Lab 5 (Sec. \@ref{lab5}), we will compare the down-scaled GCM data to our observed data and re-assess our exposure unit based on these new data.
