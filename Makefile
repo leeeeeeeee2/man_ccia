@@ -25,9 +25,7 @@ docker_tinytex_push:
 	docker push registry.gitlab.com/claut/man_ccia/tinytex
 
 patches:
-	apt-get update;\
-	apt-get install -y --no-install-recommends libgfortran-6-dev;\
-	ln -s /usr/lib/gcc/x86_64-linux-gnu/6/libgfortran.so /usr/lib/x86_64-linux-gnu/libgfortran.so.4
+	echo "No patches needed"
 
 build_book:
 	source activate man_ccia;\
@@ -39,3 +37,6 @@ package_book:
 clean:
 	chown -R 1000:1000 .;\
         git clean -fdx
+
+local_container:
+	docker run --rm -it -v $PWD:/src registry.gitlab.com/claut/man_ccia bash

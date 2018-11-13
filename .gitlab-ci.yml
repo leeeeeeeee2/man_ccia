@@ -22,7 +22,7 @@ test:
   - make patches
   - make book
   artifacts:
-    expire_in: 1d
+    expire_in: 1w
     paths:
     - public
   except:

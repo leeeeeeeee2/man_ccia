@@ -21,8 +21,9 @@ RUN conda create -y \
           r-base \
           "r-bookdown>=0.7" \
           r-canadaHCDx \
+          r-plotly \
           r-reticulate \
           rpy2 \
           scipy \
-          seaborn &&\
+          "seaborn>=0.9.0" &&\
           conda clean -ya
