@@ -176,14 +176,14 @@ print(tor.head())
 print(tor.tail())
 ```
 
-Save your new data set to _csv_ by:
-
-```{python, eval=FALSE}
-tor.to_csv("tor.csv")
-```
-
 ```{bash cleanup, include=FALSE}
 rm eccc* *.csv
+```
+
+Save your new data set to _csv_ by:
+
+```{python}
+tor.to_csv("tor.csv")
 ```
 </details>
 
