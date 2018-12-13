@@ -2,7 +2,13 @@
 
 _Last update: `r file.info("01-intro.Rmd")$mtime`_
 
-Forthcoming
+Climate change is a critical issue facing our generation, and has been called the "greatest challenge of our time" by Dr. Thomas F. Stocker, the former co-chairman of the IPCC Working Group I [@gillis_2013_climate]. At the University of Toronto Scarborough, we EES1117 "Climate Change Impact Assessment" (CCIA) focuses on projecting the regional impacts of the changing global climate, and is, arguably, the academic centrepiece of the M.Env.Sc. program of the same name. This lab manual is a companion to that course, and is designed to walk you through a detailed CCIA process.
+
+## Learning outcomes
+
+Throughout the course of this book, you will learn how to acquire observed historical climate data from Environment and Climate Change Canada, and perform basic analyses of a climatic exposure unit and meteoroligical variables (Lab 1; Sec. \@ref(lab1)). In Lab 2 (Sec. \@ref(lab2)), you will also learn how to acquire raw GCM data from the Earth System Grid Federation (ESGF), the source for data from the Coupled Model Intercomparison Project Phase 5 (CMIP5). We will show you have to navigate these data sets, and extract the information that is relevant to your analysis (Lab 3, Sec. \@ref(lab3)). In Lab 4 (Sec. \@ref(lab4)), you will use these data to project changes in your exposure unit through the year 2100. Finally, in lab 5 (Sec. \@ref(lab5)), we will show you how to acquire statistically down-scaled climate data for Canada (Sec. \@ref(pcic)), and we will use that data to improve our CCIA projections.
+
+Along the way, you will learn some general information about climate model hierarchy and scenarios Sec. \@ref(modelling)), and some model selection strategies (and whether you should use any of them) (Sec. \@ref(modelselection)). In addition to these field-specific skills, you will learn all about the netCDF file format, and multidimensional data series (Sec. \@ref(dimensions)). You will also learn a lot of code! The examples in this book are written in Python, but you are welcome to use any programming language in which you are comfortable. All of the exercises herein should be relatively easy to port to R or another statistical language of your choosing. 
 
 ## Syntax used in this manual
 
@@ -13,6 +19,8 @@ The help you navigate this book, we will use a specific syntax.
 - `constant width` is used to indicate code, commands, or output, as well as variable names and the names of executabes.
 - **`constant width bold`** code should be typed exactly as it appears.
 - _`constant width italic`_ code may have user-defined variables or filenames that need to be replaced by you.
+
+You will also sometimes find specially-formatted call out boxes. These boxes are meant to provide you with helpful tips, important warnings, or provide exercises for you to check your understanding. The boxes look like this:
 
 ```{block, type='rmdassignment'}
 This is work that you should complete to check your understanding of the material presented in each lab.
@@ -29,3 +37,7 @@ This is a comment.
 ```{block, type='rmddisclaimer'}
 This is a warning or other disclaimer.
 ```
+
+## Ready. Set. Go.
+
+We hope that you find this manual engaging as well as informative. As we already mentioned in the preface of this book, we happily welcome your contributions and comments by reporting [issues](https://gitlab.com/claut/man_ccia/issues) with the book (anything as small as a typo or as large as an erroneous explanation) or submitting [merge requests](https://gitlab.com/claut/man_ccia/merge_requests) to the project to add content or make corrections. Let's get started. Section \@ref(enviro) will walk you through installing the necessary programs and packages that you will need to complete this lab manual. 

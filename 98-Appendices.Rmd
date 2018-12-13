@@ -1,25 +1,35 @@
-# Appendix {#appendix}
+# (APPENDIX) Appendix {#appendix}
 
-## Appendix 1: Exposure Units
+## Exposure unit definitions
 
-| Element            | Extreme Index         | Definition                                  | Units         |
-| ------------------ | --------------------- | ------------------------------------------- | ------------- |
-| _T_<sub>max</sub>  | Hot days              | No. of days with _T_<sub>max</sub> > 30 °C  | days          |
-|                    | Summer days           | No. of days with _T_<sub>max</sub> > 25 °C  | days          |
-|                    | Ice days              | No. of days with _T_<sub>max</sub> < 0 °C   | days          |
-| _T_<sub>min</sub>  | Frost days            | No. of days with _T_<sub>min</sub> < 0 °C   | days          |
-|                    | Tropical nights       | No. of days with _T_<sub>min</sub> > 20 °C  | days          |
-|                    | Cold alerts (Toronto) | No. of days with _T_<sub>min</sub> ≤ -15 °C | No. of alerts |
-|                    | School closure        | No. of days with _T_<sub>min</sub> ≤ -40 °C | school* days  |
-| _T_<sub>mean</sub> | Heating degree-days   | No. of degrees below 18 °C for each day.    | degree-days   |
-|                    | Cooling degree-days   | No. of degrees above 18 °C for each day.    | degree-days   |
-|                    | Freezing degree-days  | No. of degrees below 0 °C for each day.     | degree-days   |
-| Precipitation      | Dry days              | No. of days with < 1 mm precipitation       | days          |
-|                    | Wet days              | No. of days with > 1 mm precipitation       | days          |
-|                    | Drought risk          | More than 10 consecutive dry days           | No. of alerts |
+| Element            | Extreme Index         | Definition                                  | Units          |
+| ------------------ | --------------------- | ------------------------------------------- | -------------- |
+| _T_<sub>max</sub>  | Hot days              | No. of days with _T_<sub>max</sub> > 30 °C  | days           |
+|                    | Summer days           | No. of days with _T_<sub>max</sub> > 25 °C  | days           |
+|                    | Ice days              | No. of days with _T_<sub>max</sub> < 0 °C   | days           |
+| _T_<sub>min</sub>  | Frost days            | No. of days with _T_<sub>min</sub> < 0 °C   | days           |
+|                    | Tropical nights       | No. of days with _T_<sub>min</sub> > 20 °C  | days           |
+|                    | Cold alerts (Toronto) | No. of days with _T_<sub>min</sub> ≤ -15 °C | No. of alerts  |
+|                    | School closure        | No. of days with _T_<sub>min</sub> ≤ -40 °C | _school_ days  |
+| _T_<sub>mean</sub> | Heating degree-days   | No. of degrees below 18 °C for each day.    | degree-days    |
+|                    | Cooling degree-days   | No. of degrees above 18 °C for each day.    | degree-days    |
+|                    | Freezing degree-days  | No. of degrees below 0 °C for each day.     | degree-days    |
+| Precipitation      | Dry days              | No. of days with < 1 mm precipitation       | days           |
+|                    | Wet days              | No. of days with > 1 mm precipitation       | days           |
+|                    | Drought risk          | More than 10 consecutive dry days           | No. of alerts  |
 
-### Seasons
- - DJF: Winter
- - MAM: Spring
- - JJA: Summer
- - SON: Autumn
+## Exposure unit Python expressions
+
+| Extreme Index         | Type    | Code                                 |
+| --------------------- | --------| ------------------------------------ |
+| Hot days              | Boolean | `1 if x > 30 else 0`                 |
+| Summer days           | Boolean | `1 if x > 25 else 0`                 |
+| Ice days              | Boolean | `1 if x < 0 else 0`                  |
+| Frost days            | Boolean | `1 if x < 0 else 0`                  |
+| Tropical nights       | Boolean | `1 if x > 20 else 0`                 |
+| Cold alerts (Toronto) | Boolean | `1 if x <= -15 else 0`               |
+| Heating degree-days   | Lambda  | `lambda x: 0 if x >= 18 else 18 - x` |
+| Cooling degree-days   | Lambda  | `lambda x: 0 if x <= 18 else x - 18` |
+| Freezing degree-days  | Lambda  | `lambda x: 0 if x >= 0 else 0 - x`   |
+| Dry days              | Boolean | `1 if x > 30 else 0`                 |
+| Wet days              | Boolean | `1 if x > 30 else 0`                 |

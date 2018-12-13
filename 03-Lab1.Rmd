@@ -39,8 +39,7 @@ Environment and Climate Change Canada (ECCC) makes data available over an intern
 ## Getting the data
 
 ### Option 1: On the command line
-<details>
-  <summary>Click here for instructions.</summary>
+
 ECCC makes data available over an [FTP site](ftp://client_climate@ftp.tor.ec.gc.ca/Pub/Get_More_Data_Plus_de_donnees/), and gives instructions for downloading data manually via `bash` and `wget`. You can find instructions for using the command line to download data [here](ftp://client_climate@ftp.tor.ec.gc.ca/Pub/Get_More_Data_Plus_de_donnees/Readme.txt).
 
 #### A scripted solution
@@ -185,11 +184,9 @@ Save your new data set to _csv_ by:
 ```{python}
 tor.to_csv("tor.csv")
 ```
-</details>
 
 ### Option 2: Using the **canadaHCD** package in R
-<details>
-<summary>Click here for instructions.</summary>
+
 For those of us who work often in R, the **canadaHCD** package [@R-canadaHCD] is the first stop for Canadian climate data. We can take advantage of this package in Python too, thanks to the **rpy2** Python module. We will also use an expansion pack that I have written based on **canadaHCD**, called **canadaHCDx** [@R-canadaHCDx]. Of course, you are free to run any of the R commands in the code below directly in R.
 
 [//]: # (It seems (understandably), that calling rpy2 through reticulate causes all sorts of trouble)
@@ -350,9 +347,7 @@ You can save your new data set to _csv_ by:
 tor.to_csv("tor.csv")
 ```
 
-
 There you have it! We just downloaded 30 years of data from Environment Canada in Python via R!
-</details>
 
 ## Analyzing the data
 
