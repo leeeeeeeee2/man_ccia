@@ -24,8 +24,8 @@ import scipy.stats as stats
 ```{bash get_csvs, include=FALSE}
 wget https://gitlab.com/ConorIA/shell-scripts/raw/master/eccc/eccc
 chmod a+x eccc
-./eccc -y 1981:2010 -s 5051 -x 24 -g
-./eccc -y 2000:2010 -s 31688 -x 24 -g
+./eccc -y 1981:2010 -s 5051 -g
+./eccc -y 2000:2010 -s 31688 -g
 ```
 
 One of the first steps of a climate change impact assessment (CCIA) is to establish a climatological baseline  for the climate variable of interest (either an exposure unit or the climate variable most directly linked to the exposure unit). 
@@ -56,7 +56,7 @@ To get help using the script, pass the `-h` flag to the script.
 This command prints out help information for using the script. To download daily data for Toronto, for instance, you can run the script like this: 
 
 ```{bash, eval=FALSE}
-./eccc -y 1981:2010 -s 5051 -x 24 -g
+./eccc -y 1981:2010 -s 5051 -g
 ```
 
 This will download the individual year-by-year _csv_ files for daily data at Toronto, crop the first 24 lines from them, and the glue them all together in a single file. In this case. That file is called "_`r list.files(pattern = "5051.*csv")`_".
@@ -117,7 +117,7 @@ We'll have to return to `bash` for a moment to get the data that we're missing. 
 
 <center>**Really, run this in bash, not Python**</center>
 ```{bash, eval = FALSE}
-./eccc -y 2000:2010 -s 31688 -x 24 -g
+./eccc -y 2000:2010 -s 31688 -g
 ```
 
 Now let's return to Python. 
