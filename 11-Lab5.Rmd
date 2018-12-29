@@ -1,0 +1,451 @@
+# Lab exercise 5: Using Down-scaled GCM Data {#lab5}
+
+_Last update: `r file.info("11-Lab5.Rmd")$mtime`_
+
+```{r setup, include=FALSE}
+library(reticulate)
+conda <- ifelse(file.exists("/opt/conda/bin/conda"), "/opt/conda/bin/conda", "/data/home-ext/miniconda3/bin/conda")
+use_condaenv("man_ccia", conda = conda, required = TRUE)
+```
+
+```{python py_setup, include=FALSE}
+import matplotlib as mpl
+mpl.use("agg") # Needed for the book only
+mpl.rc('font', size=12)
+from matplotlib import pyplot as plt
+plt.switch_backend('agg') # Might be overkill
+import numpy as np
+import pandas as pd
+pd.set_option('display.max_columns', 10)
+import scipy.stats as stats
+import os
+import re
+import datetime as dt
+import cftime
+import seaborn as sns
+from netCDF4 import Dataset, num2date
+```
+
+In Lab 4 (Sec. \@ref(lab4)) we applied GCM-derived change factors to our observed data as a rudimentary form of down-scaling, and removing the bias in the model projections. In that sense, we kept the relative change in the model projections, but discarded the monthly and seasonal signals. In this lab, we will use down-scaled data provided by @pcic2014statistically. We downloaded these files, in Section \@ref(pcic).
+
+## Reading the down-scaled data
+
+To begin our lab, we will read in the downscaled data. First, however, we have a lot of libraries to load!
+
+```{python, eval=FALSE}
+import numpy as np
+from matplotlib import pyplot as plt
+import pandas as pd
+import matplotlib as mpl
+import scipy.stats as stats
+import os
+import re
+import datetime as dt
+import cftime
+from netCDF4 import Dataset, num2date
+import seaborn as sns
+```
+
+You should dedicate a folder to the downloaded PCIC data. Adjust the path, below, to the correct folder on your local machine. We will also create a list of models that we have used.
+
+```{python}
+data_dir = "data/pcic_data"
+filenames = os.listdir(data_dir)
+models = ["CanESM2", "CCSM4", "CSIRO-Mk3-6-0", "GFDL-ESM2G", "inmcm4", "MIROC5"]
+```
+
+We will use some regex patterns to pull some important info out of our filenames. Most of this information is contained in the metadata of the netCDF files, but it is probably easier to match the information from the filenames. 
+
+```{python}
+variable_pattern = r'tasmin|tasmax'
+model_pattern = "|".join(models)
+scenario_pattern = r'rcp[458]{2}'
+```
+
+Finally, we want to have a list of dates to add to each model. Since we are certain that we are using the same period and calendar in each file, it is more efficient to define the dates once, rather than pulling the date dimension from each netCDF file. These PCIC data use a special "365-day" calendar, which ignores leap years. We could manually generate the date series, but this is not as straightforward in Python as you might hope. Instead, let's pull the `time` dimension out of the first file, and re-use that object for all of our remaining files. 
+
+```{python}
+nc = Dataset(data_dir + "/" + filenames[0])
+nc_time = nc.variables['time']
+time = num2date(nc_time[:], nc_time.units, nc_time.calendar)
+nc.close()
+```
+
+Now let's loop across all of our files and create one big **pandas** data frame for our data. If you have unrelated files in your data directory, you may want to test for a certain filename pattern and [`continue`](https://docs.python.org/3/tutorial/controlflow.html#break-and-continue-statements-and-else-clauses-on-loops) to the next iteration. 
+
+```{python}
+for file in filenames:
+    var = re.findall(variable_pattern, file)[0]
+    mod = re.findall(model_pattern, file)[0]
+    scen = re.findall(scenario_pattern, file)[0]
+    
+    nc = Dataset(data_dir + "/" + file)
+    nc_var = np.squeeze(nc.variables[var][:].data)
+    nc.close()
+    
+    try:  # check to see if df already exists
+        df
+    except NameError:
+        df = pd.DataFrame({'Date': time, 'Model': mod, 'Scenario': scen, 'Variable': var, 'Value': nc_var})
+    else:
+        df = df.append(pd.DataFrame({'Date': time, 'Model': mod, 'Scenario': scen, 'Variable': var, 'Value': nc_var}))    
+```
+
+Let's check our new table.
+
+```{python}
+print(df.head())
+```
+
+```{python}
+print(df.tail())
+```
+
+Our netCDF files only contain $T_{max}$ and $T_{min}$. Let's create a $T_{mean}$ variable too. We'll stick with the CMIP naming and call this variable "tas". We could create this variable by filtering to create two tables, one where `Variable == 'tasmin'` and one where `Variable == 'tasmax'` and finding the average, however, it is probably cleaner to use the `pivot_table()` function in **pandas** to re-arrange our table, create the new column, and then `melt` it back to its original layout.
+
+```{python}
+df = df.pivot_table(
+    index=['Date', 'Model', 'Scenario'],
+    columns='Variable',
+    values='Value').reset_index()
+
+df['tas'] = (df.tasmax + df.tasmin)/2
+print(df.head())
+```
+
+Now we can `melt` the data frame back to the long form.
+
+```{python}
+df = df.melt(id_vars=['Date','Model','Scenario'], value_name="Value")
+print(df.head())
+```
+
+## Comparing down-scaled data to our observed data
+
+Let's analyze the baseline first. Since we are using a special calendar, we'll need to use `cftime.DatetimeNoLeap()` to filter our dates.
+
+```{python}
+baseline = df[(df.Date >= cftime.DatetimeNoLeap(1981, 1, 1)) & (df.Date <= cftime.DatetimeNoLeap(2010, 12, 31))]
+```
+
+Let's examine our data at the monthly timestep. First, we'll add a `'Month'` column. The `cftime.DatetimeNoLeap` class doesn't have a `.dt` selector, so we'll extract the month via a lambda expression. There may be an easier way to do this. Please send contributions!
+
+```{python}
+baseline = baseline.assign(Month=baseline.Date.apply(lambda x: x.month))
+```
+
+Now let's calculate some summary stats for the baseline, grouped by 'Scenario', 'Variabile', and 'Month'.
+
+```{python}
+baseline_stats_gcm = baseline.groupby(['Scenario','Variable','Month']).agg({'Value': ['mean', 'std','max','min']})
+print(baseline_stats_gcm)
+```
+
+Let's see how the down-scaled data compare to our observed data. Let's read in our observed data that we generated in Lab 1 (Sec. \@ref{lab1}), and generate the same stats. 
+
+```{python}
+tor = pd.read_csv("tor.csv", index_col=0)
+tor.Date = pd.to_datetime(tor.Date)
+tor = tor[['Date', 'MaxTemp', 'MinTemp', 'MeanTemp']]
+tor = tor.assign(Month=tor.Date.dt.month)
+print(tor.head())
+```
+
+```{python}
+tor_stats = tor.groupby(['Month']).agg({'MaxTemp': ['mean', 'std','max','min'],
+                                        'MinTemp': ['mean', 'std','max','min'],
+                                        'MeanTemp': ['mean', 'std', 'max', 'min']}).reset_index()
+print(tor_stats)
+```
+
+Now we'll plot these two series against one another. 
+
+```{python}
+months = np.arange(0.5,12.5,1)
+
+plt.figure(figsize=(12,6))
+plt.errorbar(months,
+             np.asarray(baseline_stats_gcm["Value", "mean"]["rcp45", "tas"]),
+             yerr=np.asarray(baseline_stats_gcm["Value", "std"]["rcp45", "tas"]),
+             label='MMM')
+
+plt.errorbar(months,
+             np.asarray(tor_stats["MeanTemp", "mean"]),
+             yerr=np.asarray(tor_stats["MeanTemp", "std"]),
+             label='OBS')
+
+plt.xlim(0,12)
+plt.xticks(months,["J","F","M","A","M","J","J","A","S","O","N","D"])
+plt.title("$T_{mean}$ (1981-2010): Multi-model Mean & Station Data")
+plt.xlabel("Month")
+plt.ylabel("$T_{mean}$ ($^{\circ}$C)")
+plt.legend()
+```
+
+```{python, include=FALSE}
+plt.savefig('l5f1.png')
+plt.close()
+```
+
+![](l5f1.png)
+
+```{python}
+plt.figure(figsize=(12,6))
+plt.errorbar(months,
+             np.asarray(baseline_stats_gcm["Value", "mean"]["rcp45", "tasmin"]),
+             yerr=np.asarray(baseline_stats_gcm["Value", "std"]["rcp45", "tasmin"]),
+             label='MMM')
+
+plt.errorbar(months,
+             np.asarray(tor_stats["MinTemp", "mean"]),
+             yerr=np.asarray(tor_stats["MinTemp", "std"]),
+             label='OBS')
+
+plt.xlim(0,12)
+plt.xticks(months,["J","F","M","A","M","J","J","A","S","O","N","D"])
+plt.title("$T_{min}$ (1981-2010): Multi-model Mean & Station Data")
+plt.xlabel("Month")
+plt.ylabel("$T_{min}$ ($^{\circ}$C)")
+plt.legend()
+```
+
+```{python, include=FALSE}
+plt.savefig('l5f2.png')
+plt.close()
+```
+
+![](l5f2.png)
+
+```{python}
+plt.figure(figsize=(12,6))
+plt.errorbar(months,
+             np.asarray(baseline_stats_gcm["Value", "mean"]["rcp45", "tasmax"]),
+             yerr=np.asarray(baseline_stats_gcm["Value", "std"]["rcp45", "tasmax"]),
+             label='MMM')
+
+plt.errorbar(months,
+             np.asarray(tor_stats["MaxTemp", "mean"]),
+             yerr=np.asarray(tor_stats["MaxTemp", "std"]),
+             label='OBS')
+
+plt.xlim(0,12)
+plt.xticks(months,["J","F","M","A","M","J","J","A","S","O","N","D"])
+plt.title("$T_{max}$ (1981-2010): Multi-model Mean & Station Data")
+plt.xlabel("Month")
+plt.ylabel("$T_{max}$ ($^{\circ}$C)")
+plt.legend()
+```
+
+```{python, include=FALSE}
+plt.savefig('l5f3.png')
+plt.close()
+```
+
+![](l5f3.png)
+
+## Calculating GCM bias
+
+We can plot the bias in the GCM projections of $T_{mean}$. To calculate the bias we subtract the station baseline from the GCM baseline. We will use a $t$ distribution to detect months where there is a significant difference and will plot those with a red line, if there are any.
+
+```{python}
+gcm_bias = np.asarray(baseline_stats_gcm["Value","mean"]["rcp45","tas"]) - np.asarray(tor_stats["MeanTemp","mean"])
+
+N = len(models)
+t_crit = stats.t.ppf(0.975, N - 1)
+
+t_sample = gcm_bias * np.sqrt(N - 1) / baseline_stats_gcm["Value","std"]["rcp45","tas"]
+
+gcm_bias_sig = np.ma.masked_where(np.abs(t_sample) < t_crit, gcm_bias)
+```
+
+Now let's plot it!
+
+```{python}
+plt.figure(figsize=(12,6))
+# The full range (Min minus the Mean and Max minus the Mean; dark gray shading)
+plt.fill_between(months,
+                 np.asarray(baseline_stats_gcm["Value","min"]["rcp45","tas"]) - np.asarray(tor_stats["MeanTemp","mean"]), 
+                 np.asarray(baseline_stats_gcm["Value", "max"]["rcp45","tas"]) - np.asarray(tor_stats["MeanTemp","mean"]),
+                 color='darkgray')
+
+# One standard deviation (light gray shading)
+plt.fill_between(months,
+                 gcm_bias - np.asarray(baseline_stats_gcm["Value","std"]["rcp45","tas"]), 
+                 gcm_bias + np.asarray(baseline_stats_gcm["Value","std"]["rcp45","tas"]),
+                 color='lightgray')
+
+plt.plot(months, gcm_bias, 'k', linewidth=2)
+plt.plot(months, gcm_bias_sig, 'r', linewidth=2.5)
+
+plt.axhline(0, color='k', linestyle=':')
+plt.xlim(0,12)
+plt.ylim(-20,20)
+plt.xticks(months,["J","F","M","A","M","J","J","A","S","O","N","D"])
+plt.title("Multi-model Mean GCM Bias (1981-2010)")
+plt.xlabel("Month")
+plt.ylabel("Bias ($^{\circ}$C)")
+```
+
+
+```{python, include=FALSE}
+plt.savefig('l5f4.png')
+plt.close()
+```
+
+![](l5f4.png)
+
+## Re-assessing the future
+
+Let's take a look at how the down-scaled data projects the future climate. We will perform our analysis using the same tridecades that we used in Lab 4. In the interest of expediency, we have defined a function to bin a given date into one of our four tridecades, and we'll apply the function to our `df.Date` column.
+
+```{python}
+def define_tridecades(date):
+    if cftime.DatetimeNoLeap(2011, 1, 1) <= date <= cftime.DatetimeNoLeap(2040, 12, 31):
+        return "2020s"
+    elif  cftime.DatetimeNoLeap(2041, 1, 1) <= date <= cftime.DatetimeNoLeap(2070, 12, 31):
+        return "2050s"
+    elif  cftime.DatetimeNoLeap(2071, 1, 1) <= date <= cftime.DatetimeNoLeap(2100, 12, 31):
+        return "2080s"
+    elif  cftime.DatetimeNoLeap(1981, 1, 1) <= date <= cftime.DatetimeNoLeap(2010, 12, 31):
+        return "1990s"
+    else: 
+        return None
+```
+
+Let's grab the data from 1981 to 2100, which covers our baseline and our three tridecades.
+
+```{python}
+dat = df[(df.Date >= cftime.DatetimeNoLeap(1981, 1, 1)) & (df.Date <= cftime.DatetimeNoLeap(2100, 12, 31))]
+dat = dat.assign(Period=dat.Date.apply(define_tridecades))
+print(dat.head())
+print(dat.tail())
+```
+
+We can plot the tridecadal annual average temperature. In this case, let's use **seaborn** for the plot so that we can take advantage of its convenient facetting shortcuts.
+
+```{python}
+plot_data = dat.groupby(['Scenario', 'Variable', 'Period']).agg('mean').reset_index()
+
+plt.figure(figsize=(10,6))
+sns.lineplot(x="Period", y="Value", hue="Variable", style="Scenario", data=plot_data)
+plt.legend(loc='upper left', ncol=2, prop={'size': 10})
+plt.ylabel("Temperature ($^{\circ}$C)")
+plt.title("Tridecadal annual temperature averages ($^{\circ}$C)")
+```
+
+```{python, include=FALSE}
+plt.savefig('l5f5.png')
+plt.close()
+```
+
+![](l5f5.png)
+
+Perhaps we want to see the projections of each model, as well as the ensemble mean. Let's look at an example for $T_{mean}$
+
+```{python}
+plot_data = dat.groupby(['Model', 'Scenario', 'Variable', 'Period']).agg('mean').reset_index()
+overall_means = plot_data.groupby(['Period', 'Scenario', 'Variable']).agg({'Value': 'mean'}).reset_index()
+plot_data = plot_data.append(overall_means.assign(Model="MMM"), sort=True)
+
+plt.figure(figsize=(10,6))
+sns.lineplot(x="Period", y="Value", hue="Model", style="Scenario", data=plot_data[plot_data.Variable == "tas"])
+plt.legend(loc='upper left', prop={'size': 10})
+plt.ylabel("Mean Temperature ($^{\circ}$C)")
+plt.title("Tridecadal annual temperature averages ($^{\circ}$C)")
+```
+
+```{python, include=FALSE}
+plt.savefig('l5f6.png')
+plt.close()
+```
+
+![](l5f6.png)
+
+That plot looks a little busy. Let's try plotting with a facet on the scenario.
+
+```{python}
+plt.figure(figsize=(10,12))
+fg = sns.FacetGrid(hue="Model", row="Scenario", data=plot_data[plot_data.Variable == "tas"], aspect=1.61)
+fg.map(sns.lineplot, "Period", "Value").add_legend()
+fg.set_ylabels("Temperature ($^{\circ}$C)")
+plt.title("Tridecadal annual temperature averages ($^{\circ}$C)")
+```
+
+```{python, include=FALSE}
+plt.savefig('l5f7.png')
+plt.close()
+```
+
+![](l5f7.png)
+
+## Evaluating an exposure unit.
+
+We can also use the down-scaled data to project changes in our exposure unit. Let's look at summertime cooling degree days (CDD)?
+
+```{python}
+cdd = dat.assign(Month=dat.Date.apply(lambda x: x.month))
+cdd = cdd[(cdd.Variable == "tas") & (cdd.Month.isin([6,7,8]))]
+cdd = cdd.assign(CDD=cdd.Value.apply(lambda x: 0 if x <= 18 else x - 18))
+print(cdd.head())
+```
+
+Let's look at the total for our tridecadal periods.
+
+```{python}
+cdd = cdd[['Model', 'Scenario', 'Period', 'CDD']]
+cdd = cdd.groupby(['Model', 'Scenario', 'Period']).agg('sum').reset_index()
+print(cdd.head())
+```
+
+Let's take a look.
+
+```{python}
+sns.catplot(x="Period", y="CDD", hue="Scenario", col="Model",
+            data=cdd, saturation=0.5, palette="Blues", kind="bar",
+            ci=None, height=5, aspect=0.66, col_wrap=3)
+```
+
+```{python, include=FALSE}
+plt.savefig('l5f7.png')
+plt.close()
+```
+
+![](l5f7.png)
+
+We might prefer to use the real observed CDD values instead of the model-projected historical values. Let's see how these compare.
+
+
+```{python}
+observed_cdd = tor[tor.Month.isin([6,7,8])]
+observed_cdd = observed_cdd.assign(CDD=observed_cdd.MeanTemp.apply(lambda x: 0 if x <= 18 else x - 18))
+observed_cdd = observed_cdd.CDD.sum()
+
+for mod in cdd.Model.unique():
+    cdd = cdd.append({'Model': mod, 'Scenario': 'historical', 'Decade': '1990s', 'CDD': observed_cdd}, ignore_index=True)
+    
+print(cdd.tail())    
+```
+
+```{python}
+sns.catplot(x="Period", y="CDD", hue="Scenario", col="Model",
+            data=cdd, saturation=0.5, palette="Blues",
+            kind="bar", ci=None, height=7, aspect=0.66, col_wrap=3)
+```
+
+```{python, include=FALSE}
+plt.savefig('l5f8.png')
+plt.close()
+```
+
+![](l5f8.png)
+
+It looks like our models slightly under-estimate baseline CDD. This might be related to the multi-model ensembles underestimation of $T_{min}$, which you will explore in the exercises. 
+
+## Exercises (what to submit)
+
+```{block, type='rmdassignment'}
+- There is still some considerable difference between the multi-model ensemble-projected $T_{min}$ and the observed value. Why might that be? [2 marks]
+- Create a barplot (you may use either **matplotlib** or **seaborn**) of the projected changes to CDD using the six-model ensemble. Remember to include the relevant details such as error bars. [2 marks]
+- How do the results of the down-scaled GCM data compare to the change-factor method that you used in Lab 4? [5 marks]
+- Write a brief (max 1 page) review of the CCIA methodology process taken to this point. Ensure that you include the relevant citations to data and methods used.  [6 marks]
+```
