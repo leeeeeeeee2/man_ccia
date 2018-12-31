@@ -1,4 +1,6 @@
-# (APPENDIX) Appendix {#appendix}
+# (APPENDIX) Appendix {-}
+
+# Example exposure units {#appendix}
 
 ## Exposure unit definitions
 
