@@ -185,7 +185,7 @@ plt.savefig('l4f1.png')
 plt.clf()
 ```
 
-```{r l4f1, fig.cap="GFCI confidence classes for GCM-projected $T_{mean}$ at Toronto (1981‒2010). Lower values indicate less bias in the model projections compared to baseline annual observed average $T_{mean}$"}
+```{r l4f1, echo=FALSE, fig.cap="GFCI confidence classes for GCM-projected $T_{mean}$ at Toronto (1981\u20122010). Lower values indicate less bias in the model projections compared to baseline annual observed average $T_{mean}$"}
 knitr::include_graphics("l4f1.png", dpi = NA)
 ```
 
@@ -467,7 +467,7 @@ plt.savefig('l4f2.png')
 plt.clf()
 ```
 
-```{r l4f2, fig.cap="Baseline and future summer cooling degree days (CDD) at Toronto. Projections are based on changes to mean temperature forcast by three GCMs under the RCP4.5 and RCP8.5 scenarios."}
+```{r l4f2, echo=FALSE, fig.cap="Baseline and future summer cooling degree days (CDD) at Toronto. Projections are based on changes to mean temperature forcast by three GCMs under the RCP4.5 and RCP8.5 scenarios."}
 knitr::include_graphics("l4f2.png", dpi = NA)
 ```
 

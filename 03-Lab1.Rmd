@@ -398,7 +398,9 @@ plt.savefig('l1f1.png')
 plt.clf()
 ```
 
-![](l1f1.png)
+```{r l1f1, echo=FALSE fig.cap="Total summertime tropical nights at Toronto (1981\u20122010)."}
+knitr::include_graphics("l1f1.png", dpi = NA)
+```
 
 The grouping operation has changed our table index to the years from 1981 to 2010. We want to keep this information in the table, so we can reset our index like this:
 
@@ -420,7 +422,9 @@ plt.savefig('l1f2.png')
 plt.clf()
 ```
 
-![](l1f2.png)
+```{r l1f2, echo=FALSE fig.cap="Total summertime tropical nights at Toronto (1981\u20122010), with linear trend line."}
+knitr::include_graphics("l1f2.png", dpi = NA)
+```
 
 Let's try for a slightly more complicated exposure unit: Winter heating degree days (HDDs). The HDDs represent the difference between the mean temperature and the base temperature of 18 °C. Since HDDs can't be negative, they are only calculated when the mean temperature is below 18 °C. They are used as an indirect measure of energy demand. 
 
@@ -457,7 +461,9 @@ plt.savefig('l1f3.png')
 plt.clf()
 ```
 
-![](l1f3.png)
+```{r l1f3, echo=FALSE fig.cap="Total wintertime heating degree days (HDD) at Toronto (1981\u20122010), with linear trend line."}
+knitr::include_graphics("l1f3.png", dpi = NA)
+```
 
 Let's see if we can detect any trends in our baseline values. For convenience, I am going to create a function that will spit out the relevant values. You can run these commands directly, but this might save you time when you get to the exercises (Hint!).
 

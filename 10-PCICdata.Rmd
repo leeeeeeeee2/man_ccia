@@ -8,12 +8,105 @@ conda <- ifelse(file.exists("/opt/conda/bin/conda"), "/opt/conda/bin/conda", "/d
 use_condaenv("man_ccia", conda = conda, required = TRUE)
 ```
 
+```{python py_setup, include=FALSE}
+import matplotlib as mpl
+mpl.use("agg") # Needed for the book only
+mpl.rc('font', size=12)
+from matplotlib import pyplot as plt
+plt.switch_backend('agg') # Might be overkill
+import numpy as np
+import pandas as pd
+import scipy.stats as stats
+import os
+import cftime
+from netCDF4 import Dataset, num2date
+```
+
 We can improve upon our estimate of the impact of climate change on our exposure unit of interest by downscaling GCM data using more sophisticated statistical downscaling techniques.
 
 In this exercise, we will use data that has been downscaled using a bias-corrected constructed analogs method (BCCAQ; see @werner2016hydrologic). One of the advantages of this method is that we can bias-correct and downscale daily GCM data.
 
 The data was provided by @pcic2014statistically, and is downscaled based on a high-quality gridded observed dataset (~10 km grid size) developed by NRCan (ANUSPLIN300). PCIC provides an excellent overview of their downscaling methodology, with citations made to the relevant articles, [here](https://
 www.pacificclimate.org/data/statistically-downscaled-climate-scenarios). You should read the entirety of that page before continuing this preface and before starting lab 5.
+
+Figure \@ref(fig:l5f0), below, shows the results of this down-scaling process for the Canadian CanESM2 model. Notice that the PCIC product, down-scaled to a 10 km grid, is much more closely related to the observed station point data that we downloaded from Environment and Climate Change Canada. Our comparison here still isn't perfect, as we're still comparing a point to a grid cell, but as our grid cell decreases in size, the two series begin to behave more similarly. This definitely looks like a solution to improve the quality of our impact assessment. Read on to learn how to obtain this high-resolution down-scaled data directly from PCIC.
+
+```{python make_ds_comp_plot, include=FALSE}
+## Downscaled Data
+
+filename = {'tasmax': 'data/pcic_data/tasmax_day_BCCAQ-ANUSPLIN300-CanESM2_historical-rcp45_r1i1p1_19810101-21001231.nc',
+            'tasmin': 'data/pcic_data/tasmin_day_BCCAQ-ANUSPLIN300-CanESM2_historical-rcp45_r1i1p1_19810101-21001231.nc'}
+
+nc = Dataset(filename['tasmax'])
+nc_time = nc.variables['time']
+time = num2date(nc_time[:], nc_time.units, nc_time.calendar)
+nc_var = np.squeeze(nc.variables['tasmax'][:].data)
+nc.close()
+df = pd.DataFrame({'Date': time, 'Model': 'CanESM2', 'Variable': 'tasmax', 'Value': nc_var})
+
+nc = Dataset(filename['tasmin'])
+nc_var = np.squeeze(nc.variables['tasmin'][:].data)
+nc.close()
+df = df.append(pd.DataFrame({'Date': time, 'Model': 'CanESM2', 'Variable': 'tasmin', 'Value': nc_var}))   
+
+df = df.pivot_table(
+    index=['Date', 'Model'],
+    columns='Variable',
+    values='Value').reset_index()
+
+df['tas'] = (df.tasmax + df.tasmin)/2
+df = df.melt(id_vars=['Date','Model'], value_name="Value")
+baseline = df[(df.Date >= cftime.DatetimeNoLeap(1981, 1, 1)) & (df.Date <= cftime.DatetimeNoLeap(2010, 12, 31))]
+
+## Observed Data
+
+T_STN = pd.read_csv("tor.csv", index_col = 0)
+
+## Raw CanESM2 Data
+
+T_hist_CanESM2 = np.genfromtxt('data/CanESM2_tas_19812010_mat.csv', delimiter=',').ravel()
+
+## Plot PDFs of all data for Baseline time period
+
+kernel1 = stats.gaussian_kde(np.asarray(baseline.Value[baseline.Variable=='tas']))
+x1 = np.linspace(2*np.asarray(baseline.Value[baseline.Variable=='tas']).min(), 
+                 2*np.asarray(baseline.Value[baseline.Variable=='tas']).max(), 1000)
+pdf1 = kernel1(x1)
+
+kernel2 = stats.gaussian_kde(np.asarray(T_STN.MeanTemp)[~np.isnan(T_STN.MeanTemp)])
+x2 = np.linspace(2*np.asarray(T_STN.MeanTemp)[~np.isnan(T_STN.MeanTemp)].min(), 2*np.asarray(T_STN.MeanTemp)[~np.isnan(T_STN.MeanTemp)].max(), 1000)
+pdf2 = kernel2(x2)
+
+kernel3 = stats.gaussian_kde(T_hist_CanESM2)
+x3 = np.linspace(2*T_hist_CanESM2.min(), 2*T_hist_CanESM2.max(), 1000)
+pdf3 = kernel3(x3)
+
+fig = plt.figure(figsize=(9,6))
+
+plt.plot(x1, pdf1, color='blue',linewidth=2)
+plt.plot(x2, pdf2, color='green',linewidth=2)
+plt.plot(x3, pdf3, color='orange',linewidth=2)
+
+plt.plot(np.squeeze(np.mean(np.asarray(T_STN.MeanTemp)[~np.isnan(T_STN.MeanTemp)])*np.ones(x1.size)),
+         np.linspace(0,0.045,x1.size),'green',linewidth=2,label='Station (point data)')
+plt.plot(np.squeeze(np.mean(np.asarray(baseline.Value[baseline.Variable=='tas']))*np.ones(x1.size)),
+         np.linspace(0,0.045,x1.size),'blue',linewidth=2,label='DS CanESM2 (~10 km grid)')
+plt.plot(np.squeeze(np.mean(T_hist_CanESM2)*np.ones(x1.size)),
+         np.linspace(0,0.045,x1.size),'orange',linewidth=2,label='Raw CanESM2 (~2.8125° grid)')
+
+plt.xlabel('$T_{mean}$ ($^{\circ}$C)')
+plt.ylabel('Probability Density')
+plt.title('$T_{mean}$ at Toronto, 1981‒2010')
+plt.legend(loc='upper right',fontsize=12)
+plt.ylim(0,0.045)
+plt.tight_layout()
+plt.savefig('l5f0.png')
+plt.clf()
+```
+
+```{r l5f0, fig.cap="Baseline (1981\u20122100) $T_{mean}$ at Toronto, observed (green), simulated by CanESM2 (yellow), and downscaled by PCIC (blue)."}
+knitr::include_graphics("l5f0.png", dpi = NA)
+```
 
 ## Retreiving downscaled data from the data portal website
 

@@ -141,7 +141,7 @@ baseline_stats_gcm = baseline.groupby(['Scenario','Variable','Month']).agg({'Val
 print(baseline_stats_gcm)
 ```
 
-Let's see how the down-scaled data compare to our observed data. Let's read in our observed data that we generated in Lab 1 (Sec. \@ref{lab1}), and generate the same stats. 
+Let's see how the down-scaled data compare to our observed data. Let's read in our observed data that we generated in Lab 1 (Sec. \@ref(lab1)), and generate the same stats. 
 
 ```{python}
 tor = pd.read_csv("tor.csv", index_col=0)
@@ -187,7 +187,9 @@ plt.savefig('l5f1.png')
 plt.close()
 ```
 
-![](l5f1.png)
+```{r l5f1, fig.cap="Toronto $T_{mean}$ (1981\u20122100), comparison between observed station data (yellow) and simulation by a multimodel ensemble using down-scaled GCM data."}
+knitr::include_graphics("l5f1.png", dpi = NA)
+```
 
 ```{python}
 plt.figure(figsize=(12,6))
@@ -214,7 +216,9 @@ plt.savefig('l5f2.png')
 plt.close()
 ```
 
-![](l5f2.png)
+```{r l5f2, fig.cap="Toronto $T_{min}$ (1981\u20122100), comparison between observed station data (yellow) and simulation by a multimodel ensemble using down-scaled GCM data."}
+knitr::include_graphics("l5f2.png", dpi = NA)
+```
 
 ```{python}
 plt.figure(figsize=(12,6))
@@ -241,7 +245,9 @@ plt.savefig('l5f3.png')
 plt.close()
 ```
 
-![](l5f3.png)
+```{r l5f3, fig.cap="Toronto $T_{max}$ (1981\u20122100), comparison between observed station data (yellow) and simulation by a multimodel ensemble using down-scaled GCM data."}
+knitr::include_graphics("l5f3.png", dpi = NA)
+```
 
 ## Calculating GCM bias
 
@@ -292,7 +298,9 @@ plt.savefig('l5f4.png')
 plt.close()
 ```
 
-![](l5f4.png)
+```{r l5f4, fig.cap="$T_{mean}$ bias in down-scaled multi-model ensemble using down-scaled GCM data. The ensemble mean is shown as a black line. Shaded regions indicate one standard deviation (light grey), and the full range of individual ensemble-members (dark grey)."}
+knitr::include_graphics("l5f4.png", dpi = NA)
+```
 
 ## Re-assessing the future
 
@@ -338,7 +346,9 @@ plt.savefig('l5f5.png')
 plt.close()
 ```
 
-![](l5f5.png)
+```{r l5f5, fig.cap="Simulated and projected 30-year maximum (orange), minimum (green), and mean (blue) temperatures averages at Toronto for tridecades from the 1990s to the 2080s, as projected by a down-scaled multimodel ensemble for RCP4.5 (solid) and RCP8.5 (dashed)."}
+knitr::include_graphics("l5f5.png", dpi = NA)
+```
 
 Perhaps we want to see the projections of each model, as well as the ensemble mean. Let's look at an example for $T_{mean}$
 
@@ -351,7 +361,7 @@ plt.figure(figsize=(10,6))
 sns.lineplot(x="Period", y="Value", hue="Model", style="Scenario", data=plot_data[plot_data.Variable == "tas"])
 plt.legend(loc='upper left', prop={'size': 10})
 plt.ylabel("Mean Temperature ($^{\circ}$C)")
-plt.title("Tridecadal annual temperature averages ($^{\circ}$C)")
+plt.title("Tridecadal annual mean temperature averages ($^{\circ}$C)")
 ```
 
 ```{python, include=FALSE}
@@ -359,7 +369,9 @@ plt.savefig('l5f6.png')
 plt.close()
 ```
 
-![](l5f6.png)
+```{r l5f6, fig.cap="Simulated and projected 30-year mean temperatures averages at Toronto for tridecades from the 1990s to the 2080s, as projected by six down-scaled GCMs for RCP4.5 (solid) and RCP8.5 (dashed)."}
+knitr::include_graphics("l5f6.png", dpi = NA)
+```
 
 That plot looks a little busy. Let's try plotting with a facet on the scenario.
 
@@ -376,7 +388,9 @@ plt.savefig('l5f7.png')
 plt.close()
 ```
 
-![](l5f7.png)
+```{r l5f7, fig.cap="Simulated and projected 30-year mean temperatures averages at Toronto for tridecades from the 1990s to the 2080s, as projected by six down-scaled GCMs for RCP4.5 (top) and RCP8.5 (bottom)."}
+knitr::include_graphics("l5f7.png", dpi = NA)
+```
 
 ## Evaluating an exposure unit.
 
@@ -406,11 +420,13 @@ sns.catplot(x="Period", y="CDD", hue="Scenario", col="Model",
 ```
 
 ```{python, include=FALSE}
-plt.savefig('l5f7.png')
+plt.savefig('l5f8.png')
 plt.close()
 ```
 
-![](l5f7.png)
+```{r l5f8, fig.cap="Simulated and projected 30-year total cooling degree days (CDD) at Toronto for tridecades from the 1990s to the 2080s using down-scaled GCMs for RCP4.5 (light) and RCP8.5 (dark)."}
+knitr::include_graphics("l5f8.png", dpi = NA)
+```
 
 We might prefer to use the real observed CDD values instead of the model-projected historical values. Let's see how these compare.
 
@@ -421,7 +437,7 @@ observed_cdd = observed_cdd.assign(CDD=observed_cdd.MeanTemp.apply(lambda x: 0 i
 observed_cdd = observed_cdd.CDD.sum()
 
 for mod in cdd.Model.unique():
-    cdd = cdd.append({'Model': mod, 'Scenario': 'historical', 'Decade': '1990s', 'CDD': observed_cdd}, ignore_index=True)
+    cdd = cdd.append({'Model': mod, 'Scenario': 'historical', 'Period': '1990s', 'CDD': observed_cdd}, ignore_index=True)
     
 print(cdd.tail())    
 ```
@@ -433,11 +449,13 @@ sns.catplot(x="Period", y="CDD", hue="Scenario", col="Model",
 ```
 
 ```{python, include=FALSE}
-plt.savefig('l5f8.png')
+plt.savefig('l5f9.png')
 plt.close()
 ```
 
-![](l5f8.png)
+```{r l5f9, fig.cap="Simulated and projected 30-year total cooling degree days (CDD) at Toronto for tridecades from the 1990s to the 2080s using down-scaled GCMs for RCP4.5 (light) and RCP8.5. The true historical observed CDDs are shown in dark blue."}
+knitr::include_graphics("l5f9.png", dpi = NA)
+```
 
 It looks like our models slightly under-estimate baseline CDD. This might be related to the multi-model ensembles underestimation of $T_{min}$, which you will explore in the exercises. 
 
