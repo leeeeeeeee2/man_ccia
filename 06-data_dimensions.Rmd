@@ -1,6 +1,6 @@
 # Data dimensions and the netCDF file format {#dimensions}
 
-_Last update: `r file.info("06-data_dimensions.Rmd")$mtime`_
+_Last update: `r system("git log -1 --format=\"%ad (%h)\" -- 06-data_dimensions.Rmd")`_
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)

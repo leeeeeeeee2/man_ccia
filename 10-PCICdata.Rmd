@@ -1,6 +1,6 @@
 # Downscaled climate data from PCIC {#pcic}
 
-_Last update: `r file.info("10-PCICdata.Rmd")$mtime`_
+_Last update: `r system("git log -1 --format=\"%ad (%h)\" -- 10-PCICdata.Rmd")`_
 
 ```{r setup, include=FALSE}
 library(reticulate)

@@ -1,6 +1,6 @@
 # Lab exercise 1: Understanding the recent past {#lab1}
 
-_Last update: `r file.info("03-Lab1.Rmd")$mtime`_
+_Last update: `r system("git log -1 --format=\"%ad (%h)\" -- 03-Lab1.Rmd")`_
 
 ```{r setup, include=FALSE}
 library(reticulate)

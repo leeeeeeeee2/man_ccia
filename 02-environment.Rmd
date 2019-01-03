@@ -1,6 +1,6 @@
 # Preparing your Environment {#enviro}
 
-_Last update: `r file.info("02-environment.Rmd")$mtime`_
+_Last update: `r system("git log -1 --format=\"%ad (%h)\" -- 02-environment.Rmd")`_
 
 During the labs in this manual, we will make use of a number of different pieces of software. Chiefly among these is Python. We will take for granted that you have already installed Python on your computer, but if you have not, please follow the [instructions to install Anaconda](https://docs.anaconda.com/anaconda/install/) on your operating system.
 
