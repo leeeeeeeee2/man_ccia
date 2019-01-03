@@ -1,6 +1,6 @@
 # Lab exercise 4: Choosing our models {#lab4}
 
-_Last update: `r system("git log -1 --format=\"%ad (%h)\" -- 09-Lab4.Rmd")`_
+_Last update: `r system("git log -1 --format=\"%ad (%h)\" -- 09-Lab4.Rmd", intern = TRUE)`_
 
 ```{r setup, include=FALSE}
 library(reticulate)

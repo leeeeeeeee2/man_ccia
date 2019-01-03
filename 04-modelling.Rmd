@@ -1,6 +1,6 @@
 # A brief primer on climate modelling {#modelling}
 
-_Last update: `r system("git log -1 --format=\"%ad (%h)\" -- 04-modelling.Rmd")`_
+_Last update: `r system("git log -1 --format=\"%ad (%h)\" -- 04-modelling.Rmd", intern = TRUE)`_
 
 In Lab 1, we learned how to acquire data for the past, and perform a basic baseline analysis. In Lab 2, we will be looking the other direction, towards the future. Before we begin, this chapter serves as a primer on (or, hopefully, review of) basic climate modelling. 
 

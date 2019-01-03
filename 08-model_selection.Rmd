@@ -1,6 +1,6 @@
 # Strategies for selecting GCM models {#modelselection}
 
-_Last update: `r system("git log -1 --format=\"%ad (%h)\" -- 08-model_selection.Rmd")`_
+_Last update: `r system("git log -1 --format=\"%ad (%h)\" -- 08-model_selection.Rmd", intern = TRUE)`_
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)

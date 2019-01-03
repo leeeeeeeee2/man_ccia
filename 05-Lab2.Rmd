@@ -1,6 +1,6 @@
 # Lab exercise 2: Downloading Climate Data {#lab2}
 
-_Last update: `r system("git log -1 --format=\"%ad (%h)\" -- 05-Lab2.Rmd")`_
+_Last update: `r system("git log -1 --format=\"%ad (%h)\" -- 05-Lab2.Rmd", intern = TRUE)`_
 
 The climate data that we need is made available through the Earth System Grid Federation (ESGF), a federated network of academic and government data centres in the USA, Europe, and Asia. This is a one-stop shop for all of the climate data from the CMIP5 and (soon, as of the time of writing, CMIP6). In this lab, we will focus on the CMIP5 data output. 
 

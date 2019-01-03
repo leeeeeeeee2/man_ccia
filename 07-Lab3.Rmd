@@ -1,6 +1,6 @@
 # Lab exercise 3: Navigating across three dimensions of data {#lab3}
 
-_Last update: `r system("git log -1 --format=\"%ad (%h)\" -- 07-Lab3.Rmd")`_
+_Last update: `r system("git log -1 --format=\"%ad (%h)\" -- 07-Lab3.Rmd", intern = TRUE)`_
 
 ```{r setup, include=FALSE}
 library(reticulate)
