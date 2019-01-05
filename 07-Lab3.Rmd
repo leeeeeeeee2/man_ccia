@@ -316,7 +316,7 @@ knitr::include_graphics("l3f5.png", dpi = NA)
 
 ## Change Factors
 
-In our next lab, we are going to use change factors to describe changes in our baseline climate. The change factor method (sometimes called $\Delta T$) calculates the projected temperature by adding the observed, baseline temperature time series to the change in the temperature projected by a CGM integration (typically using monthly GCM data). This process removes the bias in the GCM baseline climatology, and represents a simplified form of down-scaling. Change factors are described by the following equation:  
+In our next lab, we are going to use change factors to describe changes in our baseline climate. The change factor method (sometimes called $\Delta T$) calculates the projected temperature by adding the observed, baseline temperature time series to the change in the temperature projected by a CGM integration (typically using monthly GCM data). This process removes the bias in the GCM baseline climatology, and represents a simplified form of downscaling. Change factors are described by the following equation:  
 
 <center>$$T_{\mathrm{FUTURE}} = T_{\mathrm{OBSERVED}} + \Delta T_{\mathrm{GCM}}$$</center>
 

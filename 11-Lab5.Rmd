@@ -26,9 +26,9 @@ import seaborn as sns
 from netCDF4 import Dataset, num2date
 ```
 
-In Lab 4 (Sec. \@ref(lab4)) we applied GCM-derived change factors to our observed data as a rudimentary form of down-scaling, and removing the bias in the model projections. In that sense, we kept the relative change in the model projections, but discarded the monthly and seasonal signals. In this lab, we will use down-scaled data provided by @pcic2014statistically. We downloaded these files, in Section \@ref(pcic).
+In Lab 4 (Sec. \@ref(lab4)) we applied GCM-derived change factors to our observed data as a rudimentary form of downscaling, and removing the bias in the model projections. In that sense, we kept the relative change in the model projections, but discarded the monthly and seasonal signals. In this lab, we will use downscaled data provided by @pcic2014statistically. We downloaded these files, in Section \@ref(pcic).
 
-## Reading the down-scaled data
+## Reading the downscaled data
 
 To begin our lab, we will read in the downscaled data. First, however, we have a lot of libraries to load!
 
@@ -120,7 +120,7 @@ df = df.melt(id_vars=['Date','Model','Scenario'], value_name="Value")
 print(df.head())
 ```
 
-## Comparing down-scaled data to our observed data
+## Comparing downscaled data to our observed data
 
 Let's analyze the baseline first. Since we are using a special calendar, we'll need to use `cftime.DatetimeNoLeap()` to filter our dates.
 
@@ -141,7 +141,7 @@ baseline_stats_gcm = baseline.groupby(['Scenario','Variable','Month']).agg({'Val
 print(baseline_stats_gcm)
 ```
 
-Let's see how the down-scaled data compare to our observed data. Let's read in our observed data that we generated in Lab 1 (Sec. \@ref(lab1)), and generate the same stats. 
+Let's see how the downscaled data compare to our observed data. Let's read in our observed data that we generated in Lab 1 (Sec. \@ref(lab1)), and generate the same stats. 
 
 ```{python}
 tor = pd.read_csv("tor.csv", index_col=0)
@@ -187,7 +187,7 @@ plt.savefig('l5f1.png')
 plt.close()
 ```
 
-```{r l5f1, fig.cap="Toronto $T_{mean}$ (1981\u20122100), comparison between observed station data (yellow) and simulation by a multimodel ensemble using down-scaled GCM data."}
+```{r l5f1, fig.cap="Toronto $T_{mean}$ (1981\u20122100), comparison between observed station data (yellow) and simulation by a multimodel ensemble using downscaled GCM data."}
 knitr::include_graphics("l5f1.png", dpi = NA)
 ```
 
@@ -216,7 +216,7 @@ plt.savefig('l5f2.png')
 plt.close()
 ```
 
-```{r l5f2, fig.cap="Toronto $T_{min}$ (1981\u20122100), comparison between observed station data (yellow) and simulation by a multimodel ensemble using down-scaled GCM data."}
+```{r l5f2, fig.cap="Toronto $T_{min}$ (1981\u20122100), comparison between observed station data (yellow) and simulation by a multimodel ensemble using downscaled GCM data."}
 knitr::include_graphics("l5f2.png", dpi = NA)
 ```
 
@@ -245,7 +245,7 @@ plt.savefig('l5f3.png')
 plt.close()
 ```
 
-```{r l5f3, fig.cap="Toronto $T_{max}$ (1981\u20122100), comparison between observed station data (yellow) and simulation by a multimodel ensemble using down-scaled GCM data."}
+```{r l5f3, fig.cap="Toronto $T_{max}$ (1981\u20122100), comparison between observed station data (yellow) and simulation by a multimodel ensemble using downscaled GCM data."}
 knitr::include_graphics("l5f3.png", dpi = NA)
 ```
 
@@ -298,13 +298,13 @@ plt.savefig('l5f4.png')
 plt.close()
 ```
 
-```{r l5f4, fig.cap="$T_{mean}$ bias in down-scaled multi-model ensemble using down-scaled GCM data. The ensemble mean is shown as a black line. Shaded regions indicate one standard deviation (light grey), and the full range of individual ensemble-members (dark grey)."}
+```{r l5f4, fig.cap="$T_{mean}$ bias in downscaled multi-model ensemble using downscaled GCM data. The ensemble mean is shown as a black line. Shaded regions indicate one standard deviation (light grey), and the full range of individual ensemble-members (dark grey)."}
 knitr::include_graphics("l5f4.png", dpi = NA)
 ```
 
 ## Re-assessing the future
 
-Let's take a look at how the down-scaled data projects the future climate. We will perform our analysis using the same tridecades that we used in Lab 4. In the interest of expediency, we have defined a function to bin a given date into one of our four tridecades, and we'll apply the function to our `df.Date` column.
+Let's take a look at how the downscaled data projects the future climate. We will perform our analysis using the same tridecades that we used in Lab 4. In the interest of expediency, we have defined a function to bin a given date into one of our four tridecades, and we'll apply the function to our `df.Date` column.
 
 ```{python}
 def define_tridecades(date):
@@ -346,7 +346,7 @@ plt.savefig('l5f5.png')
 plt.close()
 ```
 
-```{r l5f5, fig.cap="Simulated and projected 30-year maximum (orange), minimum (green), and mean (blue) temperatures averages at Toronto for tridecades from the 1990s to the 2080s, as projected by a down-scaled multimodel ensemble for RCP4.5 (solid) and RCP8.5 (dashed)."}
+```{r l5f5, fig.cap="Simulated and projected 30-year maximum (orange), minimum (green), and mean (blue) temperatures averages at Toronto for tridecades from the 1990s to the 2080s, as projected by a downscaled multimodel ensemble for RCP4.5 (solid) and RCP8.5 (dashed)."}
 knitr::include_graphics("l5f5.png", dpi = NA)
 ```
 
@@ -369,7 +369,7 @@ plt.savefig('l5f6.png')
 plt.close()
 ```
 
-```{r l5f6, fig.cap="Simulated and projected 30-year mean temperatures averages at Toronto for tridecades from the 1990s to the 2080s, as projected by six down-scaled GCMs for RCP4.5 (solid) and RCP8.5 (dashed)."}
+```{r l5f6, fig.cap="Simulated and projected 30-year mean temperatures averages at Toronto for tridecades from the 1990s to the 2080s, as projected by six downscaled GCMs for RCP4.5 (solid) and RCP8.5 (dashed)."}
 knitr::include_graphics("l5f6.png", dpi = NA)
 ```
 
@@ -388,13 +388,13 @@ plt.savefig('l5f7.png')
 plt.close()
 ```
 
-```{r l5f7, fig.cap="Simulated and projected 30-year mean temperatures averages at Toronto for tridecades from the 1990s to the 2080s, as projected by six down-scaled GCMs for RCP4.5 (top) and RCP8.5 (bottom)."}
+```{r l5f7, fig.cap="Simulated and projected 30-year mean temperatures averages at Toronto for tridecades from the 1990s to the 2080s, as projected by six downscaled GCMs for RCP4.5 (top) and RCP8.5 (bottom)."}
 knitr::include_graphics("l5f7.png", dpi = NA)
 ```
 
 ## Evaluating an exposure unit.
 
-We can also use the down-scaled data to project changes in our exposure unit. Let's look at summertime cooling degree days (CDD)?
+We can also use the downscaled data to project changes in our exposure unit. Let's look at summertime cooling degree days (CDD)?
 
 ```{python}
 cdd = dat.assign(Month=dat.Date.apply(lambda x: x.month))
@@ -424,7 +424,7 @@ plt.savefig('l5f8.png')
 plt.close()
 ```
 
-```{r l5f8, fig.cap="Simulated and projected 30-year total cooling degree days (CDD) at Toronto for tridecades from the 1990s to the 2080s using down-scaled GCMs for RCP4.5 (light) and RCP8.5 (dark)."}
+```{r l5f8, fig.cap="Simulated and projected 30-year total cooling degree days (CDD) at Toronto for tridecades from the 1990s to the 2080s using downscaled GCMs for RCP4.5 (light) and RCP8.5 (dark)."}
 knitr::include_graphics("l5f8.png", dpi = NA)
 ```
 
@@ -453,7 +453,7 @@ plt.savefig('l5f9.png')
 plt.close()
 ```
 
-```{r l5f9, fig.cap="Simulated and projected 30-year total cooling degree days (CDD) at Toronto for tridecades from the 1990s to the 2080s using down-scaled GCMs for RCP4.5 (light) and RCP8.5. The true historical observed CDDs are shown in dark blue."}
+```{r l5f9, fig.cap="Simulated and projected 30-year total cooling degree days (CDD) at Toronto for tridecades from the 1990s to the 2080s using downscaled GCMs for RCP4.5 (light) and RCP8.5. The true historical observed CDDs are shown in dark blue."}
 knitr::include_graphics("l5f9.png", dpi = NA)
 ```
 
@@ -464,6 +464,6 @@ It looks like our models slightly under-estimate baseline CDD. This might be rel
 ```{block, type='rmdassignment'}
 - There is still some considerable difference between the multi-model ensemble-projected $T_{min}$ and the observed value. Why might that be? [2 marks]
 - Create a barplot (you may use either **matplotlib** or **seaborn**) of the projected changes to CDD using the six-model ensemble. Remember to include the relevant details such as error bars. [2 marks]
-- How do the results of the down-scaled GCM data compare to the change-factor method that you used in Lab 4? [5 marks]
+- How do the results of the downscaled GCM data compare to the change-factor method that you used in Lab 4? [5 marks]
 - Write a brief (max 1 page) review of the CCIA methodology process taken to this point. Ensure that you include the relevant citations to data and methods used.  [6 marks]
 ```

@@ -29,7 +29,7 @@ In this exercise, we will use data that has been downscaled using a bias-correct
 The data was provided by @pcic2014statistically, and is downscaled based on a high-quality gridded observed dataset (~10 km grid size) developed by NRCan (ANUSPLIN300). PCIC provides an excellent overview of their downscaling methodology, with citations made to the relevant articles, [here](https://
 www.pacificclimate.org/data/statistically-downscaled-climate-scenarios). You should read the entirety of that page before continuing this preface and before starting lab 5.
 
-Figure \@ref(fig:l5f0), below, shows the results of this down-scaling process for the Canadian CanESM2 model. Notice that the PCIC product, down-scaled to a 10 km grid, is much more closely related to the observed station point data that we downloaded from Environment and Climate Change Canada. Our comparison here still isn't perfect, as we're still comparing a point to a grid cell, but as our grid cell decreases in size, the two series begin to behave more similarly. This definitely looks like a solution to improve the quality of our impact assessment. Read on to learn how to obtain this high-resolution down-scaled data directly from PCIC.
+Figure \@ref(fig:l5f0), below, shows the results of this downscaling process for the Canadian CanESM2 model. Notice that the PCIC product, downscaled to a 10 km grid, is much more closely related to the observed station point data that we downloaded from Environment and Climate Change Canada. Our comparison here still isn't perfect, as we're still comparing a point to a grid cell, but as our grid cell decreases in size, the two series begin to behave more similarly. This definitely looks like a solution to improve the quality of our impact assessment. Read on to learn how to obtain this high-resolution downscaled data directly from PCIC.
 
 ```{python make_ds_comp_plot, include=FALSE}
 ## Downscaled Data
@@ -108,7 +108,7 @@ plt.clf()
 knitr::include_graphics("l5f0.png", dpi = NA)
 ```
 
-## Retreiving downscaled data from the data portal website
+## Retrieving downscaled data from the data portal website
 
 PCIC provides an intutive point and click map for accessing the downscaled GCM data. In our exercise in Lab 5, we will use six models (CanESM2, CCSM4, CSIRO-Mk3-6-0, GFDLESM2G, inmcm4 and MIROC5). To download this information manually, follow the steps below. You may instead wish to download these data programatically. Skip to the next section for that process. 
 
@@ -120,7 +120,7 @@ PCIC provides an intutive point and click map for accessing the downscaled GCM d
 5. Now, click on the pen icon in the top right-hand corner of the map and select the Toronto latitude and longitude (43.67°N and 79.40°W). A small window will pop-up asking if you want to download this data - click 'OK'.
 6. Repeat this process 23 times so that you have data for both 'tasmax' and 'tasmin' for all 6 models for RCP 4.5 and RCP 8.5. 
 
-## Retreiving downscaled GCM data from PCIC programatically
+## Retrieving downscaled GCM data from PCIC programatically
 
 The The Pacific Climate Impacts Consortium (PCIC) data portal can also be accessed programatically via `wget` or your preferred programming language. If you performed any manual downloading, above, you may have noticed that the data portal webpage returns some interesting data set URLs. We can use the same specific URL syntax to automate our downloading. We can do this in Python using the code, below. 
 
@@ -135,7 +135,7 @@ import numpy as np
 import re
 ```
 
-PCIC maintains a JSON-formatted catalogue of file IDs and URLs, which we can retreive in Python directly. 
+PCIC maintains a JSON-formatted catalogue of file IDs and URLs, which we can retrieve in Python directly. 
 
 ```{python}
 with urllib.request.urlopen("http://tools.pacificclimate.org/dataportal/downscaled_gcms/catalog/catalog.json") as url:
@@ -231,4 +231,4 @@ for i in range(len(urls)):
     urllib.request.urlretrieve(urls[i], filenames[i])
 ```
 
-Now that you have the data, we can proceed to analyze it. In Lab 5 (Sec. \@ref{lab5}), we will compare the down-scaled GCM data to our observed data and re-assess our exposure unit based on these new data.
+Now that you have the data, we can proceed to analyze it. In Lab 5 (Sec. \@ref{lab5}), we will compare the downscaled GCM data to our observed data and re-assess our exposure unit based on these new data.

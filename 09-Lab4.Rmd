@@ -471,7 +471,7 @@ plt.clf()
 knitr::include_graphics("l4f2.png", dpi = NA)
 ```
 
-Great! We have now seen who we can apply GCM-projected change factors to our observed data to project changes in an exposure unit. In our next Lab, we will look at more advanced down-scaling methods.
+Great! We have now seen who we can apply GCM-projected change factors to our observed data to project changes in an exposure unit. In our next Lab, we will look at more advanced downscaling methods.
 
 ## Exercises (what to submit)
 
