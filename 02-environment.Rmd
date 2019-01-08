@@ -2,20 +2,20 @@
 
 _Last update: `r system("git log -1 --format=\"%ad (%h)\" -- 02-environment.Rmd", intern = TRUE)`_
 
-During the labs in this manual, we will make use of a number of different pieces of software. Chiefly among these is Python. We will take for granted that you have already installed Python on your computer, but if you have not, please follow the [instructions to install Anaconda](https://docs.anaconda.com/anaconda/install/) on your operating system.
+During the labs in this manual, we will make use of a number of different pieces of software. Chiefly among these is Python. We will take for granted that you have already installed Python on your computer, but if you have not, please follow the [instructions to install Anaconda](https://docs.anaconda.com/anaconda/install/) on your operating system. We recommend using Anaconda3. If you already have Anaconda2 installed, fear not! You can still complete the exercises in this book, but you will have to create a new Python 3 environment. Check the tip box, below, for instruction on doing just that. 
 
 ```{block, type='rmdtip'}
-We recommend you create a new Anaconda environment for this manual. You can accomplish this by writing the following commands from the base Anaconda environment (i.e from the Anaconda Prompt on Windows or after running `conda activate` on MacOS or Linux). 
+Whether you are running Anaconda2 or Anaconda3, or one of the [Miniconda](https://conda.io/miniconda.html) variants, we recommend you create a new conda environment for this manual. You can accomplish this by writing the following commands from the base conda environment (i.e from the Anaconda Prompt on Windows or after running `conda activate` from a terminal on MacOS or Linux). 
 
-`conda create -n "man_ccia" python>=3.7.1 matplotlib netCDF4 pandas seaborn>=0.9.0`
+    conda create -n "man_ccia" "python>=3.7.1" matplotlib netCDF4 pandas "seaborn>=0.9.0"
 
-If you plan to use Jupyter Notebook, your new environment won't be immediately available, however, you can install a "kernel" for your new environment by issuing the following commands: 
+This will create a new environment, named "man_ccia", which will contain all of the packages that you will need to complete the exercises contained in this manual, including Python 3.7.1 or higher. If you plan to use Jupyter Notebook, your new environment won't be immediately available, however, you can install a "kernel" for your new environment by issuing the following commands: 
 
     conda activate man_ccia
     conda install ipykernel
     python -m ipykernel install --user --name="man_ccia" --display-name="man_ccia"
 
-Your new environment should now be available as "man_ccia" after re-launching Jupyter Notebook.
+This command will create a simple JSON file, that tells Jupyter where to look for the Python executable and the packages that are contained in your "man_ccia" environment. Once you have run those commands and re-launched Jupyter Notebook, your "man_ccia" environment should be available under the "New" file creation menu and the "Kernel" options in any running Jupyter Notebook.
 ```
 
 ## Shell Commands
@@ -103,28 +103,28 @@ sudo apt-get update
 sudo apt-get install wget
 ```
 
-## Optional, but recommended: R
+## Optional: Installing R
 
 Many people consider R and Python to be mutually exclusive: you either use one, or the other. While it is true that there are many things that you can do in either of the two languages, each has its own idiosyncrasies. R was developed as a statistical programming language, and many of the methods that we will use in this course have been implemented efficiently in R. Indeed, _Conjuntool_, which we will use extensively in the Labs in this manual is written in R Shiny. The instructions below will help you to install R on your system. 
 
 ### Option 1: Installing via Anaconda
 
-If you already have an Anaconda environment set up, and wish to install R, you can do this easily via Anaconda. To create a new Anaconda environment, and install everything you'll need to work in R, run the following command. (_Note: More packages are coming for Windows and Mac, I hope!_)
+If you already have an Anaconda environment set up, and wish to install R, you can do this easily via Anaconda. To create a new Anaconda environment, and install everything you'll need to work in R, run the following command.
 
 ```{bash, eval = FALSE}
-conda create -n r34 r-base r-essentials
+conda create -n r35 r-base r-essentials
 ```
 
-If you want to use R from within Python, you could add R to an existing environment instead: 
+If you want to use R from within Python, you could add R to an existing environment instead. As an example: 
 
 ```{bash, eval = FALSE}
-conda install -n <name of existing environment> r-base r-essentials rpy2
+conda install -n man_ccia r-base r-essentials rpy2
 ```
 
 Or alternatively, add Python to the newly created R environment.
 
 ```{bash, eval = FALSE}
-conda install -n r34 pandas python rpy2
+conda install -n r35 pandas python rpy2
 ```
 
 ### Option 2: 
@@ -143,11 +143,11 @@ IRkernel::installspec()
 
 You will have the option to complete Lab 1 using either shell commands, or an R package within Python. If you want to use the R package, you will have to install it. This is relatively simple. 
 
-If you are running a 64-bit operating system, you can install via conda using the following commands. Note that I built the packages under Windows and Linux. The MacOS package was converted from Mac and hasn't been tested. I'll remove this line from this manual once I've heard from some users about whether it works or not!
+I have created a conda package for **canadaHCDx**, called **r-canadahcdx**. You can install this package from my personal Anaconda "channel" using the commands, below. 
 
 ```{bash, eval = FALSE}
-conda config --append channels ConorIA
-conda config --prepend channels conda-forge
+conda config --prepend channels conda-forge # use conda-forge packages
+conda config --append channels ConorIA # use my channel as a last resort
 conda install -n <name of existing environment> r-canadahcdx
 ```
 
@@ -157,4 +157,3 @@ If you installed R directly (or if the above packages fail), you can install the
 devtools::install_git("https://gitlab.com/ConorIA/canadaHCDx")
 devtools::install_github("ConorIA/canadaHCD@patched")
 ```
-
