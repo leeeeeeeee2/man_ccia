@@ -1,4 +1,4 @@
-FROM alpine:edge
+FROM alpine
 
 MAINTAINER Conor I. Anderson <conor@conr.ca>
 

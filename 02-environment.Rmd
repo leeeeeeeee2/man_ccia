@@ -4,6 +4,20 @@ _Last update: `r system("git log -1 --format=\"%ad (%h)\" -- 02-environment.Rmd"
 
 During the labs in this manual, we will make use of a number of different pieces of software. Chiefly among these is Python. We will take for granted that you have already installed Python on your computer, but if you have not, please follow the [instructions to install Anaconda](https://docs.anaconda.com/anaconda/install/) on your operating system.
 
+```{block, type='rmdtip'}
+We recommend you create a new Anaconda environment for this manual. You can accomplish this by writing the following commands from the base Anaconda environment (i.e from the Anaconda Prompt on Windows or after running `conda activate` on MacOS or Linux). 
+
+`conda create -n "man_ccia" python>=3.7.1 matplotlib netCDF4 pandas seaborn>=0.9.0`
+
+If you plan to use Jupyter Notebook, your new environment won't be immediately available, however, you can install a "kernel" for your new environment by issuing the following commands: 
+
+    conda activate man_ccia
+    conda install ipykernel
+    python -m ipykernel install --user --name="man_ccia" --display-name="man_ccia"
+
+Your new environment should now be available as "man_ccia" after re-launching Jupyter Notebook.
+```
+
 ## Shell Commands
 
 In addition to Python, we will be using two shell utilities, namely `bash` and `wget`. The following sections will help you to install these two pieces of software 
@@ -112,11 +126,6 @@ Or alternatively, add Python to the newly created R environment.
 ```{bash, eval = FALSE}
 conda install -n r34 pandas python rpy2
 ```
-
-```{block, type='rmdtip'}
-If you want to run all of the code used in this book, you can install a copy of the environment used by running **`conda env create ConorIA/man_ccia`**. That will install all of the packages that were used in this book!
-```
-
 
 ### Option 2: 
 
