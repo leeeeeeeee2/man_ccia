@@ -12,13 +12,13 @@ In addition to Python, we will be using two shell utilities, namely `bash` and `
 
 #### Option 1: The Windows Linux Subsystem
 
-If you are running a recent version of Windows 10 (build 16215 or later), you may wish to install the [Windows Linux Subsystem](https://docs.microsoft.com/en-us/windows/wsl/install-win10). To install Linux on Windows, find PowerShell in your start menu, and run it with administrator priviledges. When the shell opens, run:
+If you are running a recent version of Windows 10 (build 16215 or later), you may wish to install the [Windows Linux Subsystem](https://docs.microsoft.com/en-us/windows/wsl/install-win10). To install Linux on Windows, find PowerShell in your start menu, and run it with administrator privileges. When the shell opens, run:
 
 ```
 Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux
 ```
 
-Once you have enabled the Windows Linux Subsystem, restart your machine, and install your Linux disitrbution of choice from the Windows Store, for example, [Ubuntu](https://www.microsoft.com/en-ca/p/ubuntu/9nblggh4msv6). When the install has completed, click "Launch" and choose a username for your Linux user account when prompted. 
+Once you have enabled the Windows Linux Subsystem, restart your machine, and install your Linux distribution of choice from the Windows Store, for example, [Ubuntu](https://www.microsoft.com/en-ca/p/ubuntu/9nblggh4msv6). When the install has completed, click "Launch" and choose a username for your Linux user account when prompted. 
 
 The Linux distribution that you install should include `bash` and `wget`. Refer to the "Installing on Linux" (Section \@ref(installing-on-linux)), below, to confirm. 
 
@@ -33,14 +33,14 @@ You can install Cygwin directly from the Cygwin website, or via the Chocolatey p
 3. When given the option to install more packages, search for wget.
 4. Click the "wget" entry that appears under "Internet", and ensure that the "bin" box is selected
 
-If you prefer to install via Chocolately, find the `cmd.exe` command on your start menu, and run that program as an administration. Enter the following commands (one at a time) to install Choclatey, Cygwin, and wget. 
+If you prefer to install via Chocolatey, find the `cmd.exe` command on your start menu, and run that program as an administration. Enter the following commands (one at a time) to install Chocolatey, Cygwin, and wget. 
 
 ```
 # Install Chocolately
 @"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))" && SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin"
 ```
 
-Now open an instance of Windows Powershell with administrator priviledges and run:
+Now open an instance of Windows Powershell with administrator privileges and run:
 
 ```
 choco install cygwin cyg-get
@@ -49,7 +49,7 @@ cyg-get install wget
 
 ### Installing on MacOS
 
-The MacOS Terminal app on modern vesions of MacOS actually uses bash under the hood, so you are only likely to be missing wget. We will install wget on MacOS using the Homebrew Package Manager.
+The MacOS Terminal app on modern versions of MacOS actually uses bash under the hood, so you are only likely to be missing wget. We will install wget on MacOS using the Homebrew Package Manager.
 
 First, run the following code to install Homebrew
 ```{bash, eval = FALSE}
@@ -71,7 +71,7 @@ sudo make install
 
 ### Installing on Linux {#installing-on-linux}
 
-If you are running Linux, you almost certainly already have both of these utilities. You can check for the presence of these executables by opening a shell and typing:
+If you are running Linux, you almost certainly already have both of these utilities. You can check for the presence of these executable files by opening a shell and typing:
 
 ```{bash}
 which bash
@@ -91,7 +91,7 @@ sudo apt-get install wget
 
 ## Optional, but recommended: R
 
-Many people consider R and Python to be mutually excusive: you either use one, or the other. While it is true that there are many things that you can do in either of the two languages, each has its own idiosyncrasies. R was developed as a staistical programming language, and many of the methods that we will use in this course have been implemented efficiently in R. Indeed, _Conjuntool_, which we will use extensively in the Labs in this manual is written in R Shiny. The instructions below will help you to install R on your system. 
+Many people consider R and Python to be mutually exclusive: you either use one, or the other. While it is true that there are many things that you can do in either of the two languages, each has its own idiosyncrasies. R was developed as a statistical programming language, and many of the methods that we will use in this course have been implemented efficiently in R. Indeed, _Conjuntool_, which we will use extensively in the Labs in this manual is written in R Shiny. The instructions below will help you to install R on your system. 
 
 ### Option 1: Installing via Anaconda
 
@@ -101,7 +101,7 @@ If you already have an Anaconda environment set up, and wish to install R, you c
 conda create -n r34 r-base r-essentials
 ```
 
-If you want to use R from within Python, you could add R to an exisiting environment instead: 
+If you want to use R from within Python, you could add R to an existing environment instead: 
 
 ```{bash, eval = FALSE}
 conda install -n <name of existing environment> r-base r-essentials rpy2
@@ -114,7 +114,7 @@ conda install -n r34 pandas python rpy2
 ```
 
 ```{block, type='rmdtip'}
-If you want to run all of the code used in this book, you can intall a copy of the environment used by running **`conda env create ConorIA/man_ccia`**. That will install all of the packages that were used in this book!
+If you want to run all of the code used in this book, you can install a copy of the environment used by running **`conda env create ConorIA/man_ccia`**. That will install all of the packages that were used in this book!
 ```
 
 
