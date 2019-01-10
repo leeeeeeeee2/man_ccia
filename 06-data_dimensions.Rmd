@@ -7,6 +7,7 @@ knitr::opts_chunk$set(echo = FALSE)
 library(reticulate)
 conda <- ifelse(file.exists("/opt/conda/bin/conda"), "/opt/conda/bin/conda", "/data/home-ext/miniconda3/bin/conda")
 use_condaenv("man_ccia", conda = conda, required = TRUE)
+source("R/deco_hook.R")
 ```
 
 ```{bash, include=FALSE}
@@ -82,7 +83,7 @@ The above benefits of netCDF files have led to the format being endorsed by a nu
 
 The `ncdump` program is a command-line utility (run in `bash`) that is a useful tool to begin to understand the contents of your netCDF files. The command will output information on the dimensions of your data set, the size of each dimension, and additional metadata like units and variable names. The following, for instance, is the output of that command when run on some miniature netCDF files that we have created for this book. You will surely see much more output if you run the tool on the files that you downloaded in Lab 2!
 
-```{bash, echo=TRUE}
+```{bash, echo=TRUE, deco=list(label="Shell", bc="#000000", tc="#ffffff", icon=list(style="fas", name="terminal"))}
 ncdump -h data/tas_Amon_CanESM2_historical_r1i1p1_198001-200512_mini.nc
 ```
 

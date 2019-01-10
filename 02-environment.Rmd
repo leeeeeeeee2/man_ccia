@@ -2,6 +2,10 @@
 
 _Last update: `r system("git log -1 --format=\"%ad (%h)\" -- 02-environment.Rmd", intern = TRUE)`_
 
+```{r deco_hook, include=FALSE}
+source("R/deco_hook.R")
+```
+
 During the labs in this manual, we will make use of a number of different pieces of software. Chiefly among these is Python. We will take for granted that you have already installed Python on your computer, but if you have not, please follow the [instructions to install Anaconda](https://docs.anaconda.com/anaconda/install/) on your operating system. We recommend using Anaconda3. If you already have Anaconda2 installed, fear not! You can still complete the exercises in this book, but you will have to create a new Python 3 environment. Check the tip box, below, for instruction on doing just that. 
 
 ```{block, type='rmdtip'}
@@ -28,7 +32,7 @@ In addition to Python, we will be using two shell utilities, namely `bash` and `
 
 If you are running a recent version of Windows 10 (build 16215 or later), you may wish to install the [Windows Linux Subsystem](https://docs.microsoft.com/en-us/windows/wsl/install-win10). To install Linux on Windows, find PowerShell in your start menu, and run it with administrator privileges. When the shell opens, run:
 
-```
+```{shell, eval=FALSE, deco=list(label="PowerShell", bc="#0872c4", tc="#ffffff", icon=list(style="fab", name="windows"))}
 Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux
 ```
 
@@ -49,14 +53,14 @@ You can install Cygwin directly from the Cygwin website, or via the Chocolatey p
 
 If you prefer to install via Chocolatey, find the `cmd.exe` command on your start menu, and run that program as an administration. Enter the following commands (one at a time) to install Chocolatey, Cygwin, and wget. 
 
-```
+```{shell, eval=FALSE, deco=list(label="cmd.exe", bc="#000000", tc="#ffffff", icon=list(style="fab", name="windows"))}
 # Install Chocolately
 @"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))" && SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin"
 ```
 
 Now open an instance of Windows Powershell with administrator privileges and run:
 
-```
+```{shell, eval=FALSE, deco=list(label="PowerShell", bc="#0872c4", tc="#ffffff", icon=list(style="fab", name="windows"))}
 choco install cygwin cyg-get
 cyg-get install wget
 ```
@@ -66,18 +70,18 @@ cyg-get install wget
 The MacOS Terminal app on modern versions of MacOS actually uses bash under the hood, so you are only likely to be missing wget. We will install wget on MacOS using the Homebrew Package Manager.
 
 First, run the following code to install Homebrew
-```{bash, eval = FALSE}
+```{bash, eval=FALSE, deco=list(label="Shell", bc="#000000", tc="#ffffff", icon=list(style="fas", name="terminal"))}
 /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 ```
 
 Next, install wget using the newly installed `brew` command: 
-```{bash, eval = FALSE}
+```{bash, eval=FALSE, deco=list(label="Shell", bc="#000000", tc="#ffffff", icon=list(style="fas", name="terminal"))}
 brew install wget
 ```
 
 If you prefer to install wget manually, you can download the latest version of the source code from the [GNU website](http://ftp.gnu.org/pub/gnu/wget/). Extract the archive, and run the following commands in the Terminal app;
 
-```{bash, eval = FALSE}
+```{bash, eval=FALSE, deco=list(label="Shell", bc="#000000", tc="#ffffff", icon=list(style="fas", name="terminal"))}
 ./configure 
 make
 sudo make install
@@ -87,18 +91,18 @@ sudo make install
 
 If you are running Linux, you almost certainly already have both of these utilities. You can check for the presence of these executable files by opening a shell and typing:
 
-```{bash}
+```{bash, deco=list(label="Shell", bc="#000000", tc="#ffffff", icon=list(style="fas", name="terminal"))}
 which bash
 ```
 
-```{bash}
+```{bash, deco=list(label="Shell", bc="#000000", tc="#ffffff", icon=list(style="fas", name="terminal"))}
 which wget
 ```
 
 If either of those commands says `no <command> in (/usr/local/sbin:/usr/local/bin:/usr/bin)`, then you will need to install. Installing programs varies widely by distribution, so refer to your distribution's package manager to find the `wget` and `bash` packages. 
 
 On Ubuntu, for instance, you could run:
-```{bash, eval = FALSE}
+```{bash, eval=FALSE, deco=list(label="Shell", bc="#000000", tc="#ffffff", icon=list(style="fas", name="terminal"))}
 sudo apt-get update
 sudo apt-get install wget
 ```
@@ -111,19 +115,19 @@ Many people consider R and Python to be mutually exclusive: you either use one, 
 
 If you already have an Anaconda environment set up, and wish to install R, you can do this easily via Anaconda. To create a new Anaconda environment, and install everything you'll need to work in R, run the following command.
 
-```{bash, eval = FALSE}
+```{bash, eval=FALSE, deco=list(label="Shell", bc="#000000", tc="#ffffff", icon=list(style="fas", name="terminal"))}
 conda create -n r35 r-base r-essentials
 ```
 
 If you want to use R from within Python, you could add R to an existing environment instead. As an example: 
 
-```{bash, eval = FALSE}
+```{bash, eval=FALSE, deco=list(label="Shell", bc="#000000", tc="#ffffff", icon=list(style="fas", name="terminal"))}
 conda install -n man_ccia r-base r-essentials rpy2
 ```
 
 Or alternatively, add Python to the newly created R environment.
 
-```{bash, eval = FALSE}
+```{bash, eval=FALSE, deco=list(label="Shell", bc="#000000", tc="#ffffff", icon=list(style="fas", name="terminal"))}
 conda install -n r35 pandas python rpy2
 ```
 
@@ -133,7 +137,8 @@ If you would like to install R directly, follow the install instructions from [C
 
 Once you have R installed, you will probably want to add the **IRkernel** so that you can use R within Jupyter Notebook. To do so, open R, and run the following commands: 
 
-```{r, eval = FALSE}
+```{r, eval = FALSE, deco=list(label="R", bc="#276dc3", tc="#ffffff", icon=list(style="fab", name="r-project"))}
+
 install.packages(c('repr', 'IRdisplay', 'evaluate', 'crayon', 'pbdZMQ', 'devtools', 'uuid', 'digest'), repos = "https://cloud.r-project.org/")
 devtools::install_github('IRkernel/IRkernel')
 IRkernel::installspec()
@@ -145,7 +150,7 @@ You will have the option to complete Lab 1 using either shell commands, or an R 
 
 I have created a conda package for **canadaHCDx**, called **r-canadahcdx**. You can install this package from my personal Anaconda "channel" using the commands, below. 
 
-```{bash, eval = FALSE}
+```{bash, eval=FALSE, deco=list(label="Shell", bc="#000000", tc="#ffffff", icon=list(style="fas", name="terminal"))}
 conda config --prepend channels conda-forge # use conda-forge packages
 conda config --append channels ConorIA # use my channel as a last resort
 conda install -n <name of existing environment> r-canadahcdx
@@ -153,7 +158,7 @@ conda install -n <name of existing environment> r-canadahcdx
 
 If you installed R directly (or if the above packages fail), you can install the package directly in R via **devtools**, which we installed when we installed **IRkernel**.
 
-```{r, eval = FALSE}
+```{r, eval=FALSE, deco=list(label="R", bc="#276dc3", tc="#ffffff", icon=list(style="fab", name="r-project"))}
 devtools::install_git("https://gitlab.com/ConorIA/canadaHCDx")
 devtools::install_github("ConorIA/canadaHCD@patched")
 ```

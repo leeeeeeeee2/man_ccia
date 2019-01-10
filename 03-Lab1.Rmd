@@ -6,6 +6,7 @@ _Last update: `r system("git log -1 --format=\"%ad (%h)\" -- 03-Lab1.Rmd", inter
 library(reticulate)
 conda <- ifelse(file.exists("/opt/conda/bin/conda"), "/opt/conda/bin/conda", "/data/home-ext/miniconda3/bin/conda")
 use_condaenv("man_ccia", conda = conda, required = TRUE)
+source("R/deco_hook.R")
 ```
 
 ```{python py_setup, include=FALSE}
@@ -48,13 +49,13 @@ For convenience, I have written a script, called `eccc` to perform this download
 
 To get help using the script, pass the `-h` flag to the script. 
 
-```{bash eccc_help}
+```{bash, deco=list(label="Shell", bc="#000000", tc="#ffffff", icon=list(style="fas", name="terminal"))}
 ./eccc -h
 ```
 
 This command prints out help information for using the script. To download daily data for Toronto, for instance, you can run the script like this: 
 
-```{bash, eval=FALSE}
+```{bash, eval=FALSE, deco=list(label="Shell", bc="#000000", tc="#ffffff", icon=list(style="fas", name="terminal"))}
 ./eccc -y 1981:2010 -s 5051 -g
 ```
 
@@ -114,14 +115,12 @@ It looks like we're missing data as of July 2003. Indeed, in 2003 the "Toronto" 
 
 We'll have to return to `bash` for a moment to get the data that we're missing. Let's grab the data for the new station code from 2000 to 2010. 
 
-<center>**Really, run this in bash, not Python**</center>
-```{bash, eval = FALSE}
+```{bash, eval=FALSE, deco=list(label="Shell", bc="#000000", tc="#ffffff", icon=list(style="fas", name="terminal"))}
 ./eccc -y 2000:2010 -s 31688 -g
 ```
 
 Now let's return to Python. 
 
-<center>**Back to Python**</center>
 ```{python}
 tor2 = pd.read_csv("31688-daily.csv")
 tor2 = tor2.rename(columns={'Date/Time': 'Date', 'Max Temp (°C)': 'MaxTemp', 'Min Temp (°C)': 'MinTemp', 'Mean Temp (°C)': 'MeanTemp', 'Total Precip (mm)': 'TotalPrecip'})
@@ -186,6 +185,10 @@ tor.to_csv("tor.csv")
 ```
 
 ### Option 2: Using the **canadaHCD** package in R
+
+```{block, type='rmddisclaimer'}
+The commands in this section, should (in theory), work in Jupyter Notebook, however, I have experienced constant kernel crashes when attempting. You may have to use a different program, such as Spyder, or use the Python shell directly. 
+```
 
 For those of us who work often in R, the **canadaHCD** package [@R-canadaHCD] is the first stop for Canadian climate data. We can take advantage of this package in Python too, thanks to the **rpy2** Python module. We will also use an expansion pack that I have written based on **canadaHCD**, called **canadaHCDx** [@R-canadaHCDx]. Of course, you are free to run any of the R commands in the code below directly in R.
 

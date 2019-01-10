@@ -5,7 +5,8 @@ MAINTAINER Conor I. Anderson <conor@conr.ca>
 RUN apt-get update -qq &&\
     apt-get -y install --no-install-recommends \
       libgl1-mesa-dev \
-      make &&\
+      make \
+      unzip &&\
     apt-get clean &&\
     rm -rf /tmp/* /var/lib/apt/lists/*
 

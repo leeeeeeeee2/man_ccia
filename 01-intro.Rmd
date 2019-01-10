@@ -2,6 +2,13 @@
 
 _Last update: `r system("git log -1 --format=\"%ad (%h)\" -- 01-intro.Rmd", intern = TRUE)`_
 
+```{r setup, include=FALSE}
+library(reticulate)
+conda <- ifelse(file.exists("/opt/conda/bin/conda"), "/opt/conda/bin/conda", "/data/home-ext/miniconda3/bin/conda")
+use_condaenv("man_ccia", conda = conda, required = TRUE)
+source("R/deco_hook.R")
+```
+
 Climate change is a critical issue facing our generation, and has been called the "greatest challenge of our time" by Dr. Thomas F. Stocker, the former co-chairman of the IPCC Working Group I [@gillis_2013_climate]. At the University of Toronto Scarborough, we EES1117 "Climate Change Impact Assessment" (CCIA) focuses on projecting the regional impacts of the changing global climate, and is, arguably, the academic centrepiece of the M.Env.Sc. program of the same name. This lab manual is a companion to that course, and is designed to walk you through a detailed CCIA process.
 
 ## Learning outcomes
@@ -37,6 +44,21 @@ This is a comment.
 ```{block, type='rmddisclaimer'}
 This is a warning or other disclaimer.
 ```
+
+Any code block in this book should be assumed to be Python code, unless specifically highlighed otherwise. 
+
+```{python}
+print("This is Python code!")
+```
+
+```{r, deco=list(label="R", bc="#276dc3", tc="#ffffff", icon=list(style="fab", name="r-project"))}
+print("This is R code!")
+```
+
+```{bash, deco=list(label="Shell", bc="#000000", tc="#ffffff", icon=list(style="fas", name="terminal"))}
+echo "This is code in your shell (e.g. Bash)!"
+```
+
 
 ## Ready. Set. Go.
 
