@@ -47,7 +47,7 @@ This is a warning or other disclaimer.
 
 Any code block in this book should be assumed to be Python code, unless specifically highlighed otherwise. 
 
-```{python}
+```{python, deco=list()}
 print("This is Python code!")
 ```
 

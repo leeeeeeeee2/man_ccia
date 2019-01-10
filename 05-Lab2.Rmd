@@ -2,6 +2,10 @@
 
 _Last update: `r system("git log -1 --format=\"%ad (%h)\" -- 05-Lab2.Rmd", intern = TRUE)`_
 
+```{r, include=FALSE}
+source("R/deco_hook.R")
+```
+
 The climate data that we need is made available through the Earth System Grid Federation (ESGF), a federated network of academic and government data centres in the USA, Europe, and Asia. This is a one-stop shop for all of the climate data from the CMIP5 and (soon, as of the time of writing, CMIP6). In this lab, we will focus on the CMIP5 data output. 
 
 To begin, visit the [ESGF website](https://esgf-node.llnl.gov/projects/esgf-llnl/). I am using the Lawrence-Livermore National Laboratory node, but you could, theoretically, choose any of the other nodes listed on the home page, which looks something like this: 
@@ -97,7 +101,7 @@ Without even looking at the file contents, we can already determine a great deal
 
 Downloading files one-by-one can be cumbersome. Instead, we will use `wget` to speed up the process. You should already have `wget` installed, so we can make use of the "wget script" option. _Make sure you have filtered your files_, check the box to "Select All Datasets", and the click the "wget script" button. This will download a script which you can execute in **bash**. 
 
-```{bash, eval=FALSE}
+```{bash, eval=FALSE, deco=list(label="Shell", bc="#000000", tc="#ffffff", icon=list(style="fas", name="terminal"))}
 bash wget-20180711205236.sh
 ```
 

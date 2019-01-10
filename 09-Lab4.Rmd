@@ -6,6 +6,7 @@ _Last update: `r system("git log -1 --format=\"%ad (%h)\" -- 09-Lab4.Rmd", inter
 library(reticulate)
 conda <- ifelse(file.exists("/opt/conda/bin/conda"), "/opt/conda/bin/conda", "/data/home-ext/miniconda3/bin/conda")
 use_condaenv("man_ccia", conda = conda, required = TRUE)
+source("R/deco_hook.R")
 ```
 
 ```{python py_setup, include=FALSE}
@@ -23,7 +24,7 @@ pd.set_option('display.max_columns', 10)
 
 Now that we have reviewed some methods for selecting models from our 42 GCM options, let's see them in action. We'll start by importing the relevant libraries, as usual.
 
-```{python, eval=FALSE}
+```{python, eval=FALSE, deco=list()}
 import pandas as pd
 import seaborn as sns
 from matplotlib import pyplot as plt
@@ -31,26 +32,26 @@ from matplotlib import pyplot as plt
 
 Next, we need to find our downloaded anomaly data, as produced by the "Download Table" button in _Conjuntool_. In my case, I have this saved in a `data` subdirectory. I am also using the default name used by _Conjuntool_, which is heavy on the details (for lack of better metadata capabilities in a `.csv` file). If you have renamed your file, or saved it somewhere strange, adjust this line as necessary.
 
-```{python}
+```{python, deco=list()}
 file = "data/4367_-7940_bsln-1981‒2010_proj-2011‒2100_Annual.csv"
 ```
 
 Now we read it using **Pandas**.
 
-```{python}
+```{python, deco=list()}
 dat = pd.read_csv(file)
 print(dat.head())
 ```
 
 Let's see what we're working with.
 
-```{python}
+```{python, deco=list()}
 print(dat.shape)
 ```
 
 It looks like we have `r nrow(py$dat)` rows and `r ncol(py$dat)` columns of data. Let's drop our `'Var'`, `'Ensemble'` and `'Note'` columns, which we won't use in this analysis. If you want to analyze more than one ensemble member, you may need to hold on to the `'Ensemble'` column at least.
 
-```{python}
+```{python, deco=list()}
 dat = dat.drop(['Var', 'Ensemble', 'Note'], axis = 1)
 print(dat.head())
 ```
@@ -65,14 +66,14 @@ Choosing our models based on the highest and lowest projected changes allows us 
 For this and all of our selection methods, I'll made a copy of `dat` to work with using the `copy()` method. This is the safer option, as something like `dat_ext = dat` creates a new reference to the _same_ `dat` table. This isn't an issue if we are just sub-setting and filtering data, but it becomes troublesome if we want to change any of the data points; any modification to the values in `dat_ext` would also appear in `dat`! This will become more relevant later in this lab when we create the `tor_win` data frame. 
 ```
 
-```{python}
+```{python, deco=list()}
 dat_ext = dat.copy()
 ```
 
 I am going to add a new column, called `'MeanAnom'`, which will contain the average tridecadal anomaly, or change factor, produced by each model. This will be sorted from smallest change to largest.
 
 
-```{python}
+```{python, deco=list()}
 dat_ext['MeanAnom'] = dat_ext.iloc[:,-3:].mean(axis = 1)
 dat_ext = dat_ext.sort_values('MeanAnom')
 print(dat_ext.head()) # Smallest
@@ -82,7 +83,7 @@ print(dat_ext.tail()) # Largest
 The next line of code is a little involved. I am going to group `dat_ext` by `'Scenario'` and get the smallest value for each using `first()`. (Make sure you sorted the values in the previous code block!) I then do the same for the `last()` value. I append these two tables together, and drop the `'MeanAnom'` column. Finally, I restore the index.
 
 
-```{python}
+```{python, deco=list()}
 dat_ext = dat_ext.groupby('Scenario').first().append(dat_ext.groupby("Scenario").last()).drop("MeanAnom", axis = 1).reset_index()
 print(dat_ext)
 ```
@@ -94,7 +95,7 @@ Now we have a table of the two extreme models for each scenario. Great! This tab
 Another model selection method is to validate a model against observed baseline values. Before we can validate, we need data to validate against. Here I am using the very same `.csv` file that we generated in Lab 1. If you no longer have that file, give The code in Lab 1 a quick run and you should be able to re-create it in no time. Note that when we saved the file using `tor.to_csv()`, an index column was included in the file. Use the `index_col` argument to let **Pandas** know about this, or you will end up with an extra unnamed column of numbers from 0 to the number of rows in the file.
 
 
-```{python}
+```{python, deco=list()}
 tor = pd.read_csv("tor.csv", index_col = 0)
 print(tor.head())
 ```
@@ -112,20 +113,20 @@ If you are performing a monthly or seasonal example, you would use the respectiv
 
 **Pandas** doesn't reliably process date information in a `.csv` file, so we need to fix the `'Date'` column.
 
-```{python}
+```{python, deco=list()}
 tor.Date = pd.to_datetime(tor.Date)
 ```
 
 Now we can generate our annual average $T_{\textrm{mean}}$.
 
-```{python}
+```{python, deco=list()}
 tor_mean = tor[['Date', 'MeanTemp']].groupby(tor.Date.dt.year).mean()
 print(tor_mean.head())
 ```
 
 Now we calculate the mean and the standard deviation of those values. 
 
-```{python}
+```{python, deco=list()}
 tor_tas_mean = tor_mean.MeanTemp.values.mean()
 tor_tas_std = tor_mean.MeanTemp.values.std()
 
@@ -134,13 +135,13 @@ print("Mean:", tor_tas_mean, "... Standard Deviation:", tor_tas_std)
 
 Since we averaged our baselines using _Conjuntool_, we don't need multiple baselines per model. Let's get the unique Model and Baseline combinations.
 
-```{python}
+```{python, deco=list()}
 dat_gf = dat.copy()[['Model', '1981-2010']].drop_duplicates()
 ```
 
 Now we calculate the GFCI.
 
-```{python}
+```{python, deco=list()}
 dat_gf = dat_gf.assign(GFCI = abs(dat_gf[['1981-2010']] - tor_tas_mean) / tor_tas_std)
 print(dat_gf.sort_values('GFCI').head())
 ```
@@ -154,7 +155,7 @@ The GFCI defines confidence as follows:
 
 We can whip this into a simple function so that we can easily classify the confidence that we have in our models. 
 
-```{python}
+```{python, deco=list()}
 def confidence(GFCI):
     if (GFCI < 0.5):
         return "high"
@@ -164,14 +165,14 @@ def confidence(GFCI):
         return "moderate"
 ```
 
-```{python}
+```{python, deco=list()}
 dat_gf['Confidence'] = dat_gf.GFCI.apply(confidence)
 print(dat_gf.sort_values('GFCI').head(10))
 ```
 
 Let's see this information in a figure!
 
-```{python}
+```{python, deco=list()}
 plt.figure(figsize=(10,10/1.66))
 fg = sns.scatterplot(x="Model", y="GFCI", hue="Confidence", data=dat_gf)
 plt.title(r'GFCI Values for Model-Projected $T_{mean}$ at Toronto (1981‒2010)')
@@ -180,7 +181,7 @@ for label in fg.axes.get_xticklabels():
 plt.tight_layout()
 ```
 
-```{python, include = FALSE}
+```{python, include=FALSE}
 plt.savefig('l4f1.png')
 plt.clf()
 ```
@@ -191,7 +192,7 @@ knitr::include_graphics("l4f1.png", dpi = NA)
 
 Let's get just the top three models
 
-```{python}
+```{python, deco=list()}
 dat_gf = dat_gf.sort_values('GFCI').iloc[0:3,:]
 print(dat_gf)
 ```
@@ -199,7 +200,7 @@ print(dat_gf)
 Now that we have our models, we need to recover the change factors for these models! We can do this with a left merge of `dat` into `dat_gf`.
 
 
-```{python}
+```{python, deco=list()}
 dat_gf = pd.merge(dat_gf, dat, how = 'left', on = ['Model', '1981-2010'])
 print(dat_gf)
 ```
@@ -212,14 +213,14 @@ You may have noted that some of the models in our ranking have similar names. Th
 
 Using the ensemble is as simple as taking the average for each scenario across each scenario.
 
-```{python}
+```{python, deco=list()}
 dat_ens = dat.copy().groupby(['Scenario']).mean().reset_index()
 print(dat_ens)
 ```
 
 You may be concerned that the baseline values are different for the difference scenarios. If you are thinking, "didn't we average the baselines between all the scenarios earlier". You're right. What we're seeing here is an inconsistency based on the number of models that provide projections for each scenario. Since we aren't doing any validation here, it doesn't really matter, but it is nice to know how many models are providing projections for each scenario and period.
 
-```{python}
+```{python, deco=list()}
 dat.groupby(['Scenario']).count().reset_index()
 ```
 
@@ -244,21 +245,21 @@ I will begin this section by showing how we can manually apply the change factor
 
 Let's begin by filtering our extreme table to only use the RCP 4.5 and RCP 8.5 scenarios.
 
-```{python}
+```{python, deco=list()}
 dat_ext = dat_ext[dat_ext.Scenario.isin(['RCP4.5', 'RCP8.5'])]
 print(dat_ext)
 ```
 
 Let's apply the high extreme for RCP 4.5 for the 2020s. There are a number of ways of sub-setting the the table, above, use whichever is easiest for you.
 
-```{python}
+```{python, deco=list()}
 anom = dat_ext.loc[dat_ext.Model == 'MIROC-ESM-CHEM', '2011-2040'].values
 print(anom)
 ```
 
 Now I'll apply that anomaly to the daily `'MeanTemp'` values in a copy of the `tor` data frame.
 
-```{python}
+```{python, deco=list()}
 tor_ext = tor.copy()[['Date', 'MeanTemp']]
 tor_ext = tor_ext.assign(hex2020s = tor.MeanTemp + anom)
 print(tor_ext.head())
@@ -266,7 +267,7 @@ print(tor_ext.head())
 
 Now we can (re)calculate our exposure unit using a lambda expression just as we did in Lab 1.
 
-```{python}
+```{python, deco=list()}
 tor_ext['CDDObs'] = tor_ext.MeanTemp.apply(lambda x: 0 if x <= 18 else x - 18)
 tor_ext['CDDhex2020s'] = tor_ext.hex2020s.apply(lambda x: 0 if x <= 18 else x - 18)
 print(tor_ext.head())
@@ -274,7 +275,7 @@ print(tor_ext.head())
 
 So, what is the projected change to summertime CDD? Let's take a look.
 
-```{python}
+```{python, deco=list()}
 print(tor_ext[tor_ext.Date.dt.month.isin([6,7,8])].filter(regex = '^CDD').sum())
 ```
 
@@ -282,7 +283,7 @@ It looks like we can expect an increase from `r suppressWarnings(sum(py$tor_ext$
 
 Great! That's one projection down; 11 more to go to fill in our first table. This looks like it could turn out to be a monotonous process. Let's whip up a function to do the work for us! This is loosely based on [code](https://gitlab.com/ConorIA/CdeCPeru-CC/blob/master/Ejercicios/recalc_exp.R) that I put together in R last year. This version takes five arguments: `obs` is a two-column Data Frame containing the `'Date'` and variable column; `anoms` is the respective `dat_*` table; `stat` is the stat that we want to calculate for the exposure units, e.g. `sum`; `expr` is a lambda expression to evaluate to calculate the exposure unit (some examples are in the appendix of this book); finally, `month` is a list of one or more months to filter on, defaulting to `None`. If in doubt, the function has a complete docstring to help you to choose values for each parameter.
 
-```{python}
+```{python, deco=list()}
 from math import isnan
 
 def recalc_exp(obs, anoms, stat, expr, month = None):
@@ -335,7 +336,7 @@ def recalc_exp(obs, anoms, stat, expr, month = None):
 
 Let's take a look at CDDs, based on our extreme models.
 
-```{python}
+```{python, deco=list()}
 print(recalc_exp(obs=tor[['Date', 'MeanTemp']],
                  anoms=dat_ext,
                  stat=sum,
@@ -347,7 +348,7 @@ As we might have expected, there is a larger increase in CDDs for the RCP 8.5 Sc
 
 We can also use our `recalc_exp` function to give us the 30-year daily average CDD, instead of the 30-year total. 
 
-```{python}
+```{python, deco=list()}
 from numpy import mean
 
 print(recalc_exp(obs=tor[['Date', 'MeanTemp']],
@@ -370,7 +371,7 @@ Once you have finished changing the code, generate a patch for the original func
 
 What if we want to calculate winter heating degree days? We'll need to shift our Decembers up a year like we did in Lab 1. This isn't hugely necessary at the moment, since I'm looking at 30-year totals, but it is always a good habit to maintain and allows us to be more precise about the seasons in consideration. It will become especially relevant for those of your who undertake the bonus assignment in the box above.
 
-```{python}
+```{python, deco=list()}
 tor_win = tor.copy()
 tor_win['Date'] = tor_win.Date.apply(lambda x: x + pd.DateOffset(years=1) if x.month == 12 else x)
 print(tor_win.head()) # Not shifted
@@ -379,11 +380,11 @@ print(tor_win.tail()) # Shifted
 
 Let's drop the years that we know to be incomplete, winter 1981/82, which is missing December 1980, and winter 2010/11, which is just December 2010. Remember, a better solution for the former would be to download data for December 1980 so that we can include all 30 winters. 
 
-```{python}
+```{python, deco=list()}
 tor_win = tor_win[tor_win.Date.dt.year.isin(range(1982, 2011))]
 ```
 
-```{python}
+```{python, deco=list()}
 print(recalc_exp(obs=tor_win[['Date', 'MeanTemp']],
                  anoms=dat_ext,
                  stat=sum,
@@ -398,7 +399,7 @@ As winter is projected to warm, we see less heating degree days. This change is 
 Since the `recalc_exp()` function expects our `anoms` data frame to include a `'Model'` column, we should add one.
 
 
-```{python}
+```{python, deco=list()}
 dat_ens['Model'] = "Ensemble"
 print(dat_ens)
 ```
@@ -407,7 +408,7 @@ Now we can take a look at the projected changes in our exposure units.
 
 For CDD:
 
-```{python}
+```{python, deco=list()}
 print(recalc_exp(obs=tor[['Date', 'MeanTemp']],
                  anoms=dat_ens[dat_ens.Scenario.isin(['RCP4.5', 'RCP8.5'])],
                  stat=sum,
@@ -417,7 +418,7 @@ print(recalc_exp(obs=tor[['Date', 'MeanTemp']],
 
 For HDD:
 
-```{python}
+```{python, deco=list()}
 print(recalc_exp(obs=tor_win[['Date', 'MeanTemp']],
                  anoms=dat_ens[dat_ens.Scenario.isin(['RCP4.5', 'RCP8.5'])],
                  stat=sum,
@@ -429,7 +430,7 @@ print(recalc_exp(obs=tor_win[['Date', 'MeanTemp']],
 
 How about our top ranked models? Our function works as expected for CDD:
 
-```{python}
+```{python, deco=list()}
 print(recalc_exp(obs=tor[['Date', 'MeanTemp']],
                  anoms=dat_gf[dat_gf.Scenario.isin(['RCP8.5', 'RCP4.5'])],
                  stat=sum,
@@ -439,7 +440,7 @@ print(recalc_exp(obs=tor[['Date', 'MeanTemp']],
 
 Okay, enough tables, let's plot some of these changes! First, I will create a table of results. Called `out`.
 
-```{python}
+```{python, deco=list()}
 out = recalc_exp(obs=tor_win[['Date', 'MeanTemp']],
                  anoms=dat_gf[dat_gf.Scenario.isin(['RCP4.5', 'RCP8.5'])],
                  stat=sum,
@@ -450,19 +451,19 @@ print(out)
 
 In Lab 3, we used `pd.pivot()` to turn our table from a narrow layout to a wide layout. I stressed, however, that the narrow layout was more efficient for plotting. This time around, we have a wide data frame, which we want to convert to a narrow one. The method that we need to call, the antithesis to `pd.pivot()` is `pd.melt()`. 
 
-```{python}
+```{python, deco=list()}
 out_long = out.melt(id_vars = ['Model', 'Scenario'], var_name = "Period", value_name = "Cooling Degree Days")
 ```
 
 Now we are ready to plot! Play around with the options in the **seaborn** (`sns`) plot below until you've come up with a figure you are happy with. Make sure to add complete labels (like a _title_, for instance).
 
-```{python}
+```{python, deco=list()}
 sns.catplot(x = "Period", y = "Cooling Degree Days", hue = "Scenario", col = "Model",
             data = out_long, hue_order=["RCP4.5", "RCP8.5"], saturation = 0.5,
             palette = "Reds", kind = "bar", ci = None, height = 7, aspect = 0.66)
 ```
 
-```{python, include = FALSE}
+```{python, include=FALSE}
 plt.savefig('l4f2.png')
 plt.clf()
 ```

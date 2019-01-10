@@ -6,6 +6,7 @@ _Last update: `r system("git log -1 --format=\"%ad (%h)\" -- 07-Lab3.Rmd", inter
 library(reticulate)
 conda <- ifelse(file.exists("/opt/conda/bin/conda"), "/opt/conda/bin/conda", "/data/home-ext/miniconda3/bin/conda")
 use_condaenv("man_ccia", conda = conda, required = TRUE)
+source("R/deco_hook.R")
 ```
 
 ```{python py_setup, include=FALSE}
@@ -28,7 +29,7 @@ Now that we have acquired our GCM output data (Lab 2, Sec. \@ref(lab2)), we need
 
 We begin, as always, by importing the libraries that we will need.
 
-```{python, eval=FALSE}
+```{python, eval=FALSE, deco=list()}
 import datetime as dt
 import numpy as np
 import pandas as pd
@@ -39,7 +40,7 @@ from netCDF4 import Dataset, date2index, num2date, date2num
 
 Now, create a list of the netCDF files that we will examine. We have created some miniature netCDF files for use in this book, but you should substitute the directories and filenames below with paths leading to the netCDF files that you downloaded in Lab 2.  
 
-```{python}
+```{python, deco=list()}
 past = "data/tas_Amon_CanESM2_historical_r1i1p1_198001-200512_mini.nc"
 future = ["data/tas_Amon_CanESM2_rcp26_r1i1p1_200601-204012_mini.nc", "data/tas_Amon_CanESM2_rcp45_r1i1p1_200601-204012_mini.nc", "data/tas_Amon_CanESM2_rcp85_r1i1p1_200601-204012_mini.nc"]
 ```
@@ -48,13 +49,13 @@ future = ["data/tas_Amon_CanESM2_rcp26_r1i1p1_200601-204012_mini.nc", "data/tas_
 
 We will begin by looking at our "historical" netCDF file. We can load this file into memory using the `Dataset()` function that we imported from **netCDF4**.
 
-```{python}
+```{python, deco=list()}
 nc = Dataset(past)
 ```
 
 First, we recommend that you get familiar with your data set. For instance, what are the dimensions of your data? _Remember, yours should look much different than the output, below_.
 
-```{python}
+```{python, deco=list()}
 print(nc.dimensions)
 ```
 
@@ -62,7 +63,7 @@ Notice that we have three-dimensional data, stored along X (longitude), Y (latit
 
 You can get a list of variables stored in your file using `nc.variables.get()`. The output is very long, so we will omit it here. You can query a specific variable as well, e.g. `time`.
 
-```{python}
+```{python, deco=list()}
 print(nc.variables['time'])
 ```
 
@@ -70,7 +71,7 @@ The above tells us interesting attributes about our variable, such as units, cur
 
 We can store the variable in a Python object, which will help us to get the its values. 
 
-```{python}
+```{python, deco=list()}
 nc_time = nc.variables['time']
 print(nc_time[0:10])
 ```
@@ -79,14 +80,14 @@ print(nc_time[0:10])
 
 The time variable isn't very easy for us to read, as it is stored as "Days since January 1, 1850". Luckily, there are a few helper functions to help us get our period of interest: 1981 to 2010. 
 
-```{python}
+```{python, deco=list()}
 time_start = date2index(dt.datetime(1981, 1, 1), nc_time, select="nearest")
 time_end = date2index(dt.datetime(2010, 12, 31), nc_time, select="nearest")
 ```
 
 The observant among you may be asking how we can get data up to 2010 in a file that only contains data to 2005. We can't! We have selected the index that contains data _nearest_ to our desired end date. If we check the true date, we will see that we only have data to 2005. 
 
-```{python}
+```{python, deco=list()}
 print(num2date(nc_time[time_end], units=nc_time.units, calendar=nc_time.calendar))
 ```
 
@@ -94,14 +95,14 @@ Most of the CMIP5 climate models force data with the RCPs as of January 2006. Th
 
 We now know the slice of T that we need. How about X and Y? We will select a single grid cell, based on our station target. First, I will define that target. I have chosen to use a Python dictionary, because I have a tendency to get my "lats" and my "lons" confused. You can use a regular list if you prefer. 
 
-```{python}
+```{python, deco=list()}
 # Toronto station coords
 target = {"lat": 43.67, "lon": -79.40}
 ```
 
 We are used to using negatives for western longitudes (i.e. 180°W to 180°E), but the CMIP5 models use longitudes from 0°E to 360°E instead. We'll need to convert our longitude.
 
-```{python}
+```{python, deco=list()}
 if target['lon'] < 0:
     target['lon'] = 360 + target['lon']
 
@@ -110,14 +111,14 @@ print(target['lon'])
 
 Now we can get the data for our latitude and longitude variables. Notice the syntax below. We query the variable using `nc.variables.get()`, then we choose the full range of the data using `[:]`, which returns a masked array. We pull the values out of that array with `.data`. 
 
-```{python}
+```{python, deco=list()}
 nc_lat = nc.variables['lat'][:].data
 nc_lon = nc.variables['lon'][:].data
 ```
 
 Now we can find the latitude and longitude cell that is closest to our target. 
 
-```{python}
+```{python, deco=list()}
 lat_cell = np.argmin(np.abs(nc_lat - target['lat']))
 lon_cell = np.argmin(np.abs(nc_lon - target['lon']))
 ```
@@ -125,69 +126,71 @@ lon_cell = np.argmin(np.abs(nc_lon - target['lon']))
 ```{block, type='rmdtip'}
 The minimal netCDF files that we've created for this book do not include "bounds" variables, however, these can be useful. It is not always clear what the "latitude" and "longitude" of a cell refers to: is the centre point? Is it the top-left corner of the grid box? This is where the bounds variables are really useful. The latitude bounds provide the latitude of the top and bottom of each grid box. The longitude bounds provide the right and left sides of the box. Using the bounds can be a safer way to identify the grid box that we are interested in. Depending on the model you have selected, look for a variable called `lat_bnds` or `lat_bounds`.
 
-`nc_lat_bnds = nc.variables["lat_bnds"][:].data`<br>
-`lat_cell = np.where((nc_lat_bnds[:,0] < target['lat']) & (nc_lat_bnds[:,1] > target['lat']))[0][0]`<br>
-`nc_lon_bnds = nc.variables["lon_bnds"][:].data`<br>
-`lon_cell = np.where((nc_lon_bnds[:,0] < target['lon']) & (nc_lon_bnds[:,1] > target['lon']))[0][0]`
+<div class="decocode"><div style="background-color:#366994"><p><span style="font-size:90%;color:#ffffff"><i class="fab fa-python"></i> <b>Python</b></span></p>
+    nc_lat_bnds = nc.variables["lat_bnds"][:].data
+    lat_cell = np.where((nc_lat_bnds[:,0] < target['lat']) & (nc_lat_bnds[:,1] > target['lat']))[0][0]
+    nc_lon_bnds = nc.variables["lon_bnds"][:].data
+    lon_cell = np.where((nc_lon_bnds[:,0] < target['lon']) & (nc_lon_bnds[:,1] > target['lon']))[0][0]
+</div></div>
 ```
 
 ### Getting the data
 
 Now that we know the indices of X, Y, and T that we are interested in, we can pull these out of the netCDF file. 
 
-```{python}
+```{python, deco=list()}
 dat = nc.variables['tas'][time_start:(time_end + 1), lat_cell, lon_cell]
 print(dat[0:10])
 ```
 
 You may have noticed temperatures in the 200s. Our data is in Kelvin. To convert to Celsius, we can subtract 273.15 from every value. For convenience, I will also pull the values out of the masked array using `.data`.
 
-```{python}
+```{python, deco=list()}
 dat = np.subtract(dat.data, 273.15)
 ```
 
 Let's make sure that we got the right amount of time and data.
 
-```{python}
+```{python, deco=list()}
 print(time_end - time_start + 1) # 25 yr * 12 mo = 300
 ```
 
-```{python}
+```{python, deco=list()}
 print(len(dat))
 ```
 
 We can convert our time deltas into dates as follows:
 
-```{python}
+```{python, deco=list()}
 dates = num2date(nc_time[time_start:time_end + 1], units=nc_time.units, calendar=nc_time.calendar)
 ```
 
 Now create a Pandas data frame.
 
-```{python}
+```{python, deco=list()}
 df = pd.DataFrame({'Date': dates, 'MeanTemp': dat, 'Experiment': 'historical'})
 print(df.head())
 ```
 
 The calendar used in CanESM2 is a "365 day" calendar, which ignores leap years. The `num2date` function above, converts the times into a special `cftime.DatetimeNoLeap` object. Unfortunately, this date format does not react intuitively in plots. Given that we are using monthly data, it doesn't matter to us whether there were 28 or 29 days in February of any given year. As such, let's convert the `cftime.DatetimeNoLeap` object to a regular Python `datetime.date`. 
 
-```{python}
+```{python, deco=list()}
 df['Date'] = [dt.date(i.year, i.month, i.day) for i in df.Date]
 ```
 
 Let's see what our data frame looks like.
 
-```{python}
+```{python, deco=list()}
 print(df.head())
 ```
 
-```{python}
+```{python, deco=list()}
 print(df.tail())
 ```
 
 We can plot the results of our analysis up to this point.
 
-```{python}
+```{python, deco=list()}
 plt.plot(df.Date, df.MeanTemp)
 plt.title(r'CanESM2 Monthly $T_{mean}$ at Toronto (1981‒2005)')
 plt.xlabel("Year")
@@ -203,7 +206,7 @@ knitr::include_graphics("l3f1.png", dpi = NA)
 ```
 
 It is always a good idea to close our netCDF file when we are done with it. 
-```{python}
+```{python, deco=list()}
 nc.close()
 ```
 
@@ -211,13 +214,13 @@ nc.close()
 
 I will condense the above process into a quick `for` loop across the two netCDF files that contain projections. In your case, you may have three or four such files. Also note that I will only extract data to 2040, but you should use 2100 as your upper date. A reminder of the contents of `future`:
 
-```{python}
+```{python, deco=list()}
 print(future)
 ```
 
 This loop will process the data from each file in the same way that we processed the historical data, and will create one data frame containing all of our data. 
 
-```{python}
+```{python, deco=list()}
 for file in future:
     nc = Dataset(file)
     nc_time = nc.variables["time"]
@@ -238,7 +241,7 @@ The table that we have created above, is a "long" data frame. A long data frame 
 
 A long layout table is very useful for many operations such as grouping and subsetting, but can be a challenge to plot. For instance: 
 
-```{python}
+```{python, deco=list()}
 df.plot()
 ```
 ```{python, include = FALSE}
@@ -252,7 +255,7 @@ knitr::include_graphics("l3f2.png", dpi = NA)
 
 That doesn't look right. We can manually fix the above by filtering for each projection and adding the line manually. 
 
-```{python}
+```{python, deco=list()}
 plt.plot(df.Date[df.Experiment == "rcp26"], df.MeanTemp[df.Experiment == "rcp45"], 'y-', alpha=0.7, label = 'RCP 2.6')
 plt.plot(df.Date[df.Experiment == "rcp45"], df.MeanTemp[df.Experiment == "rcp45"], 'y-', alpha=0.7, label = 'RCP 4.5')
 plt.plot(df.Date[df.Experiment == "rcp85"], df.MeanTemp[df.Experiment == "rcp85"], 'r-', alpha=0.7, label = 'RCP 8.5')
@@ -272,7 +275,7 @@ knitr::include_graphics("l3f3.png", dpi = NA)
 
 What if we want to include the "historical" data? The **seaborn** library can also make this process a little easier. Run the following if you have installed **seaborn**. 
 
-```{python}
+```{python, deco=list()}
 import seaborn as sns
 fg = sns.FacetGrid(hue="Experiment", data=df, aspect=1.61)
 fg.map(plt.plot, "Date", "MeanTemp").add_legend()
@@ -290,18 +293,18 @@ knitr::include_graphics("l3f4.png", dpi = NA)
 
 A long data frame is computationally efficient, but isn't as intuitive to navigate by the human eye. As such, if we want to include a table in a report or publication, the wide layout is usually more print-friendly. You can create a wide layout table using `df.pivot` like this:
 
-```{python}
+```{python, deco=list()}
 df_wide = df.pivot(index='Date', columns='Experiment')['MeanTemp']
 print(df_wide.head())
 ```
 
-```{python}
+```{python, deco=list()}
 print(df_wide.tail())
 ```
 
 This is also easier to plot with the `plot` method built into **pandas**. 
 
-```{python}
+```{python, deco=list()}
 df_wide.plot(title = r'CanESM2 Monthly $T_{mean}$ at Toronto (1981‒2040)')
 plt.ylabel("Mean Temperature (°C)")
 ```
@@ -324,14 +327,14 @@ The first step for a change factor analysis is to calculate the change projected
 
 Let's begin by filtering our "long" data frame to our areas of interest. I will only provide examples for the baseline and the 2020s, but you should complete this work for the 2050s and 2080s as well. 
 
-```{python}
+```{python, deco=list()}
 df_base = df[(df.Date >= dt.date(1981, 1, 1)) & (df.Date <= dt.date(2010, 12, 31))]
 df_2020s = df[(df.Date >= dt.date(2011, 1, 1)) & (df.Date <= dt.date(2040, 12, 31))]
 ```
 
 Recall from \@ref(getindices) that our baseline is going to be partially forced by each climate change scenario. To minimize the (albeit small) impact of the scenario forcing on the last five years of the baseline, we will calculate the baseline forced with each scenario, and use the average of those values.
 
-```{python}
+```{python, deco=list()}
 bsln26 = df_base[df_base.Experiment.isin(["historical", "rcp26"])].MeanTemp.mean()
 bsln45 = df_base[df_base.Experiment.isin(["historical", "rcp45"])].MeanTemp.mean()
 bsln85 = df_base[df_base.Experiment.isin(["historical", "rcp85"])].MeanTemp.mean()
@@ -340,7 +343,7 @@ bsln = np.mean([bsln26, bsln45, bsln85])
 
 Now we can calculate the change factor (or anomaly) for each of our tridecadal periods.
 
-```{python}
+```{python, deco=list()}
 cf2020s_rcp26 = df_2020s[df_2020s.Experiment == "rcp26"].MeanTemp.mean() - bsln
 cf2020s_rcp45 = df_2020s[df_2020s.Experiment == "rcp45"].MeanTemp.mean() - bsln
 cf2020s_rcp85 = df_2020s[df_2020s.Experiment == "rcp85"].MeanTemp.mean() - bsln
@@ -348,7 +351,7 @@ cf2020s_rcp85 = df_2020s[df_2020s.Experiment == "rcp85"].MeanTemp.mean() - bsln
 
 We can summarize these data in a table like so:
 
-```{python}
+```{python, deco=list()}
 print(pd.DataFrame({"Model": np.repeat("CanESM2", 3),
                     "Ensemble": np.repeat("r1i1p1", 3),
                     "Scenario": ["RCP2.6", "RCP4.5", "RCP8.5"],

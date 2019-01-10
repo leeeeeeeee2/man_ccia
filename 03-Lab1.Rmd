@@ -67,47 +67,47 @@ Now that we have the data that we need, we need to start working with it. Fire u
 
 First, let's import the libraries we are going to need to manipulate our data. 
 
-```{python, eval = FALSE}
+```{python, eval=FALSE, deco=list()}
 import numpy as np
 import pandas as pd
 ```
 
 Now read the _csv_ files into Python. 
 
-```{python}
+```{python, deco=list()}
 tor = pd.read_csv("5051-daily.csv")
 ```
 
 Let's take a look at what our columns are named. 
 
-```{python}
+```{python, deco=list()}
 print(tor.columns)
 ```
 
 Hmm, some of those are very clunk. Let's rename the colums we are going to use and then select only those columns. 
 
-```{python}
+```{python, deco=list()}
 tor = tor.rename(columns={'Date/Time': 'Date', 'Max Temp (°C)': 'MaxTemp', 'Min Temp (°C)': 'MinTemp', 'Mean Temp (°C)': 'MeanTemp', 'Total Precip (mm)': 'TotalPrecip'})
 tor = tor[['Date', 'MaxTemp', 'MinTemp', 'MeanTemp', 'TotalPrecip']]
 ```
 
 Great. Let's take a look at what we've got. 
 
-```{python}
+```{python, deco=list()}
 print(tor.head())
 ```
-```{python}
+```{python, deco=list()}
 print(tor.tail())
 ```
 
 Uhh ohh! It looks like we are missing all of our temperature data at the end of our _csv_ file. We can test this theory by using an enumerator. The following will tell us the index at which all three of our temperature variables of interest are missing for the first time. 
-```{python}
+```{python, deco=list()}
 print(next(i for i, x in enumerate(tor.loc[:, 'MaxTemp':'MeanTemp'].isnull().all(axis=1)) if x) - 1)
 ```
 
 Let's take a look at the context around that index. 
 
-```{python}
+```{python, deco=list()}
 print(tor[8211:8221])
 ```
 
@@ -121,7 +121,7 @@ We'll have to return to `bash` for a moment to get the data that we're missing. 
 
 Now let's return to Python. 
 
-```{python}
+```{python, deco=list()}
 tor2 = pd.read_csv("31688-daily.csv")
 tor2 = tor2.rename(columns={'Date/Time': 'Date', 'Max Temp (°C)': 'MaxTemp', 'Min Temp (°C)': 'MinTemp', 'Mean Temp (°C)': 'MeanTemp', 'Total Precip (mm)': 'TotalPrecip'})
 tor2 = tor2[['Date', 'MaxTemp', 'MinTemp', 'MeanTemp', 'TotalPrecip']]
@@ -129,22 +129,22 @@ tor2 = tor2[['Date', 'MaxTemp', 'MinTemp', 'MeanTemp', 'TotalPrecip']]
 
 We can check the head and the tail of this data too. 
 
-```{python}
+```{python, deco=list()}
 print(tor2.head())
 ```
-```{python}
+```{python, deco=list()}
 print(tor2.tail())
 ```
 
 As expected, we're missing data at the beginning of the file (before 2003). We can use a slightly modified version of our iterator from earlier. This time, we'll check for the first row for which any of the data is present. 
 
-```{python}
+```{python, deco=list()}
 print(next(i for i, x in enumerate(tor2.loc[:, 'MaxTemp':'MeanTemp'].notnull().any(axis=1)) if x) - 1)
 ```
 
 We'll take a look at that in context again. 
 
-```{python}
+```{python, deco=list()}
 print(tor2[880:890])
 ```
 
@@ -152,25 +152,25 @@ It looks like our data starts as of June 04, 2002.
 
 Ok, so we know that we have data at the old station until May 30, 2002. Likewise, we have some data at the new station in May 2002. Let's take a look at the overlap and see if we can merge these files without issue. 
 
-```{python}
+```{python, deco=list()}
 print(tor[(tor.Date >= "2003-06-25") & (tor.Date <= "2003-07-05")])
 ```
-```{python}
+```{python, deco=list()}
 print(tor2[(tor2.Date >= "2003-06-25") & (tor2.Date <= "2003-07-05")])
 ```
 
 The data on the overlapping days is virtually identical between the two station codes, so we can be confident that merging these two data sets won't lead to a sudden temperature bump. Let's append the relevant section of `tor2` to `tor`.
 
-```{python}
+```{python, deco=list()}
 tor = tor[tor.Date < "2003-07-01"].append(tor2[tor2.Date >= "2003-07-01"])
 ```
 
 Now we can make sure that we have a full data set from January 1981 to December 2010. 
 
-```{python}
+```{python, deco=list()}
 print(tor.head())
 ```
-```{python}
+```{python, deco=list()}
 print(tor.tail())
 ```
 
@@ -180,7 +180,7 @@ rm eccc* *.csv
 
 Save your new data set to _csv_ by:
 
-```{python}
+```{python, deco=list()}
 tor.to_csv("tor.csv")
 ```
 
@@ -200,14 +200,14 @@ In the interest of full disclosure, it should be noted that your output might lo
 
 First we need to import our Python libraries.
 
-```{python, eval=FALSE}
+```{python, eval=FALSE, deco=list()}
 import pandas as pd
 from rpy2.robjects import r, pandas2ri
 ```
 
 We now have an object in Python called `r`, that serves as an interface to R. You can pass code to R using `r('your code goes here')`. 
 
-```{python, eval=FALSE}
+```{python, eval=FALSE, deco=list()}
 print(r('R.version.string'))
 ```
 ```{r, include=FALSE}
@@ -219,13 +219,13 @@ print(r.rver)
 
 In R, we load packages using the `library()` function. You can load a package into your `rpy2` R environment like this:
 
-```{python, eval = FALSE}
+```{python, eval=FALSE, deco=list()}
 r('library(canadaHCDx)')
 ```
 
 You may see some errors about masking. Both `canadaHCD` and `canadaHCDx` include a `find_station()` function to search for available station data. The more advanced 'x' version masks the former. 
 
-```{python, eval=FALSE}
+```{python, eval=FALSE, deco=list()}
 print(r('find_station("Toronto")'))
 ```
 ```{r, include=FALSE}
@@ -237,7 +237,7 @@ print(r.search)
 
 Depending on the platform that you are using, this table might be hard to read. Jupyter Notebook maintains the format as a `R/rpy2 DataFrame` object that abbreviates all the columns. You can convert it into a Python pandas using the `pandas2ri.ri2py()` method. 
 
-```{python, eval=FALSE}
+```{python, eval=FALSE, deco=list()}
 search = pandas2ri.ri2py(search)
 ```
 
@@ -245,7 +245,7 @@ You can also automatically convert all subsequent R objects to Python by running
 
 So, we have a _very_ long list of stations, but we have no idea about the kinds of data that are available. **canadaHCDx** includes some more advanced search options.
 
-```{python, eval=FALSE}
+```{python, eval=FALSE, deco=list()}
 r('find_station("Toronto", baseline = 1981:2010, type = "daily")')
 ```
 ```{r, include=FALSE}
@@ -257,7 +257,7 @@ print(r.search)
 
 It looks like Toronto (5051) has all the data we need. Let's download it.
 
-```{python, eval=FALSE}
+```{python, eval=FALSE, deco=list()}
 print(r('tor <- hcd_daily(5051, 1981:2010, progress = FALSE)').head())
 ```
 ```{r, include=FALSE}
@@ -269,7 +269,7 @@ print(r.tor.head())
 
 In the above cell, we saved the data into an object on the R "side". We can pull the object into Python via assignment. 
 
-```{python, eval=FALSE}
+```{python, eval=FALSE, deco=list()}
 tor = r('tor')
 print(tor.head())
 
@@ -281,20 +281,20 @@ print(tor.head())
 
 You may encounter that some of the columns become corrupted. The most important among these is the data column. If you find that you have a series of numbers instead of dates, you can easily overwrite the column by:
 
-```{python}
+```{python, deco=list()}
 tor['Date'] = pd.date_range(start="1981-01-01", end="2010-12-31")
 print(tor.head())
 ```
 
 It looks like there is something wrong with the `MaxGustDir` and `MaxGustSpeed` columns, but we won't be using them for anything, so we can safely ignore them. Indeed, let's drop the columns that aren't of interest to us. 
 
-```{python}
+```{python, deco=list()}
 tor = tor[['Station', 'Date', 'MaxTemp', 'MinTemp', 'MeanTemp', 'TotalPrecip']]
 ```
 
 Let's check the end of our data. 
 
-```{python}
+```{python, deco=list()}
 print(tor.tail())
 ```
 
@@ -303,7 +303,7 @@ Uhh ohh! It looks like there are a lot of missing temperature values at the end 
 ```{r, include=FALSE}
 search <- canadaHCDx::find_station(target = 5051, dist = 0:1)
 ```
-```{python, eval=FALSE}
+```{python, eval=FALSE, deco=list()}
 r('find_station(target = 5051, dist = 0:1)')
 ```
 ```{python, echo=FALSE}
@@ -313,7 +313,7 @@ print(r.search)
 It seems that there was a station code change at Toronto in 2003. The "Toronto" station, 5051, became "Toronto City", 31688. These are co-located. These data sets can be easily merged between 2002 and 2003. 
 
 
-```{python, eval=FALSE}
+```{python, eval=FALSE, deco=list()}
 t1 = r('hcd_daily(5051, 1981:2002, progress = FALSE)')
 t2 = r('hcd_daily(31688, 2003:2010, progress = FALSE)')
 ```
@@ -328,25 +328,25 @@ t2 = r.t2
 
 Merge the tables using the pd.append() method.
 
-```{python}
+```{python, deco=list()}
 tor = t1.append(t2)
 ```
 
 Now let's clean this up a little.
 
-```{python}
+```{python, deco=list()}
 tor['Date'] = pd.date_range(start="1981-01-01", end="2010-12-31")
 tor = tor[['Station', 'Date', 'MaxTemp', 'MinTemp', 'MeanTemp', 'TotalPrecip']]
 print(tor.head())
 ```
 
-```{python}
+```{python, deco=list()}
 print(tor.tail())
 ```
 
 You can save your new data set to _csv_ by:
 
-```{python, eval=FALSE}
+```{python, eval=FALSE, deco=list()}
 tor.to_csv("tor.csv")
 ```
 
@@ -356,7 +356,7 @@ There you have it! We just downloaded 30 years of data from Environment Canada i
 
 Now let's take a look at our data. We will require some additional libraries.
 
-```{python, eval=FALSE}
+```{python, eval=FALSE, deco=list()}
 import matplotlib as mpl
 mpl.rc('font', size = 12)
 import numpy as np
@@ -373,27 +373,27 @@ This code requires that your "Date" column is recognized as such by Python. If y
 
 Let's start by adding a new column to our table called "TropNight", which will be a True/False value.
 
-```{python}
+```{python, deco=list()}
 tor['TropNight'] = ((tor.MinTemp > 20) & (tor.Date.dt.month.isin([6, 7, 8])))
 print(tor.head())
 ```
 
 Since our value is Boolean, we can use that column as an index. Let's double-check to make sure that we got the results that we were expecting.
 
-```{python}
+```{python, deco=list()}
 print(tor[tor.TropNight].head())
 ```
 
 Now let's get an aggregate data set by grouping by the year. 
 
-```{python}
+```{python, deco=list()}
 tor_trop = tor[['Date', 'TropNight']].groupby(tor.Date.dt.year).sum()
 print(tor_trop.head())
 ```
 
 We can plot this easily. Note, this book is generated on a machine with no display, if you want to see the plot, run `plot.show()` or set the option `%matplotlib inline` if you are using Jupyter Notebook.
 
-```{python}
+```{python, deco=list()}
 tor_trop.plot()
 ```
 ```{python, include=FALSE}
@@ -407,14 +407,14 @@ knitr::include_graphics("l1f1.png", dpi = NA)
 
 The grouping operation has changed our table index to the years from 1981 to 2010. We want to keep this information in the table, so we can reset our index like this:
 
-```{python}
+```{python, deco=list()}
 tor_trop.reset_index(level = 0, inplace = True)
 print(tor_trop.head())
 ```
 
 Now let's make another plot, this time with a trendline. 
 
-```{python}
+```{python, deco=list()}
 plt.plot(tor_trop.Date, tor_trop.TropNight)
 plt.plot(tor_trop.Date, np.polyval(np.polyfit(tor_trop.Date, tor_trop.TropNight, 1), tor_trop.Date))
 plt.title("Tropical Nights (JJA) at Toronto (1981‒2010)")
@@ -435,24 +435,24 @@ We can apply an anonymous (lambda) function to our `MinTemp` column to capture t
 
 <center>`return 0 if the mean temperature was above 18, otherwise, return the difference between 18 and the mean temperature`</center>
 
-```{python}
+```{python, deco=list()}
 tor['HDD'] = tor.MeanTemp.apply(lambda x: 0 if x >= 18 else 18 - x)
 ```
 
 We have one more challenge to overcome. A common mistake when performing seasonal analysis on the winter is to simply group December, January, and February by year. This is an easy logical jump to make. Remember, when we refer to winter, we mean the _continuous_ winter season that stretches from the December of the previous year to February of the current year. The easiest way to control for this is to add 1 to the year for any December. Winter 1981/82, for example will then appear with `'Year'` 1982 in the data frame. 
 
-```{python}
+```{python, deco=list()}
 tor['Year'] = tor.Date.apply(lambda x: x.year + 1 if x.month == 12 else x.year)
 ```
 
 Now we can aggregate our heating degree days. Pay close attention to the code below. First, I use two conditional filters in the square brackets. The first drops the two winters that I know are incomplete: winter 1980/81 (which is missing December 1980), and winter 2010/2011, which is really just December 2010 here. A better solution for the first issue would be to download data including December 1980. The second condition filter to just our winter months, 12, 1, and 2. Next, I select only the two columns that are of interest, group them by `'Year'` and aggregate by `sum()`. Finally, I reset the index. 
 
-```{python}
+```{python, deco=list()}
 tor_hdd = tor[tor.Year.isin(range(1982, 2011)) & tor.Date.dt.month.isin([12, 1, 2])][['Year', 'HDD']].groupby('Year').sum().reset_index()
 print(tor_hdd.head())
 ```
 
-```{python}
+```{python, deco=list()}
 plt.plot(tor_hdd.Year, tor_hdd.HDD)
 plt.plot(tor_hdd.Year, np.polyval(np.polyfit(tor_hdd.Year, tor_hdd.HDD, 1), tor_hdd.Year))
 plt.title("Winter HDD at Toronto (1981/82‒2009/10)")
@@ -470,7 +470,7 @@ knitr::include_graphics("l1f3.png", dpi = NA)
 
 Let's see if we can detect any trends in our baseline values. For convenience, I am going to create a function that will spit out the relevant values. You can run these commands directly, but this might save you time when you get to the exercises (Hint!).
 
-```{python}
+```{python, deco=list()}
 def test_trends(years, values):
     slope, intercept, r_value, p_value, std_err = stats.linregress(years, values)
     print("The regression coefficients are", np.round(slope, 3), "for the slope and",
@@ -494,11 +494,11 @@ def test_trends(years, values):
 ```
 
 
-```{python}
+```{python, deco=list()}
 test_trends(tor_trop.Date, tor_trop.TropNight)
 ```
 
-```{python}
+```{python, deco=list()}
 test_trends(tor_hdd.Year, tor_hdd.HDD)
 ```
 

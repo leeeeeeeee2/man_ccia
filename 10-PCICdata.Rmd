@@ -6,6 +6,7 @@ _Last update: `r system("git log -1 --format=\"%ad (%h)\" -- 10-PCICdata.Rmd", i
 library(reticulate)
 conda <- ifelse(file.exists("/opt/conda/bin/conda"), "/opt/conda/bin/conda", "/data/home-ext/miniconda3/bin/conda")
 use_condaenv("man_ccia", conda = conda, required = TRUE)
+source("R/deco_hook.R")
 ```
 
 ```{python py_setup, include=FALSE}
@@ -126,7 +127,7 @@ The The Pacific Climate Impacts Consortium (PCIC) data portal can also be access
 
 As always, we first import the necessary libraries.
 
-```{python}
+```{python, deco=list()}
 import urllib.request
 import json
 from netCDF4 import Dataset, date2index, num2date, date2num
@@ -137,21 +138,21 @@ import re
 
 PCIC maintains a JSON-formatted catalogue of file IDs and URLs, which we can retrieve in Python directly. 
 
-```{python}
+```{python, deco=list()}
 with urllib.request.urlopen("http://tools.pacificclimate.org/dataportal/downscaled_gcms/catalog/catalog.json") as url:
     data = json.loads(url.read().decode())
 ```
 
 We cannot access the data entries with an integer index, but rather need to access the data using the keys. We can print the fill list of keys in the data object using `data.keys()`. This is a very long list, so I will omit it here. Let's say that we are interested in accessing the dataset with the key `pr-tasmax-tasmin_day_BCSD-ANUSPLIN300-CanESM2_historical-rcp85_r1i1p1_19500101-21001231`. We can find the URL for this like this: 
 
-```{python}
+```{python, deco=list()}
 url = data['pr-tasmax-tasmin_day_BCSD-ANUSPLIN300-CanESM2_historical-rcp85_r1i1p1_19500101-21001231']
 print(url)
 ```
 
 Since this is a netCDF file, we can access its dimensions directly, just like we have done for files stored on the disk.
 
-```{python}
+```{python, deco=list()}
 nc = Dataset(url)
 nc_time = nc.variables['time']
 nc_lat = nc.variables['lat'][:].data
@@ -160,7 +161,7 @@ nc_lon = nc.variables['lon'][:].data
 
 Now we can find the relevant indeces.
 
-```{python}
+```{python, deco=list()}
 target = {"lat": 43.67, "lon": -79.40}
 total_time = len(nc_time)
 time_start = date2index(dt.datetime(1981, 1, 1), nc_time, select="nearest")
@@ -172,21 +173,21 @@ print("We need data starting at time T={} (of {}), from X={} and Y={}".format(ti
 
 Now that we know the specific dimensions that we need to download, we can find the keys for the full set of models that we desire, for both RCP4.5 and RCP8.5. We will use a special search pattern called a [regular expression](https://en.wikipedia.org/wiki/Regular_expression) for this. 
 
-```{python}
+```{python, deco=list()}
 models = ["CanESM2", "CCSM4", "CSIRO-Mk3-6-0", "GFDL-ESM2G", "inmcm4", "MIROC5"]
 ```
 
 Here we are collapsing our list of models using '`|`', which operates in our regular expression to mean "OR". The same goes for our scenarios "`rcp(45|85)`" will match both "rcp45" and "rcp85".
 
 
-```{python}
+```{python, deco=list()}
 pattern = r'.*BCCAQ.*(' + '|'.join(models) + r').*-rcp(45|85).*'
 print(pattern)
 ```
 
 Now we can pull out our desired keys
 
-```{python}
+```{python, deco=list()}
 keys = [i for i in data.keys() if re.match(pattern, i)]
 print(keys)
 ```
@@ -196,7 +197,7 @@ You might expect that you can access the data in the PCIC netCDF files directly,
 Before we download the files, I want to generate some filenames, replacing the original "pr-tasmax-tasmin" prefix with the specific variable ("tasmax" or "tasmin") that I want to store in each file (note that it is possible to download two variables at once, but here I will keep it simple and download each one at a time. I will also correct the start date for good measure.
 
 
-```{python}
+```{python, deco=list()}
 filenames = list(map(lambda i: re.sub("pr-tasmax-tasmin", "tasmax", i) + ".nc", keys)) + \
               list(map(lambda i: re.sub("pr-tasmax-tasmin", "tasmin", i) + ".nc", keys))
 filenames = [re.sub('19500101', '19810101', i) for i in filenames]
@@ -208,7 +209,7 @@ The data portal [documentation](https://data.pacificclimate.org/portal/docs/rast
 
 We need to fill in the `dataset_id` with the URL from the catalogue that we downloaded earlier. We will complete the DAP specification with either "tasmax" or "tasmin" and `[time_start:time_total][lon_cell:lon_cell][lat_cell:lat_cell]`. You may notice that the requested URL has the `.nc` extension twice. This is because we are asking the server to access the netCDF file and to return the result as a netCDF file. Other options include `.csv` and ASCII gridded data, but these are metadata-poor formats and are not recommended.
 
-```{python}
+```{python, deco=list()}
 url_suffix = "[{}:{}][{}:{}][{}:{}]".format(time_start, total_time, lat_cell, lat_cell, lon_cell, lon_cell)
 urls = list(map(lambda i: data[i] + ".nc?tasmax" + url_suffix, keys)) + \
          list(map(lambda i: data[i] + ".nc?tasmin" + url_suffix, keys))
@@ -216,17 +217,17 @@ urls = list(map(lambda i: data[i] + ".nc?tasmax" + url_suffix, keys)) + \
 
 You may wish to confirm that your filenames and URLs match, e.g.
 
-```{python}
+```{python, deco=list()}
 print(filenames[0])
 ```
 
-```{python}
+```{python, deco=list()}
 print(urls[0])
 ```
 
 Now you can proceed to download these files by looping over the `filenames` and `urls` objects. Note that, at the time of writing, the download speeds were _very_ slow (< 500 bits/second or about 0.0625 kb/s). In addition, it seems that subsetting in the time dimension causes downloads to fail after about 3kb are downloaded, so you may in fact need to download the entire time series. Given these current issues, you may prefer to download the data from [this book's repository](https://gitlab.com/claut/man_ccia/tree/master/data/pcic_data).
 
-```{python, eval=FALSE}
+```{python, eval=FALSE, deco=list()}
 for i in range(len(urls)):
     urllib.request.urlretrieve(urls[i], filenames[i])
 ```

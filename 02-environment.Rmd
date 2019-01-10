@@ -11,17 +11,13 @@ During the labs in this manual, we will make use of a number of different pieces
 ```{block, type='rmdtip'}
 Whether you are running Anaconda2 or Anaconda3, or one of the [Miniconda](https://conda.io/miniconda.html) variants, we recommend you create a new conda environment for this manual. You can accomplish this by writing the following commands from the base conda environment (i.e from the Anaconda Prompt on Windows or after running `conda activate` from a terminal on MacOS or Linux). 
 
-<div class="decocode">
-<div style="background-color:#000000">
-<p><span style="font-size:90%;color:#ffffff"><i class="fas fa-terminal"></i> <b>Shell</b></span></p>
+<div class="decocode"><div style="background-color:#000000"><p><span style="font-size:90%;color:#ffffff"><i class="fas fa-terminal"></i> <b>Shell</b></span></p>
     conda create -n "man_ccia" "python>=3.7.1" matplotlib netCDF4 pandas "seaborn>=0.9.0"
 </div></div>
 
 This will create a new environment, named "man_ccia", which will contain all of the packages that you will need to complete the exercises contained in this manual, including Python 3.7.1 or higher. If you plan to use Jupyter Notebook, your new environment won't be immediately available, however, you can install a "kernel" for your new environment by issuing the following commands: 
 
-<div class="decocode">
-<div style="background-color:#000000">
-<p><span style="font-size:90%;color:#ffffff"><i class="fas fa-terminal"></i> <b>Shell</b></span></p>
+<div class="decocode"><div style="background-color:#000000"><p><span style="font-size:90%;color:#ffffff"><i class="fas fa-terminal"></i> <b>Shell</b></span></p>
     conda activate man_ccia
     conda install ipykernel
     python -m ipykernel install --user --name="man_ccia" --display-name="man_ccia"
