@@ -5,7 +5,7 @@ knit_hooks$set(deco = function(before, options) {
                     paste0("<b>", options$deco$label, "</b>"))
     bc <- ifelse(is.null(options$deco$bc), "#636363", options$deco$bc)
     sz <- ifelse(is.null(options$deco$sz), "90%", options$deco$sz)
-    tc <- ifelse(is.null(options$deco$bc), "#bdbdbd", options$deco$bc)
+    tc <- ifelse(is.null(options$deco$tc), "#bdbdbd", options$deco$tc)
     icon <- ifelse(!is.null(options$deco$icon),
                    paste0("<i class=\"", options$deco$icon$style,
                           " fa-", options$deco$icon$name, "\"></i>  "), "")
