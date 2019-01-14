@@ -84,7 +84,7 @@ Let's take a look at what our columns are named.
 print(tor.columns)
 ```
 
-Hmm, some of those are very clunk. Let's rename the colums we are going to use and then select only those columns. 
+Hmm, some of those are are a little cumbersome. Let's rename the columns we are going to use and then select only those columns. 
 
 ```{python, deco=list()}
 tor = tor.rename(columns={'Date/Time': 'Date', 'Max Temp (°C)': 'MaxTemp', 'Min Temp (°C)': 'MinTemp', 'Mean Temp (°C)': 'MeanTemp', 'Total Precip (mm)': 'TotalPrecip'})
@@ -150,7 +150,7 @@ print(tor2[880:890])
 
 It looks like our data starts as of June 04, 2002. 
 
-Ok, so we know that we have data at the old station until May 30, 2002. Likewise, we have some data at the new station in May 2002. Let's take a look at the overlap and see if we can merge these files without issue. 
+OK, so we know that we have data at the old station until May 30, 2002. Likewise, we have some data at the new station in May 2002. Let's take a look at the overlap and see if we can merge these files without issue. 
 
 ```{python, deco=list()}
 print(tor[(tor.Date >= "2003-06-25") & (tor.Date <= "2003-07-05")])
@@ -506,7 +506,7 @@ test_trends(tor_hdd.Year, tor_hdd.HDD)
 
 ```{block, type='rmdassignment'}
 - You have been assigned an exposure unit and period. Write a brief description of the exposure unit, whether there were any missing or suspicious data, and how these data were treated. [2 marks] 
-- Include the time series plots with fitted trend lines for your exposure unit and for the relevant temperature variable, e.g. MeanTemp for freezing degree days. [2 marks] 
+- Include the time series plots with fitted trend lines for your exposure unit and for the relevant temperature variable, e.g. `MeanTemp` for freezing degree days. [2 marks] 
 - Include a table with the summary statistics for your exposure unit and temperature variable. [2 marks] 
 - Read both of the "methods" sections above, for obtaining Canadian climate data. You will notice that we have chosen different dates at which to "append" the `Tor2` object to `Tor1` in each example. Repeat your analysis using the other merge date. Have your results changed? Briefly (one sentence is fine) discuss the selection of an appropriate merge date when working with separate data sets. [2 marks] 
 - Be sure to clearly label your plots and table and include concise figure and table captions. [2 marks]

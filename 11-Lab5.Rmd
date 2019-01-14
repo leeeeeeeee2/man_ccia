@@ -135,7 +135,7 @@ Let's examine our data at the monthly timestep. First, we'll add a `'Month'` col
 baseline = baseline.assign(Month=baseline.Date.apply(lambda x: x.month))
 ```
 
-Now let's calculate some summary stats for the baseline, grouped by 'Scenario', 'Variabile', and 'Month'.
+Now let's calculate some summary stats for the baseline, grouped by 'Scenario', 'Variable', and 'Month'.
 
 ```{python, deco=list()}
 baseline_stats_gcm = baseline.groupby(['Scenario','Variable','Month']).agg({'Value': ['mean', 'std','max','min']})

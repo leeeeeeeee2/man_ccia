@@ -30,7 +30,7 @@ $$
 \textrm{Incoming} - \textrm{Outgoing} = \textrm{Redistribution}\\
 S(x,\alpha(T_s)) - F(x, T_s) = D(x, T_s)\\
 $$
-Where $x = \sin\phi$, $\phi$ is the latitude, and $\alpha$ is albedo. $D$ repersents the horizontal transport of energy. 
+Where $x = \sin\phi$, $\phi$ is the latitude, and $\alpha$ is albedo. $D$ represents the horizontal transport of energy. 
 ```
 
 ### 3-D models

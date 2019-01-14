@@ -111,7 +111,7 @@ knitr::include_graphics("l5f0.png", dpi = NA)
 
 ## Retrieving downscaled data from the data portal website
 
-PCIC provides an intutive point and click map for accessing the downscaled GCM data. In our exercise in Lab 5, we will use six models (CanESM2, CCSM4, CSIRO-Mk3-6-0, GFDLESM2G, inmcm4 and MIROC5). To download this information manually, follow the steps below. You may instead wish to download these data programatically. Skip to the next section for that process. 
+PCIC provides an intuitive point and click map for accessing the downscaled GCM data. In our exercise in Lab 5, we will use six models (CanESM2, CCSM4, CSIRO-Mk3-6-0, GFDLESM2G, inmcm4 and MIROC5). To download this information manually, follow the steps below. You may instead wish to download these data programatically. Skip to the next section for that process. 
 
 1. Open the link to the downscaled GCM data: http://tools.pacificclimate.org/dataportal/downscaled_gcms/map/. A map of North America should appear on your screen.
 2. In the bar on the right-hand side of your screen. Select "historical + rcp45".
@@ -159,7 +159,7 @@ nc_lat = nc.variables['lat'][:].data
 nc_lon = nc.variables['lon'][:].data
 ```
 
-Now we can find the relevant indeces.
+Now we can find the relevant indices.
 
 ```{python, deco=list()}
 target = {"lat": 43.67, "lon": -79.40}

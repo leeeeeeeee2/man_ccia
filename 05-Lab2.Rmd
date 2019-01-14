@@ -28,7 +28,7 @@ knitr::include_graphics("l2f2.png", dpi = NA)
 
 A direct link to the above is [here](https://esgf-node.llnl.gov/ac/subscribe/CMIP5%20Research/). 
 
-If at any point during the login/registration procress, you are asked for an OpenID, you can click the arrow to the left of the text box and select the node with which you have registered. This will take you to a conventional username/password login page. 
+If at any point during the login/registration process, you are asked for an OpenID, you can click the arrow to the left of the text box and select the node with which you have registered. This will take you to a conventional username/password login page. 
 
 ## Data search 
 
@@ -96,7 +96,7 @@ The netCDF files from the ESGF use a standardized filename format that looks som
 
 Consider the following file: `tasmax_Amon_CanESM2_historical_r1i1p1_185001-200512.nc`
 
-Without even looking at the file contents, we can already determine a great deal of information from the filename. This file contains monthly data for maxium temperture, as projected by the Canadian CanESM2 model as part of ensemble r1i1p1. The data were hindcast historical data (1850&ndash;2005).
+Without even looking at the file contents, we can already determine a great deal of information from the filename. This file contains monthly data for maximum temperature, as projected by the Canadian CanESM2 model as part of ensemble r1i1p1. The data were hindcast historical data (1850&ndash;2005).
 ```
 
 Downloading files one-by-one can be cumbersome. Instead, we will use `wget` to speed up the process. You should already have `wget` installed, so we can make use of the "wget script" option. _Make sure you have filtered your files_, check the box to "Select All Datasets", and the click the "wget script" button. This will download a script which you can execute in **bash**. 

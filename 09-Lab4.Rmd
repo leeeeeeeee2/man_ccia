@@ -438,7 +438,7 @@ print(recalc_exp(obs=tor[['Date', 'MeanTemp']],
                  month=[6,7,8]))
 ```
 
-Okay, enough tables, let's plot some of these changes! First, I will create a table of results. Called `out`.
+OK, enough tables, let's plot some of these changes! First, I will create a table of results. Called `out`.
 
 ```{python, deco=list()}
 out = recalc_exp(obs=tor_win[['Date', 'MeanTemp']],
