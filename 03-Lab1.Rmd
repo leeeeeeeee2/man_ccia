@@ -73,7 +73,7 @@ The `-h` flag tells `eccc` to print help information about using the script. Eac
 ./eccc -s 5051 -y 1981:2010 -g
 ```
 
-This will download the individual year-by-year _csv_ files for daily data at Toronto, automatically cropping the metadata from the beginning of each file, and then "gluing" them all together in a single file. In this case. That file is called "_`r list.files(pattern = "5051.*csv")`_".
+This will download the individual year-by-year _csv_ files for daily data at Toronto (station 5051), automatically cropping the metadata from the beginning of each file, and then "gluing" them all together in a single file. In this case. That file is called "_`r list.files(pattern = "5051.*csv")`_".
 
 #### Cleaning the data in Python
 
