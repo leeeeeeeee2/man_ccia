@@ -383,9 +383,13 @@ As we mentioned in the introduction, an exposure unit is often the "unit" of our
 
 As I write this section, the temperature outside is a sweltering 32 °C (36 with the humidex), so what better exposure unit to consider than "tropical nights", nights with a minimum temperature above 20 °C. We will limit our analysis to the summer months.
 
-This code requires that your "Date" column is recognized as such by Python. If you get an error, try the following expression in Python, `tor.Date = pd.to_datetime(tor.Date)`.
+This code requires that your "Date" column is recognized as such by Python. This isn't always automatic, so you will likely need to ask **pandas** to convert the column to a `datetime` object. 
 
-Let's start by adding a new column to our table called "TropNight", which will be a True/False value.
+```{python, deco=list()}
+tor.Date = pd.to_datetime(tor.Date)
+```
+
+Now let's start by adding a new column to our table called "TropNight", which will be a True/False value.
 
 ```{python, deco=list()}
 tor['TropNight'] = ((tor.MinTemp > 20) & (tor.Date.dt.month.isin([6, 7, 8])))
