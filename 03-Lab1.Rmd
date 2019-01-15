@@ -24,7 +24,7 @@ import scipy.stats as stats
 
 ```{bash get_csvs, include=FALSE}
 wget https://gitlab.com/ConorIA/shell-scripts/raw/master/eccc/eccc
-chmod a+x eccc
+chmod +x eccc
 ./eccc -y 1981:2010 -s 5051 -g
 ./eccc -y 2000:2010 -s 31688 -g
 ```
@@ -45,21 +45,35 @@ ECCC makes data available over an [FTP site](ftp://client_climate@ftp.tor.ec.gc.
 
 #### A scripted solution
 
-For convenience, I have written a script, called `eccc` to perform this downloading. You can get the latest version of this script from [GitLab](https://gitlab.com/ConorIA/shell-scripts/raw/master/eccc/eccc).
+For convenience, I have written a script, called `eccc` to perform this downloading. You can get the latest version of this script from [GitLab](https://gitlab.com/ConorIA/shell-scripts/raw/master/eccc/eccc). In fact, this is a great opportunity to test if your `wget` installation is working correctly. Fire up a terminal, and download the script using `wget`.
 
-To get help using the script, pass the `-h` flag to the script. 
+```{bash, eval=FALSE, eco=list(label="Shell", bc="#000000", tc="#ffffff", icon=list(style="fas", name="terminal"))}
+wget https://gitlab.com/ConorIA/shell-scripts/raw/master/eccc/eccc
+```
+
+The above command should provide verbose download progress information, which I have omitted here. Once the command has run, you should find a file called `eccc` in your current directory. To get help using `eccc`, pass the `-h` flag to the script. 
 
 ```{bash, deco=list(label="Shell", bc="#000000", tc="#ffffff", icon=list(style="fas", name="terminal"))}
 ./eccc -h
 ```
 
-This command prints out help information for using the script. To download daily data for Toronto, for instance, you can run the script like this: 
+```{block, type='rmdtip'}
+Note, if you are on Linux or Mac, and get a "permission denied" error message from the above command, you will need to set the script as executable (also know as "setting the executable bit") by changing the file permissions with `chmod`, e.g.
 
-```{bash, eval=FALSE, deco=list(label="Shell", bc="#000000", tc="#ffffff", icon=list(style="fas", name="terminal"))}
-./eccc -y 1981:2010 -s 5051 -g
+<div class="decocode"><div style="background-color:#000000"><p><span style="font-size:90%;color:#ffffff"><i class="fas fa-terminal"></i> <b>Shell</b></span></p>
+    chmod +x eccc
+</div></div>
+
+If for some reason you can't use `chmod` you can the skip setting the permissions by explicitly asking `bash` (which is executable) to run the script. To do this, prepend each call to the script with `bash`, e.g. `bash eccc -h`.
 ```
 
-This will download the individual year-by-year _csv_ files for daily data at Toronto, crop the first 24 lines from them, and the glue them all together in a single file. In this case. That file is called "_`r list.files(pattern = "5051.*csv")`_".
+The `-h` flag tells `eccc` to print help information about using the script. Each argument (or flag) is explained in the output. To download daily data for Toronto, for instance, you can run the script like this: 
+
+```{bash, eval=FALSE, deco=list(label="Shell", bc="#000000", tc="#ffffff", icon=list(style="fas", name="terminal"))}
+./eccc -s 5051 -y 1981:2010 -g
+```
+
+This will download the individual year-by-year _csv_ files for daily data at Toronto, automatically cropping the metadata from the beginning of each file, and then "gluing" them all together in a single file. In this case. That file is called "_`r list.files(pattern = "5051.*csv")`_".
 
 #### Cleaning the data in Python
 
