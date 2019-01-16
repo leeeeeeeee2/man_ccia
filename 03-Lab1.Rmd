@@ -47,7 +47,7 @@ ECCC makes data available over an [FTP site](ftp://client_climate@ftp.tor.ec.gc.
 
 For convenience, I have written a script, called `eccc` to perform this downloading. You can get the latest version of this script from [GitLab](https://gitlab.com/ConorIA/shell-scripts/raw/master/eccc/eccc). In fact, this is a great opportunity to test if your `wget` installation is working correctly. Fire up a terminal, and download the script using `wget`.
 
-```{bash, eval=FALSE, eco=list(label="Shell", bc="#000000", tc="#ffffff", icon=list(style="fas", name="terminal"))}
+```{bash, eval=FALSE, deco=list(label="Shell", bc="#000000", tc="#ffffff", icon=list(style="fas", name="terminal"))}
 wget https://gitlab.com/ConorIA/shell-scripts/raw/master/eccc/eccc
 ```
 
