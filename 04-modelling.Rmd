@@ -2,7 +2,7 @@
 
 _Last update: `r system("git log -1 --format=\"%ad (%h)\" -- 04-modelling.Rmd", intern = TRUE)`_
 
-In Lab 1, we learned how to acquire data for the past, and perform a basic baseline analysis. In Lab 2, we will be looking the other direction, towards the future. Before we begin, this chapter serves as a primer on (or, hopefully, review of) basic climate modelling. 
+In Lab 1, we learned how to acquire data for the past, and perform a basic baseline analysis. In Lab 2 (\@ref(lab2)), we will be looking the other direction, towards the future. Before we begin, this chapter serves as a primer on (or, hopefully, review of) basic climate modelling. 
 
 Since we scientists do not have a crystal ball to tell the future of our climate system, we rely on models to provide us with one of many "possible futures". Unlike fortune telling, climate modelling is based on our scientific understanding of the Earth's climate system. Indeed, the most important point to be made for climate modelling is that, in principle, all climate models are based in the laws of physics: conservation of energy, conservation of mass, and conservation of momentum. As such, climate models provide a mathematical representation of the interactions among the distinct components of the Earth's climate system.
 
@@ -49,7 +49,7 @@ Throughout the lab exercises, we will make use of model output from the models t
 
 A model by itself can't project the future without a little guidance. This is where climate change scenarios come in. A scenario is the description of some "possible future". Usually, scenarios will consider how the future of the world will look in terms of: socioeconomics, technology, the environment, and geopolitics. Scenarios are not predictions of the future. Instead, they can help us to understand the unknown such that we can come to robust, informed decisions in the face of a range of possible outcomes. 
 
-In this lab manual, we will focus on the Representative Concentration Pathways [@moss2010next], the current generation of climate scenarios which were developed for the IPCC's fifth assessment report [@pachauri2014climate]. These scenarios, abbreviated as RCPs, are a set of consistent climate projections, however, they are not integrated scenarios. They provide the first step for further analysis.
+In this lab manual, we will focus on the Representative Concentration Pathways [@moss2010next], the generation of climate scenarios which were developed for the IPCC's fifth assessment report [@pachauri2014climate]. These scenarios, abbreviated as RCPs, are a set of consistent climate projections, however, they are not integrated scenarios. They provide the first step for further analysis.
 
 Each of the four RCP scenarios was developed based on scenarios in the climate literature, with the goal that the four scenarios would, together, provide a full range of the scenarios that were present in the literature at the time of their development. RCP8.5 was based on the A2 "business as usual" scenario from the Special Report on Emissions Scenarios (SRES) from the IPCC's fourth assessment report. It is characterized by high energy usage, rapid population growth, low technological development, and poor global political cooperation. RCPs 2.6, 4.5, and 6.0, on the other hand, are based on energy use of between 750 and 900 EJ ($1$ EJ = $1 \times 10^{18}$J) by 2100. These scenarios place a higher focus on alternative and renewable energy. A key difference between these scenarios is the projected population growth and GPD. The four scenarios are summarized in the following table. 
 
@@ -66,4 +66,4 @@ Adapted from @moss2010next.
 The RCPs are not policy prescriptive. The socioeconomic scenarios used to generate the RCPs are not internally consistent, nor unique. The RCPs should not be interpreted as forecasts, nor even as absolute bounds for the future. 
 ```
 
-If you would like to see some examples of the four RCPs and climate model data, poke around the "plots" tab of [_Conjuntool_](https://shiny.conr.ca/conjuntool/), which we will be using in upcoming labs. In Lab 2 (\@ref(lab2)), you will learn how obtain these data from the Earth System Grid Federation (ESGF). In Lab3 (\@ref(lab3)), we will learn to read the data form these files. 
+If you would like to see some examples of the four RCPs and climate model data, poke around the "plots" tab of [_Conjuntool_](https://shiny.conr.ca/conjuntool/), which we will be using in upcoming labs. In Lab 2 (\@ref(lab2)), you will learn how obtain GCM model data from the Earth System Grid Federation (ESGF). In Lab 3 (\@ref(lab3)), we will learn to read the data from these files into Python. 

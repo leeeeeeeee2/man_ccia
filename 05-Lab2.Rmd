@@ -6,7 +6,7 @@ _Last update: `r system("git log -1 --format=\"%ad (%h)\" -- 05-Lab2.Rmd", inter
 source("R/deco_hook.R")
 ```
 
-The climate data that we need is made available through the Earth System Grid Federation (ESGF), a federated network of academic and government data centres in the USA, Europe, and Asia. This is a one-stop shop for all of the climate data from the CMIP5 and (soon, as of the time of writing, CMIP6). In this lab, we will focus on the CMIP5 data output. 
+The climate data that we need is made available through the Earth System Grid Federation (ESGF), a federated network of academic and government data centres in the USA, Europe, and Asia. This is a one-stop shop for all of the climate data from the CMIP5 and the brand new (of the time of writing) output from CMIP6. In this lab, we will focus on the CMIP5 data output. 
 
 To begin, visit the [ESGF website](https://esgf-node.llnl.gov/projects/esgf-llnl/). I am using the Lawrence-Livermore National Laboratory node, but you could, theoretically, choose any of the other nodes listed on the home page, which looks something like this: 
 
@@ -21,7 +21,7 @@ You will need to complete a few monotonous steps before you can get at the data 
 
 Next, you will need to register in the "CMIP5 Research" group. Return to the [ESGF home page](https://esgf-node.llnl.gov/projects/esgf-llnl/) and scroll down until you see the following: 
 
-```{r l2f2, echo=FALSE, fig.cap="GFCI group registration for CMIP5 research."}
+```{r l2f2, echo=FALSE, fig.cap="GFCI group registration for CMIP5 research (July 2018)."}
 download.file("https://screenshotscdn.firefoxusercontent.com/images/33a09492-a98b-4678-9563-c3f97f45b399.png?download=Screenshot_2018-07-12%20ESGF-LLNL%20-%20Home%20ESGF-CoG.png", "l2f2.png")
 knitr::include_graphics("l2f2.png", dpi = NA)
 ```
@@ -32,14 +32,14 @@ If at any point during the login/registration process, you are asked for an Open
 
 ## Data search 
 
-To the left of the CMIP5 registration link, is the link to the [CMIP search interface](https://esgf-node.llnl.gov/projects/esgf-llnl/).
+To the left of the CMIP5 registration link, is the link to the [CMIP search interface](https://esgf-node.llnl.gov/projects/esgf-llnl/). Click it!
 
-```{r l2f3, echo=FALSE, fig.cap="ESGF main data search page."}
+```{r l2f3, echo=FALSE, fig.cap="ESGF main data search page (July 2018)."}
 download.file("https://screenshotscdn.firefoxusercontent.com/images/37d2a4d8-f8e5-4b9f-b1e6-acdadde3afe9.png?download=Screenshot_2018-07-12%20CMIP5%20Data%20Search%20CMIP5%20ESGF-CoG.png", "l2f3.png")
 knitr::include_graphics("l2f3.png", dpi = NA)
 ```
 
-In the sidebar on the left, you will see a series of search options. We will only make use of a few of these in this Lab. The options that are of interest to us are summarized in the following table. 
+In the sidebar on the left, you will see a series of search filter options. We will only make use of a few of these in this lab. The options that are of interest to us are summarized in the following table. 
 
 | Criteria       | Value                                  |
 |----------------|----------------------------------------|
@@ -60,7 +60,7 @@ Try setting your filters as they are in the above table and hit search. You shou
 
 If you are satisfied with your search results, you can select the "Add all displayed results to Data Cart", and then proceed to your data cart. 
 
-```{r l2f4, echo=FALSE, fig.cap="Example ESGF search results."}
+```{r l2f4, echo=FALSE, fig.cap="Example ESGF search results (July 2018)."}
 download.file("https://screenshotscdn.firefoxusercontent.com/images/eedbb101-b756-41b0-9866-1bf77415906e.png?download=Screenshot_2018-07-12%20CMIP5%20Data%20Search%20CMIP5%20ESGF-CoG.png", "l2f4.png")
 knitr::include_graphics("l2f4.png", dpi = NA)
 ```
@@ -69,14 +69,14 @@ knitr::include_graphics("l2f4.png", dpi = NA)
 
 Once inside your data cart, you should see a list of results for each individual model-ensemble-scenario. Note, however, that even though we only searched for temperature variables, the ESGF interface gives us a list of files with _all_ available variables. This is more data than we need (and probably more bandwidth than we're willing to expend.)
 
-```{r l2f5, echo=FALSE, fig.cap="ESGF data cart."}
+```{r l2f5, echo=FALSE, fig.cap="ESGF data cart (July 2018)."}
 download.file("https://screenshotscdn.firefoxusercontent.com/images/7eaa9b5c-68d9-459c-99e5-67427463dc38.png?download=Screenshot_2018-07-12%20ESGF-CoG.png", "l2f5.png")
 knitr::include_graphics("l2f5.png", dpi = NA)
 ```
 
 Use the filter box to the top-right of the data results to narrow down the files that you will download. Note that the box does not support globbing, and expects whole words, i.e. "tas" will not match "tasmax" or "tasmin". If you want all three variables, you will need to filter each individually. 
 
-```{r l2f6, echo=FALSE, fig.cap="ESGF data cart filtering."}
+```{r l2f6, echo=FALSE, fig.cap="ESGF data cart filtering (July 2018)."}
 download.file("https://screenshotscdn.firefoxusercontent.com/images/122bb498-82ad-4586-9eea-948b4a3ffc5c.png?download=Screenshot_2018-07-12%20ESGF-CoG.png&sig=hl1KN5CLZ_YwJ2yEuyLOf4GakeQ", "l2f6.png")
 knitr::include_graphics("l2f6.png", dpi = NA)
 ```
@@ -99,7 +99,7 @@ Consider the following file: `tasmax_Amon_CanESM2_historical_r1i1p1_185001-20051
 Without even looking at the file contents, we can already determine a great deal of information from the filename. This file contains monthly data for maximum temperature, as projected by the Canadian CanESM2 model as part of ensemble r1i1p1. The data were hindcast historical data (1850&ndash;2005).
 ```
 
-Downloading files one-by-one can be cumbersome. Instead, we will use `wget` to speed up the process. You should already have `wget` installed, so we can make use of the "wget script" option. _Make sure you have filtered your files_, check the box to "Select All Datasets", and the click the "wget script" button. This will download a script which you can execute in **bash**. 
+Downloading files one-by-one can be cumbersome. Instead, we will use `wget` to speed up the process. _Make sure you have filtered your files_, check the box to "Select All Datasets", and the click the "wget script" button. This will download a script which you can execute in **bash**. 
 
 ```{bash, eval=FALSE, deco=list(label="Shell", bc="#000000", tc="#ffffff", icon=list(style="fas", name="terminal"))}
 bash wget-20180711205236.sh
@@ -117,6 +117,7 @@ The script is user-authenticated, so you will be asked to log in. Enter your cre
   - Export a time series plot of the entire range of the data.
   - Create overlay maps for two periods: 2011 to 2040 and 2071 to 2100.  [2 marks] 
 - You will have been assigned a specific set of filters. Generate a wget script for the requested filter set and submit it as part of your work. This script will be used to ensure that _Conjuntool_ is fully populated. [2 marks]
+- Pay attention to the clarity and formatting of your submitted lab write-up [2 marks]
 
 _Note: If you plan to perform a CCIA related to a variable that is not present in the Conjuntool, you should submit a wget script for your variable of interest as well._ 
 ```
