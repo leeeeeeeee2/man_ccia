@@ -435,8 +435,9 @@ Now let's make another plot, this time with a trendline.
 ```{python, deco=list()}
 plt.plot(tor_trop.Date, tor_trop.TropNight)
 plt.plot(tor_trop.Date, np.polyval(np.polyfit(tor_trop.Date, tor_trop.TropNight, 1), tor_trop.Date))
-plt.title("Tropical Nights (JJA) at Toronto (1981‒2010)")
+plt.title("Total summertime Tropical Nights at Toronto (1981‒2010)")
 plt.xlabel("Year")
+plt.ylabel("No. of Tropical Nights")
 ```
 ```{python, include = FALSE}
 plt.savefig('l1f2.png')
@@ -475,7 +476,7 @@ plt.plot(tor_hdd.Year, tor_hdd.HDD)
 plt.plot(tor_hdd.Year, np.polyval(np.polyfit(tor_hdd.Year, tor_hdd.HDD, 1), tor_hdd.Year))
 plt.title("Winter HDD at Toronto (1981/82‒2009/10)")
 plt.xlabel("Year")
-plt.ylabel("HDD")
+plt.ylabel("Heating Degree Days  (HDD)")
 ```
 ```{python, include = FALSE}
 plt.savefig('l1f3.png')
