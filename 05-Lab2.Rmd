@@ -74,7 +74,7 @@ download.file("https://screenshotscdn.firefoxusercontent.com/images/7eaa9b5c-68d
 knitr::include_graphics("l2f5.png", dpi = NA)
 ```
 
-Use the filter box to the top-right of the data results to narrow down the files that you will download. Note that the box does not support globbing, and expects whole words, i.e. "tas" will not match "tasmax" or "tasmin". If you want all three variables, you will need to filter each individually. 
+Use the filter box to the top-right of the data results to narrow down the files that you will download. Note that the box does not support globbing, and expects whole words, i.e. "tas" will not match "tasmax" or "tasmin". If you want all three variables, you can enter multiple search terms separated by commas: "tas, tasmax, tasmin". 
 
 ```{r l2f6, echo=FALSE, fig.cap="ESGF data cart filtering (July 2018)."}
 download.file("https://screenshotscdn.firefoxusercontent.com/images/122bb498-82ad-4586-9eea-948b4a3ffc5c.png?download=Screenshot_2018-07-12%20ESGF-CoG.png&sig=hl1KN5CLZ_YwJ2yEuyLOf4GakeQ", "l2f6.png")
