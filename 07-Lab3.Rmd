@@ -59,15 +59,19 @@ First, we recommend that you get familiar with your data set. For instance, what
 print(nc.dimensions)
 ```
 
-Notice that we have three-dimensional data, stored along X (longitude), Y (latitude), and T (time). Some netCDF files also have a Z dimension (e.g. height). There is no hard limit to the number of dimensions a netCDF file can have, though [it is suggested](https://www.unidata.ucar.edu/software/netcdf/docs/group__dimensions.html) not to exceed 1024. Rest assured, it is unlikely that you will encounter a 1024-D file in the wild.
+Notice that we have three-dimensional data, stored along X (longitude), Y (latitude), and T (time). Some netCDF files also have a Z dimension (e.g. height). There is no hard limit to the number of dimensions a netCDF file can have, though [it is suggested](https://www.unidata.ucar.edu/software/netcdf/docs/group__dimensions.html) not to exceed 1024. Rest assured, it is unlikely that you will encounter a 1024-D file in the wild. To get a list of the variables stored in your netCDF file, query the `variables` attribute of your loaded dataset. 
 
-You can get a list of variables stored in your file using `nc.variables.get()`. The output is very long, so we will omit it here. You can query a specific variable as well, e.g. `time`.
+```{python, deco=list()}
+print(nc.variables)
+```
+
+You can query a specific variable as well, e.g. `time`.
 
 ```{python, deco=list()}
 print(nc.variables['time'])
 ```
 
-The above tells us interesting attributes about our variable, such as units, current shape, and whether it is an unlimited variable or not. 
+The above shows us some interesting characteristics of our variable, such as units, current shape, and whether it is an unlimited variable or not. 
 
 We can store the variable in a Python object, which will help us to get the its values. 
 
@@ -149,10 +153,10 @@ You may have noticed temperatures in the 200s. Our data is in Kelvin. To convert
 dat = np.subtract(dat.data, 273.15)
 ```
 
-Let's make sure that we got the right amount of time and data.
+Let's make sure that we got the right amount of time and data: 12 months time 25 years for 300 data points.
 
 ```{python, deco=list()}
-print(time_end - time_start + 1) # 25 yr * 12 mo = 300
+print(time_end - time_start + 1)
 ```
 
 ```{python, deco=list()}
@@ -172,7 +176,7 @@ df = pd.DataFrame({'Date': dates, 'MeanTemp': dat, 'Experiment': 'historical'})
 print(df.head())
 ```
 
-The calendar used in CanESM2 is a "365 day" calendar, which ignores leap years. The `num2date` function above, converts the times into a special `cftime.DatetimeNoLeap` object. Unfortunately, this date format does not react intuitively in plots. Given that we are using monthly data, it doesn't matter to us whether there were 28 or 29 days in February of any given year. As such, let's convert the `cftime.DatetimeNoLeap` object to a regular Python `datetime.date`. 
+Even though we are using monthly data, the date column is still formatted with a full YYYY-MM-DD hh:mm:ss date! The date and time represents approximately the middle of the month (probably from averaging the values from a smaller time scale). In addition, the calendar used in CanESM2 is a "365 day" calendar, which ignores leap years. The `num2date` function that we used above, converts the values of the time dimension into a special `cftime.DatetimeNoLeap` object. Unfortunately, this date format does not react intuitively in plots. Given that we are using monthly data, it doesn't matter to us whether there were 28 or 29 days in February of any given year. As such, let's convert the `cftime.DatetimeNoLeap` object to a regular Python `datetime.date` with a YYYY-MM-DD format. 
 
 ```{python, deco=list()}
 df['Date'] = [dt.date(i.year, i.month, i.day) for i in df.Date]
@@ -212,7 +216,7 @@ nc.close()
 
 ## The future
 
-I will condense the above process into a quick `for` loop across the two netCDF files that contain projections. In your case, you may have three or four such files. Also note that I will only extract data to 2040, but you should use 2100 as your upper date. A reminder of the contents of `future`:
+I will condense the above process into a quick `for` loop across the three netCDF files that contain projections. In your case, you may have two or even four such files, depending on the number of scenarios for which simulation data is available for your model. Also note that I will only extract data to 2040, but you should use 2100 as your upper date. A reminder of the contents of `future`:
 
 ```{python, deco=list()}
 print(future)
