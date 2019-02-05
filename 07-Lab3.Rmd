@@ -260,7 +260,7 @@ knitr::include_graphics("l3f2.png", dpi = NA)
 That doesn't look right. We can manually fix the above by filtering for each projection and adding the line manually. 
 
 ```{python, deco=list()}
-plt.plot(df.Date[df.Experiment == "rcp26"], df.MeanTemp[df.Experiment == "rcp45"], 'y-', alpha=0.7, label = 'RCP 2.6')
+plt.plot(df.Date[df.Experiment == "rcp26"], df.MeanTemp[df.Experiment == "rcp26"], 'y-', alpha=0.7, label = 'RCP 2.6')
 plt.plot(df.Date[df.Experiment == "rcp45"], df.MeanTemp[df.Experiment == "rcp45"], 'y-', alpha=0.7, label = 'RCP 4.5')
 plt.plot(df.Date[df.Experiment == "rcp85"], df.MeanTemp[df.Experiment == "rcp85"], 'r-', alpha=0.7, label = 'RCP 8.5')
 plt.legend(loc='lower right')
