@@ -12,14 +12,14 @@ book: build_book package_book
 
 docker_book_build:
 	cd docker/book;\
-	docker build --pull -t registry.gitlab.com/claut/man_ccia/book .
+	docker build --pull --no-cache -t registry.gitlab.com/claut/man_ccia/book .
 
 docker_book_push:
 	docker push registry.gitlab.com/claut/man_ccia/book
 
 docker_tinytex_build:
 	cd docker/tinytex;\
-	docker build --pull -t registry.gitlab.com/claut/man_ccia/tinytex .
+	docker build --pull --no-cache -t registry.gitlab.com/claut/man_ccia/tinytex .
 
 docker_tinytex_push:
 	docker push registry.gitlab.com/claut/man_ccia/tinytex

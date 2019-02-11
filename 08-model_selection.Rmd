@@ -10,7 +10,7 @@ library(plotly)
 library(stringr)
 ```
 
-One of the challenges facing students and practitioners of climate change impact assessment is deciding which models to use for the assessment. Have a look at Figure \@ref(fig:ts-plot). The black line is the actual observed Toronto annual average $T_{\textrm{mean}}$ (produced from the data that we downloaded from Environment Canada). Each of the coloured solid lines represents the historical scenario of some model from the r1i1p1 ensemble. The dashed lines, after around 2005, represent the RCP scenario-forced projections for future climate in the same grid cell. 
+One of the challenges facing students and practitioners of climate change impact assessment is deciding which models to use for the assessment. Have a look at Figure \@ref(fig:ts-plot). The black line is the actual observed Toronto annual average $T_{\textrm{mean}}$ (produced from the data that we downloaded from Environment and Climate Change Canada). Each of the coloured solid lines represents the historical scenario of some model from the r1i1p1 ensemble. The dashed lines, starting circa 2005, represent the RCP scenario-forced projections for future climate in the same grid cell. 
 
 ```{r ts-plot, message=FALSE, warning=FALSE, fig.cap="Observed and GCM-modelled annual average mean temperature at Toronto (1981\u20122100). The black line traces observed data from the Toronto climate station. Each coloured line represents the projection from one of 39 CMIP5 GCM models. Solid lines indicate historical projections; broken lines are projections forced with the four IPCC RCP scenarios. Mouse over the figure for a detailed tooltip."}
 

@@ -207,7 +207,7 @@ The data portal [documentation](https://data.pacificclimate.org/portal/docs/rast
 
 `http://data.pacificclimate.org/dataportal/downscaled_gcms/data/<dataset_id>.nc?<variable>[<time range>][<lon range>][<lat range>]`
 
-We need to fill in the `dataset_id` with the URL from the catalogue that we downloaded earlier. We will complete the DAP specification with either "tasmax" or "tasmin" and `[time_start:time_total][lon_cell:lon_cell][lat_cell:lat_cell]`. You may notice that the requested URL has the `.nc` extension twice. This is because we are asking the server to access the netCDF file and to return the result as a netCDF file. Other options include `.csv` and ASCII gridded data, but these are metadata-poor formats and are not recommended.
+We need to fill in the `dataset_id` with the URL from the catalogue that we downloaded earlier. We will complete the DAP specification with either "tasmax" or "tasmin" and `[time_start:time_total][lon_cell:lon_cell][lat_cell:lat_cell]`. You may notice that the requested URL has the _.nc_ extension twice. This is because we are asking the server to access the netCDF file and to return the result as a netCDF file. Other options include _.csv_ and ASCII gridded data, but these are metadata-poor formats and are not recommended.
 
 ```{python, deco=list()}
 url_suffix = "[{}:{}][{}:{}][{}:{}]".format(time_start, total_time, lat_cell, lat_cell, lon_cell, lon_cell)
