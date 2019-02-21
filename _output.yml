@@ -5,6 +5,10 @@ bookdown::gitbook:
       before: |
         <li><a href="./">Climate Change Impact Assessment Lab Manual</a></li>
       after: |
+        <li><a href="https://gitlab.com/claut/man_ccia" target="blank">Book source code</a></li>
         <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
     edit:
       link: https://gitlab.com/claut/man_ccia/edit/master/%s
+    sharing:
+      facebook: no
+      twitter: no
