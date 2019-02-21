@@ -76,9 +76,9 @@ Now let's loop across all of our files and create one big **pandas** data frame 
 
 ```{python, deco=list()}
 for file in filenames:
-    var = re.findall(variable_pattern, file)[0]
-    mod = re.findall(model_pattern, file)[0]
-    scen = re.findall(scenario_pattern, file)[0]
+    var = re.search(variable_pattern, file)[0]
+    mod = re.search(model_pattern, file)[0]
+    scen = re.search(scenario_pattern, file)[0]
     
     nc = Dataset(data_dir + "/" + file)
     nc_var = np.squeeze(nc.variables[var][:].data)
@@ -305,28 +305,20 @@ knitr::include_graphics("l5f4.png", dpi = NA)
 
 ## Re-assessing the future
 
-Let's take a look at how the downscaled data projects the future climate. We will perform our analysis using the same tridecades that we used in Lab 4. In the interest of expediency, we have defined a function to bin a given date into one of our four tridecades, and we'll apply the function to our `df.Date` column.
-
-```{python, deco=list()}
-def define_tridecades(date):
-    if cftime.DatetimeNoLeap(2011, 1, 1) <= date <= cftime.DatetimeNoLeap(2040, 12, 31):
-        return "2020s"
-    elif  cftime.DatetimeNoLeap(2041, 1, 1) <= date <= cftime.DatetimeNoLeap(2070, 12, 31):
-        return "2050s"
-    elif  cftime.DatetimeNoLeap(2071, 1, 1) <= date <= cftime.DatetimeNoLeap(2100, 12, 31):
-        return "2080s"
-    elif  cftime.DatetimeNoLeap(1981, 1, 1) <= date <= cftime.DatetimeNoLeap(2010, 12, 31):
-        return "1990s"
-    else: 
-        return None
-```
-
-Let's grab the data from 1981 to 2100, which covers our baseline and our three tridecades.
+Let's take a look at how the downscaled data projects the future climate. We will perform our analysis using the same tridecades that we used in Lab 4. First, we'll filter our data to grab the data from 1981 to 2100, which covers our baseline and our three tridecades. Next, we'll add an empty `"Period"` column, and classify our tridecades by masking the relevant periods and assigning a tridecade name. 
 
 ```{python, deco=list()}
 dat = df[(df.Date >= cftime.DatetimeNoLeap(1981, 1, 1)) & (df.Date <= cftime.DatetimeNoLeap(2100, 12, 31))]
-dat = dat.assign(Period=dat.Date.apply(define_tridecades))
+dat = dat.assign(Period = np.repeat(np.nan, dat.shape[0]))
+dat.loc[(dat.Date >= cftime.DatetimeNoLeap(1981, 1, 1)) & (dat.Date <= cftime.DatetimeNoLeap(2010, 12, 31)), 'Period'] = '1990s'
+dat.loc[(dat.Date >= cftime.DatetimeNoLeap(2011, 1, 1)) & (dat.Date <= cftime.DatetimeNoLeap(2040, 12, 31)), 'Period'] = '2020s'
+dat.loc[(dat.Date >= cftime.DatetimeNoLeap(2041, 1, 1)) & (dat.Date <= cftime.DatetimeNoLeap(2070, 12, 31)), 'Period'] = '2050s'
+dat.loc[(dat.Date >= cftime.DatetimeNoLeap(2071, 1, 1)) & (dat.Date <= cftime.DatetimeNoLeap(2100, 12, 31)), 'Period'] = '2080s'
+
 print(dat.head())
+```
+
+```{python, deco=list()}
 print(dat.tail())
 ```
 
