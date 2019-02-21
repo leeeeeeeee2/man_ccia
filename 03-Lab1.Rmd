@@ -19,17 +19,12 @@ import numpy as np
 import pandas as pd
 pd.set_option('display.max_columns', 10)
 import scipy.stats as stats
+import ec3
+
+ec3.find_station() # run here to suppress warning
 ```
 
-
-```{bash get_csvs, include=FALSE}
-wget https://gitlab.com/ConorIA/shell-scripts/raw/master/eccc/eccc
-chmod +x eccc
-./eccc -y 1981:2010 -s 5051 -g
-./eccc -y 2000:2010 -s 31688 -g
-```
-
-One of the first steps of a climate change impact assessment (CCIA) is to establish a climatological baseline  for the climate variable of interest (either an exposure unit or the climate variable most directly linked to the exposure unit). 
+One of the first steps of a climate change impact assessment (CCIA) is to establish a climatological baseline for the climate variable of interest (either an exposure unit or the climate variable most directly linked to the exposure unit). 
 
 An __exposure unit__ is an element or variable that is directly or indirectly affected by the changes in climate. In this exercise you will acquire Canadian climate data for Toronto and perform an analysis of an exposure unit that will be assigned to you. Refer to the Appendix (\@ref(appendix)) for a list of some example exposure units. 
 
@@ -39,57 +34,47 @@ Environment and Climate Change Canada (ECCC) makes data available over an intern
 
 ## Getting the data
 
-### Option 1: On the command line
-
 ECCC makes data available over an [FTP site](ftp://client_climate@ftp.tor.ec.gc.ca/Pub/Get_More_Data_Plus_de_donnees/), and gives instructions for downloading data manually via `bash` and `wget`. You can find instructions for using the command line to download data [here](ftp://client_climate@ftp.tor.ec.gc.ca/Pub/Get_More_Data_Plus_de_donnees/Readme.txt).
 
-#### A scripted solution
+#### An all-in-Python solution
 
-For convenience, I have written a script, called `eccc` to perform this downloading. You can get the latest version of this script from [GitLab](https://gitlab.com/ConorIA/shell-scripts/raw/master/eccc/eccc). In fact, this is a great opportunity to test if your `wget` installation is working correctly. Fire up a terminal, and download the script using `wget`.
+For convenience, I have written a small Python module, called **ec3** to search for and download data from the ECCC archive. You can review the source code for this module on [GitLab](https://gitlab.com/ConorIA/ec3.py). **ec3** is also available as a stand-alone command-line program, so if you have a colleague who is afraid to learn how to code, they can still use **ec3** to speed up the process of downloading data from ECCC. 
 
-```{bash, eval=FALSE, deco=list(label="Shell", bc="#000000", tc="#ffffff", icon=list(style="fas", name="terminal"))}
-wget https://gitlab.com/ConorIA/shell-scripts/raw/master/eccc/eccc
-```
-
-The above command should provide verbose download progress information, which I have omitted here. Once the command has run, you should find a file called `eccc` in your current directory. To get help using `eccc`, pass the `-h` flag to the script. 
-
-```{bash, deco=list(label="Shell", bc="#000000", tc="#ffffff", icon=list(style="fas", name="terminal"))}
-./eccc -h
-```
-
-```{block, type='rmdtip'}
-Note, if you are on Linux or Mac, and get a "permission denied" error message from the above command, you will need to set the script as executable (also know as "setting the executable bit") by changing the file permissions with `chmod`, e.g.
-
-<div class="decocode"><div style="background-color:#000000"><p><span style="font-size:90%;color:#ffffff"><i class="fas fa-terminal"></i> <b>Shell</b></span></p>
-    chmod +x eccc
-</div></div>
-
-If for some reason you can't use `chmod` you can the skip setting the permissions by explicitly asking `bash` (which is executable) to run the script. To do this, prepend each call to the script with `bash`, e.g. `bash eccc -h`.
-```
-
-The `-h` flag tells `eccc` to print help information about using the script. Each argument (or flag) is explained in the output. To download daily data for Toronto, for instance, you can run the script like this: 
+If you followed the tip box in Section \@ref(enviro), then you already have **ec3** installed. If you didn't, you can install it via conda. Note that **ec3** is not available in the official Anaconda channels, and has some dependencies from the "conda-forge" channel. I'll prepend conda-forge to the start of my channels list so that packages get installed from there first, and append my personal channel to the end of the list so that it is only used for packages that are not available in any other channel.
 
 ```{bash, eval=FALSE, deco=list(label="Shell", bc="#000000", tc="#ffffff", icon=list(style="fas", name="terminal"))}
-./eccc -s 5051 -y 1981:2010 -g
+conda config --prepend channels conda-forge
+conda config --append channels ConorIA
+conda install ec3
 ```
 
-This will download the individual year-by-year _csv_ files for daily data at Toronto (station 5051), automatically cropping the metadata from the beginning of each file, and then "gluing" them all together in a single file. In this case. That file is called "_`r list.files(pattern = "5051.*csv")`_".
+Once you have the **ec3** module installed, import it.
 
-#### Cleaning the data in Python
+```{python, eval=FALSE, deco=list()}
+import ec3
+```
 
-Now that we have the data that we need, we need to start working with it. Fire up your installation of Python, and follow along with the following commands. 
+The **ec3** module contains two functions: `ec3.find_station()`, and
+`ec3.get_data()`. The functions have complete docstrings, so you can check the function documentation for syntax, e.g. 
 
-First, let's import the libraries we are going to need to manipulate our data. 
+```{python, deco=list()}
+print(ec3.get_data.__doc__)
+```
+
+Let's download the daily data for the "Toronto" station (No. 5051) from 1981 to 2010. We can request the dates that we want using a Python range. Remember that Python ranges are "left inclusive, right exclusive". That means that `range(1981, 2011)` will give us data from 1981 up to (but not including) 2011. _Note that I am turning off the progress bar here because it interferes with the book rendering. You can omit the last argument._
+
+```{python, deco=list()}
+tor = ec3.get_data(stations=5051, years=range(1981, 2011), progress=False)
+```
+
+
+#### Cleaning the data
+
+Now that we have the data that we need, we can start working with it. First, let's import the libraries we are going to need to manipulate our data. 
 
 ```{python, eval=FALSE, deco=list()}
 import numpy as np
 import pandas as pd
-```
-
-Now read the _csv_ files into Python. 
-
-```{python, deco=list()}
-tor = pd.read_csv("5051-daily.csv")
 ```
 
 Let's take a look at what our columns are named. 
@@ -114,7 +99,7 @@ print(tor.head())
 print(tor.tail())
 ```
 
-Uhh ohh! It looks like we are missing all of our temperature data at the end of our _csv_ file. We can test this theory by using an enumerator. The following will tell us the index at which all three of our temperature variables of interest are missing for the first time. 
+Uhh ohh! It looks like we are missing all of our temperature data at the end of our baseline period. We can test this theory by using an enumerator. The following will tell us the index at which all three of our temperature variables of interest are missing for the first time. 
 ```{python, deco=list()}
 print(next(i for i, x in enumerate(tor.loc[:, 'MaxTemp':'MeanTemp'].isnull().all(axis=1)) if x) - 1)
 ```
@@ -125,18 +110,23 @@ Let's take a look at the context around that index.
 print(tor[8211:8221])
 ```
 
-It looks like we're missing data as of July 2003. Indeed, in 2003 the "Toronto" station was renamed "Toronto City" and re-coded. Since that date, the daily data is available under station code 31688. 
-
-We'll have to return to `bash` for a moment to get the data that we're missing. Let's grab the data for the new station code from 2000 to 2010. 
-
-```{bash, eval=FALSE, deco=list(label="Shell", bc="#000000", tc="#ffffff", icon=list(style="fas", name="terminal"))}
-./eccc -y 2000:2010 -s 31688 -g
-```
-
-Now let's return to Python. 
+It looks like we're missing data as of July 2003! Something odd has happened. Let's look for a nearby station (within 2 km) that we can use!
 
 ```{python, deco=list()}
-tor2 = pd.read_csv("31688-daily.csv")
+print(ec3.find_station(target=5051, dist=range(3)))
+```
+
+By the looks of it, "Toronto" and "Toronto City" are co-located! Indeed, in 2003 the "Toronto" station was renamed "Toronto City" and re-coded. Since that date, the daily data is available under station code 31688. 
+
+Let's grab that dataset as of 2000 and compare with station 5051.
+
+```{python, deco=list()}
+tor2 = ec3.get_data(stations=31688, years=range(2000, 2011), progress=False)
+```
+
+The ECCC data has a standard format, so our column names for `tor2` are going to be the same nasty column names that we had in `tor`. Let's rename them and select the columns we are interested in.
+
+```{python, deco=list()}
 tor2 = tor2.rename(columns={'Date/Time': 'Date', 'Max Temp (°C)': 'MaxTemp', 'Min Temp (°C)': 'MinTemp', 'Mean Temp (°C)': 'MeanTemp', 'Total Precip (mm)': 'TotalPrecip'})
 tor2 = tor2[['Date', 'MaxTemp', 'MinTemp', 'MeanTemp', 'TotalPrecip']]
 ```
@@ -188,183 +178,12 @@ print(tor.head())
 print(tor.tail())
 ```
 
-```{bash cleanup, include=FALSE}
-rm eccc* *.csv
-```
-
 Save your new data set to _csv_ by:
 
 ```{python, deco=list()}
 tor.to_csv("tor.csv")
 ```
 
-### Option 2: Using the **canadaHCD** package in R
-
-```{block, type='rmddisclaimer'}
-The commands in this section, should (in theory), work in Jupyter Notebook, however, I have experienced constant kernel crashes when attempting. You may have to use a different program, such as Spyder, or use the Python shell directly. 
-```
-
-For those of us who work often in R, the **canadaHCD** package [@R-canadaHCD] is the first stop for Canadian climate data. We can take advantage of this package in Python too, thanks to the **rpy2** Python module. We will also use an expansion pack that I have written based on **canadaHCD**, called **canadaHCDx** [@R-canadaHCDx]. Of course, you are free to run any of the R commands in the code below directly in R.
-
-[//]: # (It seems (understandably), that calling rpy2 through reticulate causes all sorts of trouble)
-
-```{block, type='rmddisclaimer'}
-In the interest of full disclosure, it should be noted that your output might look slightly different to what you see below. This book was written in R. As you might imagine, it is not possible to run R via Python via R! I have, therefore, provided the code below in the context of Python to R, but am using R "under the hood" to generate the data. 
-```
-
-First we need to import our Python libraries.
-
-```{python, eval=FALSE, deco=list()}
-import pandas as pd
-from rpy2.robjects import r, pandas2ri
-```
-
-We now have an object in Python called `r`, that serves as an interface to R. You can pass code to R using `r('your code goes here')`. 
-
-```{python, eval=FALSE, deco=list()}
-print(r('R.version.string'))
-```
-```{r, include=FALSE}
-rver <- R.version.string
-```
-```{python, echo=FALSE}
-print(r.rver)
-```
-
-In R, we load packages using the `library()` function. You can load a package into your `rpy2` R environment like this:
-
-```{python, eval=FALSE, deco=list()}
-r('library(canadaHCDx)')
-```
-
-You may see some errors about masking. Both `canadaHCD` and `canadaHCDx` include a `find_station()` function to search for available station data. The more advanced 'x' version masks the former. 
-
-```{python, eval=FALSE, deco=list()}
-print(r('find_station("Toronto")'))
-```
-```{r, include=FALSE}
-search <- canadaHCD::find_station("Toronto")
-```
-```{python, echo = FALSE}
-print(r.search)
-```
-
-Depending on the platform that you are using, this table might be hard to read. Jupyter Notebook maintains the format as a `R/rpy2 DataFrame` object that abbreviates all the columns. You can convert it into a Python pandas using the `pandas2ri.ri2py()` method. 
-
-```{python, eval=FALSE, deco=list()}
-search = pandas2ri.ri2py(search)
-```
-
-You can also automatically convert all subsequent R objects to Python by running `pandas2ri.activate()`.
-
-So, we have a _very_ long list of stations, but we have no idea about the kinds of data that are available. **canadaHCDx** includes some more advanced search options.
-
-```{python, eval=FALSE, deco=list()}
-r('find_station("Toronto", baseline = 1981:2010, type = "daily")')
-```
-```{r, include=FALSE}
-search <- canadaHCDx::find_station("Toronto", baseline = 1981:2010, type = "daily", assume_yes = TRUE)
-```
-```{python, echo=FALSE}
-print(r.search)
-```
-
-It looks like Toronto (5051) has all the data we need. Let's download it.
-
-```{python, eval=FALSE, deco=list()}
-print(r('tor <- hcd_daily(5051, 1981:2010, progress = FALSE)').head())
-```
-```{r, include=FALSE}
-tor <- canadaHCD::hcd_daily(5051, 1981:2010, progress = FALSE)
-```
-```{python, echo=FALSE}
-print(r.tor.head())
-```
-
-In the above cell, we saved the data into an object on the R "side". We can pull the object into Python via assignment. 
-
-```{python, eval=FALSE, deco=list()}
-tor = r('tor')
-print(tor.head())
-
-```
-```{python, echo=FALSE}
-tor = r.tor
-print(tor.head())
-```
-
-You may encounter that some of the columns become corrupted. The most important among these is the data column. If you find that you have a series of numbers instead of dates, you can easily overwrite the column by:
-
-```{python, deco=list()}
-tor['Date'] = pd.date_range(start="1981-01-01", end="2010-12-31")
-print(tor.head())
-```
-
-It looks like there is something wrong with the `MaxGustDir` and `MaxGustSpeed` columns, but we won't be using them for anything, so we can safely ignore them. Indeed, let's drop the columns that aren't of interest to us. 
-
-```{python, deco=list()}
-tor = tor[['Station', 'Date', 'MaxTemp', 'MinTemp', 'MeanTemp', 'TotalPrecip']]
-```
-
-Let's check the end of our data. 
-
-```{python, deco=list()}
-print(tor.tail())
-```
-
-Uhh ohh! It looks like there are a lot of missing temperature values at the end of the data set. Let's look for another station, within 1 km of Toronto that will give us more data. 
-
-```{r, include=FALSE}
-search <- canadaHCDx::find_station(target = 5051, dist = 0:1)
-```
-```{python, eval=FALSE, deco=list()}
-r('find_station(target = 5051, dist = 0:1)')
-```
-```{python, echo=FALSE}
-print(r.search)
-```
-
-It seems that there was a station code change at Toronto in 2003. The "Toronto" station, 5051, became "Toronto City", 31688. These are co-located. These data sets can be easily merged between 2002 and 2003. 
-
-
-```{python, eval=FALSE, deco=list()}
-t1 = r('hcd_daily(5051, 1981:2002, progress = FALSE)')
-t2 = r('hcd_daily(31688, 2003:2010, progress = FALSE)')
-```
-```{r, include=FALSE}
-t1 <- canadaHCD::hcd_daily(5051, 1981:2002, progress = FALSE)
-t2 <- canadaHCD::hcd_daily(31688, 2003:2010, progress = FALSE)
-```
-```{python, include=FALSE}
-t1 = r.t1
-t2 = r.t2
-```
-
-Merge the tables using the pd.append() method.
-
-```{python, deco=list()}
-tor = t1.append(t2)
-```
-
-Now let's clean this up a little.
-
-```{python, deco=list()}
-tor['Date'] = pd.date_range(start="1981-01-01", end="2010-12-31")
-tor = tor[['Station', 'Date', 'MaxTemp', 'MinTemp', 'MeanTemp', 'TotalPrecip']]
-print(tor.head())
-```
-
-```{python, deco=list()}
-print(tor.tail())
-```
-
-You can save your new data set to _csv_ by:
-
-```{python, eval=FALSE, deco=list()}
-tor.to_csv("tor.csv")
-```
-
-There you have it! We just downloaded 30 years of data from Environment Canada in Python via R!
 
 ## Analyzing the data
 
@@ -527,6 +346,6 @@ test_trends(tor_hdd.Year, tor_hdd.HDD)
 - You have been assigned an exposure unit and period. Write a brief description of the exposure unit, whether there were any missing or suspicious data, and how these data were treated. [2 marks] 
 - Include the time series plots with fitted trend lines for your exposure unit and for the relevant temperature variable, e.g. `MeanTemp` for freezing degree days. [2 marks] 
 - Include a table with the summary statistics for your exposure unit and temperature variable. [2 marks] 
-- Read both of the "methods" sections above, for obtaining Canadian climate data. You will notice that we have chosen different dates at which to "append" the `Tor2` object to `Tor1` in each example. Repeat your analysis using the other merge date. Have your results changed? Briefly (one sentence is fine) discuss the selection of an appropriate merge date when working with separate data sets. [2 marks] 
+- Now that we know that Station 5051 was recoded sometime between 2002 and 2003, future analyses might be quicker if we simply merge the 5051 data up to 2002 and the 31688 data from 2003 onward. Does this change in the join date between the two stations affect your results? [2 marks] 
 - Be sure to clearly label your plots and table and include concise figure and table captions. [2 marks]
 ```

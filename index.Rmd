@@ -29,5 +29,5 @@ This work is licensed under a [Creative Commons Attribution-ShareAlike 4.0 Inter
 
 ```{r include=FALSE}
 # automatically create a bib database for R packages
-knitr::write_bib(c(.packages(), 'bookdown', 'canadaHCD', 'canadaHCDx', 'reticulate'), 'packages.bib')
+knitr::write_bib(c(.packages(), 'bookdown', 'reticulate', 'plotly'), 'packages.bib')
 ```

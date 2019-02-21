@@ -12,7 +12,9 @@ During the labs in this manual, we will make use of a number of different pieces
 Whether you are running Anaconda2 or Anaconda3, or one of the [Miniconda](https://conda.io/miniconda.html) variants, we recommend you create a new conda environment for this manual. You can accomplish this by writing the following commands from the base conda environment (i.e from the Anaconda Prompt on Windows or after running `conda activate` from a terminal on MacOS or Linux). 
 
 <div class="decocode"><div style="background-color:#000000"><p><span style="font-size:90%;color:#ffffff"><i class="fas fa-terminal"></i> <b>Shell</b></span></p>
-    conda create -n "man_ccia" "python>=3.7.1" matplotlib netCDF4 pandas "seaborn>=0.9.0"
+    conda config --prepend channels conda-forge
+    conda config --append channels ConorIA
+    conda create -n "man_ccia" "python>=3.7.1" ec3 matplotlib netCDF4 pandas requests "seaborn>=0.9.0"
 </div></div>
 
 This will create a new environment, named "man_ccia", which will contain all of the packages that you will need to complete the exercises contained in this manual, including Python 3.7.1 or higher. If you plan to use Jupyter Notebook, your new environment won't be immediately available, however, you can install a "kernel" for your new environment by issuing the following commands: 
@@ -111,58 +113,6 @@ sudo apt-get update
 sudo apt-get install wget
 ```
 
-## Optional: Installing R
+## Summary
 
-Many people consider R and Python to be mutually exclusive: you either use one, or the other. While it is true that there are many things that you can do in either of the two languages, each has its own idiosyncrasies. R was developed as a statistical programming language, and many of the methods that we will use in this course have been implemented efficiently in R. Indeed, _Conjuntool_, which we will use extensively in the Labs in this manual is written in R Shiny. The instructions below will help you to install R on your system. 
-
-### Option 1: Installing via Anaconda
-
-If you already have an Anaconda environment set up, and wish to install R, you can do this easily via Anaconda. To create a new Anaconda environment, and install everything you'll need to work in R, run the following command.
-
-```{bash, eval=FALSE, deco=list(label="Shell", bc="#000000", tc="#ffffff", icon=list(style="fas", name="terminal"))}
-conda create -n r35 r-base r-essentials
-```
-
-If you want to use R from within Python, you could add R to an existing environment instead. As an example: 
-
-```{bash, eval=FALSE, deco=list(label="Shell", bc="#000000", tc="#ffffff", icon=list(style="fas", name="terminal"))}
-conda install -n man_ccia r-base r-essentials rpy2
-```
-
-Or alternatively, add Python to the newly created R environment.
-
-```{bash, eval=FALSE, deco=list(label="Shell", bc="#000000", tc="#ffffff", icon=list(style="fas", name="terminal"))}
-conda install -n r35 pandas python rpy2
-```
-
-### Option 2: 
-
-If you would like to install R directly, follow the install instructions from [CRAN](https://cloud.r-project.org/). 
-
-Once you have R installed, you will probably want to add the **IRkernel** so that you can use R within Jupyter Notebook. To do so, open R, and run the following commands: 
-
-```{r, eval = FALSE, deco=list(label="R", bc="#276dc3", tc="#ffffff", icon=list(style="fab", name="r-project"))}
-
-install.packages(c('repr', 'IRdisplay', 'evaluate', 'crayon', 'pbdZMQ', 'devtools', 'uuid', 'digest'), repos = "https://cloud.r-project.org/")
-devtools::install_github('IRkernel/IRkernel')
-IRkernel::installspec()
-```
-
-### Getting the **canadaHCDx** package
-
-You will have the option to complete Lab 1 using either shell commands, or an R package within Python. If you want to use the R package, you will have to install it. This is relatively simple. 
-
-I have created a conda package for **canadaHCDx**, called **r-canadahcdx**. You can install this package from my personal Anaconda "channel" using the commands, below. 
-
-```{bash, eval=FALSE, deco=list(label="Shell", bc="#000000", tc="#ffffff", icon=list(style="fas", name="terminal"))}
-conda config --prepend channels conda-forge # use conda-forge packages
-conda config --append channels ConorIA # use my channel as a last resort
-conda install -n <name of existing environment> r-canadahcdx
-```
-
-If you installed R directly (or if the above packages fail), you can install the package directly in R via **devtools**, which we installed when we installed **IRkernel**.
-
-```{r, eval=FALSE, deco=list(label="R", bc="#276dc3", tc="#ffffff", icon=list(style="fab", name="r-project"))}
-devtools::install_git("https://gitlab.com/ConorIA/canadaHCDx")
-devtools::install_github("ConorIA/canadaHCD@patched")
-```
+By the end of this chapter, you should have a shiny new conda environment that contains all of the packages and modules that you will need to complete the exercises in this manual. Additionally, you should have `wget` installed, which we will need to download climate model simulation data from the Earth System Grid Federation (ESGF).

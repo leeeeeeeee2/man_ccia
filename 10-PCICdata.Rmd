@@ -128,25 +128,49 @@ The The Pacific Climate Impacts Consortium (PCIC) data portal can also be access
 As always, we first import the necessary libraries.
 
 ```{python, deco=list()}
-import urllib.request
-import json
-from netCDF4 import Dataset, date2index, num2date, date2num
 import datetime as dt
+import json
+import math
 import numpy as np
+import os
 import re
+import requests
+from netCDF4 import Dataset, date2index, num2date, date2num
+from tqdm import tqdm
 ```
+
+First, I am going to define a special `download` function with a progressbar so that we can keep track of the files as they download. 
+
+```{python, deco=list()}
+# Adapted from: https://stackoverflow.com/a/37573701
+def download(url, filename):
+    print("Downloading ", filename)
+    r = requests.get(url, stream=True)
+    total_size, blocksize = int(r.headers.get('content-length', 0)), 1024
+    written = 0 
+    with open(filename, 'wb') as f:
+        for data in tqdm(r.iter_content(block_size),
+                         total=math.ceil(total_size//block_size),
+                         unit='KiB', unit_scale=True):
+            written = written + len(data)
+            f.write(data)
+    if total_size != 0 and written != total_size:
+        print("Something went wrong with the download!\n",
+              "FYI, the status code was ", r.status_code)
+```
+
 
 PCIC maintains a JSON-formatted catalogue of file IDs and URLs, which we can retrieve in Python directly. 
 
 ```{python, deco=list()}
-with urllib.request.urlopen("http://tools.pacificclimate.org/dataportal/downscaled_gcms/catalog/catalog.json") as url:
-    data = json.loads(url.read().decode())
+with requests.get("http://tools.pacificclimate.org/dataportal/downscaled_gcms/catalog/catalog.json") as r:
+    data = json.loads(r.content)
 ```
 
-We cannot access the data entries with an integer index, but rather need to access the data using the keys. We can print the fill list of keys in the data object using `data.keys()`. This is a very long list, so I will omit it here. Let's say that we are interested in accessing the dataset with the key `pr-tasmax-tasmin_day_BCSD-ANUSPLIN300-CanESM2_historical-rcp85_r1i1p1_19500101-21001231`. We can find the URL for this like this: 
+We cannot access the data entries with an integer index, but rather need to access the data using the keys. We can print the fill list of keys in the data object using `data.keys()`. This is a very long list, so I will omit it here. Let's say that we are interested in accessing the dataset with the key `tasmax_day_BCCAQv2_CanESM2_historical-rcp26_r1i1p1_19500101-21001231_Canada`. We can find the URL for this like this: 
 
 ```{python, deco=list()}
-url = data['pr-tasmax-tasmin_day_BCSD-ANUSPLIN300-CanESM2_historical-rcp85_r1i1p1_19500101-21001231']
+url = data['tasmax_day_BCCAQv2_CanESM2_historical-rcp26_r1i1p1_19500101-21001231_Canada']
 print(url)
 ```
 
@@ -164,11 +188,15 @@ Now we can find the relevant indices.
 ```{python, deco=list()}
 target = {"lat": 43.67, "lon": -79.40}
 total_time = len(nc_time)
-time_start = date2index(dt.datetime(1981, 1, 1), nc_time, select="nearest")
+time_start = date2index(dt.datetime(1981, 1, 1, 12, 0, 0), nc_time, select="nearest")
 lat_cell = np.argmin(np.abs(nc_lat - target['lat']))
 lon_cell = np.argmin(np.abs(nc_lon - target['lon']))
 print("Our start date is", num2date(nc_time[time_start], nc_time.units, nc_time.calendar))
 print("We need data starting at time T={} (of {}), from X={} and Y={}".format(time_start, total_time, lon_cell, lat_cell))
+nc.close()
+
+# FIXME: As of the time of writing, using any non-zero time_start index causes the download to fail
+time_start = 0 
 ```
 
 Now that we know the specific dimensions that we need to download, we can find the keys for the full set of models that we desire, for both RCP4.5 and RCP8.5. We will use a special search pattern called a [regular expression](https://en.wikipedia.org/wiki/Regular_expression) for this. 
@@ -177,11 +205,11 @@ Now that we know the specific dimensions that we need to download, we can find t
 models = ["CanESM2", "CCSM4", "CSIRO-Mk3-6-0", "GFDL-ESM2G", "inmcm4", "MIROC5"]
 ```
 
-Here we are collapsing our list of models using '`|`', which operates in our regular expression to mean "OR". The same goes for our scenarios "`rcp(45|85)`" will match both "rcp45" and "rcp85".
+Here we are collapsing our list of models using '`|`', which operates in our regular expression to mean "OR". The same goes for our variables and scenarios "`tasm(in|ax)`" will match both variables, and "`rcp(4|8)5`" will match both "rcp45" and "rcp85".
 
 
 ```{python, deco=list()}
-pattern = r'.*BCCAQ.*(' + '|'.join(models) + r').*-rcp(45|85).*'
+pattern = r'tasm(in|ax).*BCCAQv2.*(' + '|'.join(models) + r').*-rcp(4|8)5.*'
 print(pattern)
 ```
 
@@ -189,30 +217,29 @@ Now we can pull out our desired keys
 
 ```{python, deco=list()}
 keys = [i for i in data.keys() if re.match(pattern, i)]
-print(keys)
+print("\n".join(keys))
 ```
 
-You might expect that you can access the data in the PCIC netCDF files directly, just like we have done for the dimensions. This is usually true of netCDF files but at the time of writing, trying to access the files directly was [giving unexpected results](https://github.com/pacificclimate/pdp/issues/94). However, we can download the required files to disk and access them locally. We will use the `urlretrieve` method of the **urllib.request** module for this.
-
-Before we download the files, I want to generate some filenames, replacing the original "pr-tasmax-tasmin" prefix with the specific variable ("tasmax" or "tasmin") that I want to store in each file (note that it is possible to download two variables at once, but here I will keep it simple and download each one at a time. I will also correct the start date for good measure.
+You might expect that you can access the data in the PCIC netCDF files directly, just like we have done for the dimensions. This is usually true of netCDF files but at the time of writing, trying to access the files directly was [giving unexpected results](https://github.com/pacificclimate/pdp/issues/94). However, we can download the required files to disk and access them locally using the `download()` function that we defined earlier. Before we download the files, however, we need to know the URL and filename of each file. 
 
 
 ```{python, deco=list()}
-filenames = list(map(lambda i: re.sub("pr-tasmax-tasmin", "tasmax", i) + ".nc", keys)) + \
-              list(map(lambda i: re.sub("pr-tasmax-tasmin", "tasmin", i) + ".nc", keys))
-filenames = [re.sub('19500101', '19810101', i) for i in filenames]
+urls = [data[key] for key in keys]
+filenames = [os.path.basename(url) for url in urls]
+
+# FIXME, when the time_start error is fixed, you might want to change the date in the filename
+# filenames = [re.sub('19500101', '19810101', i) for i in filenames]
 ```
 
-The data portal [documentation](https://data.pacificclimate.org/portal/docs/raster.html#power-user-howto) explains that we need to format our request URL with a valid [OPeNDAP](http://opendap.org/) specification. In our case, the URL will look like this:
+The data portal documentation [[broken link](https://data.pacificclimate.org/portal/docs/raster.html#power-user-howto)] explains that we need to format our request URL with a valid [OPeNDAP](http://opendap.org/) specification. In our case, the URL will look like this:
 
-`http://data.pacificclimate.org/dataportal/downscaled_gcms/data/<dataset_id>.nc?<variable>[<time range>][<lon range>][<lat range>]`
+<center> _https://data.pacificclimate.org/data/downscaled_gcms/data/<dataset_id>.nc?<variable>[<time range>][<lon range>][<lat range>]_ </center>
 
 We need to fill in the `dataset_id` with the URL from the catalogue that we downloaded earlier. We will complete the DAP specification with either "tasmax" or "tasmin" and `[time_start:time_total][lon_cell:lon_cell][lat_cell:lat_cell]`. You may notice that the requested URL has the _.nc_ extension twice. This is because we are asking the server to access the netCDF file and to return the result as a netCDF file. Other options include _.csv_ and ASCII gridded data, but these are metadata-poor formats and are not recommended.
 
 ```{python, deco=list()}
 url_suffix = "[{}:{}][{}:{}][{}:{}]".format(time_start, total_time, lat_cell, lat_cell, lon_cell, lon_cell)
-urls = list(map(lambda i: data[i] + ".nc?tasmax" + url_suffix, keys)) + \
-         list(map(lambda i: data[i] + ".nc?tasmin" + url_suffix, keys))
+urls = [url + ".nc?" + re.search(r'tasm(in|ax)', url)[0] + url_suffix for url in urls]
 ```
 
 You may wish to confirm that your filenames and URLs match, e.g.
@@ -229,7 +256,7 @@ Now you can proceed to download these files by looping over the `filenames` and 
 
 ```{python, eval=FALSE, deco=list()}
 for i in range(len(urls)):
-    urllib.request.urlretrieve(urls[i], filenames[i])
+    download(urls[i], filenames[i])
 ```
 
 Now that you have the data, we can proceed to analyze it. In Lab 5 (Sec. \@ref{lab5}), we will compare the downscaled GCM data to our observed data and re-assess our exposure unit based on these new data.

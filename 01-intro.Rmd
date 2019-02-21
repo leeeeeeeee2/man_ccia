@@ -21,7 +21,7 @@ Along the way, you will learn some general information about climate model hiera
 
 The help you navigate this book, we will use a specific syntax.
 
-- **bold** is used for the names of Python libraries or R packages.
+- **bold** is used for the names of Python libraries or modules.
 - _italic_ is used when referencing things like filenames, URLs, email addresses and file extensions. 
 - `constant width` is used to indicate code, commands, or output, as well as variable names and the names of executable files.
 - **`constant width bold`** code should be typed exactly as it appears.
@@ -49,10 +49,6 @@ Any code block in this book should be assumed to be Python code, unless specific
 
 ```{python, deco=list()}
 print("This is Python code!")
-```
-
-```{r, deco=list(label="R", bc="#276dc3", tc="#ffffff", icon=list(style="fab", name="r-project"))}
-print("This is R code!")
 ```
 
 ```{bash, deco=list(label="Shell", bc="#000000", tc="#ffffff", icon=list(style="fas", name="terminal"))}
