@@ -9,7 +9,7 @@ use_condaenv("man_ccia", conda = conda, required = TRUE)
 source("R/deco_hook.R")
 ```
 
-Climate change is a critical issue facing our generation, and has been called the "greatest challenge of our time" by Dr. Thomas F. Stocker, the former co-chairman of the IPCC Working Group I [@gillis_2013_climate]. At the University of Toronto Scarborough, EES1117 "Climate Change Impact Assessment" (CCIA) focuses on projecting the regional impacts of the changing global climate, and is, arguably, the academic centrepiece of the M.Env.Sc. stream of the same name. This lab manual is a companion to that course, and is designed to walk you through a detailed CCIA process.
+Climate change is a critical issue facing our generation, and has been called the "greatest challenge of our time" by Dr. Thomas F. Stocker, the former co-chairman of the IPCC Working Group I [@gillis2013climate]. At the University of Toronto Scarborough, EES1117 "Climate Change Impact Assessment" (CCIA) focuses on projecting the regional impacts of the changing global climate, and is, arguably, the academic centrepiece of the M.Env.Sc. stream of the same name. This lab manual is a companion to that course, and is designed to walk you through a detailed CCIA process.
 
 ## Learning outcomes
 

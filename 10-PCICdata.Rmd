@@ -25,7 +25,7 @@ from netCDF4 import Dataset, num2date
 
 We can improve upon our estimate of the impact of climate change on our exposure unit of interest by downscaling GCM data using more sophisticated statistical downscaling techniques.
 
-In this exercise, we will use data that has been downscaled using a bias-corrected constructed analogs method (BCCAQ; see @werner2016hydrologic). One of the advantages of this method is that we can bias-correct and downscale daily GCM data.
+In this exercise, we will use data that has been downscaled using a bias-corrected constructed analogs method (BCCAQ; see @cannon2015bias). One of the advantages of this method is that we can bias-correct and downscale daily GCM data.
 
 The data was provided by @pcic2014statistically, and is downscaled based on a high-quality gridded observed dataset (~10 km grid size) developed by NRCan (ANUSPLIN300). PCIC provides an excellent overview of their downscaling methodology, with citations made to the relevant articles, [here](https://
 www.pacificclimate.org/data/statistically-downscaled-climate-scenarios). You should read the entirety of that page before continuing this preface and before starting lab 5.
@@ -146,7 +146,7 @@ First, I am going to define a special `download` function with a progressbar so 
 def download(url, filename):
     print("Downloading ", filename)
     r = requests.get(url, stream=True)
-    total_size, blocksize = int(r.headers.get('content-length', 0)), 1024
+    total_size, block_size = int(r.headers.get('content-length', 0)), 1024
     written = 0 
     with open(filename, 'wb') as f:
         for data in tqdm(r.iter_content(block_size),
@@ -155,7 +155,7 @@ def download(url, filename):
             written = written + len(data)
             f.write(data)
     if total_size != 0 and written != total_size:
-        print("Something went wrong with the download!\n",
+        print("Downloaded size does not match expected size!\n",
               "FYI, the status code was ", r.status_code)
 ```
 
@@ -191,8 +191,8 @@ total_time = len(nc_time)
 time_start = date2index(dt.datetime(1981, 1, 1, 12, 0, 0), nc_time, select="nearest")
 lat_cell = np.argmin(np.abs(nc_lat - target['lat']))
 lon_cell = np.argmin(np.abs(nc_lon - target['lon']))
-print("Our start date is", num2date(nc_time[time_start], nc_time.units, nc_time.calendar))
-print("We need data starting at time T={} (of {}), from X={} and Y={}".format(time_start, total_time, lon_cell, lat_cell))
+print("Our start date is", num2date(nc_time[time_start], nc_time.units, nc_time.calendar),
+      "\nWe need data starting at time T={} (of {}), from X={} and Y={}".format(time_start, total_time, lon_cell, lat_cell))
 nc.close()
 
 # FIXME: As of the time of writing, using any non-zero time_start index causes the download to fail
