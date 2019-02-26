@@ -5,7 +5,7 @@ date: "`r paste0(Sys.Date(), ' (commit ', system('git rev-parse --short --verify
 site: bookdown::bookdown_site
 output: bookdown::gitbook
 documentclass: book
-bibliography: [book.bib, packages.bib]
+bibliography: [bib/book.bib, bib/packages.bib]
 biblio-style: apalike
 link-citations: yes
 description: "A lab manual for students of Climate Change Impact Assessment"
@@ -29,5 +29,5 @@ This work is licensed under a [Creative Commons Attribution-ShareAlike 4.0 Inter
 
 ```{r include=FALSE}
 # automatically create a bib database for R packages
-knitr::write_bib(c(.packages(), 'bookdown', 'reticulate', 'plotly'), 'packages.bib')
+knitr::write_bib(c(.packages(), 'bookdown', 'reticulate', 'plotly'), 'bib/packages.bib')
 ```

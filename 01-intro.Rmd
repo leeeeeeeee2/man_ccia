@@ -3,9 +3,7 @@
 _Last update: `r system("git log -1 --format=\"%ad (%h)\" -- 01-intro.Rmd", intern = TRUE)`_
 
 ```{r setup, include=FALSE}
-library(reticulate)
-conda <- ifelse(file.exists("/opt/conda/bin/conda"), "/opt/conda/bin/conda", "/data/home-ext/miniconda3/bin/conda")
-use_condaenv("man_ccia", conda = conda, required = TRUE)
+source("R/init_python.R")
 source("R/deco_hook.R")
 ```
 
