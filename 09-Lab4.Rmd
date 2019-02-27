@@ -78,15 +78,17 @@ print(dat_ext.head()) # Smallest
 print(dat_ext.tail()) # Largest
 ```
 
-The next line of code is a little involved. I am going to group `dat_ext` by `'Scenario'` and get the smallest value for each using `first()`. (Make sure you sorted the values in the previous code block!) I then do the same for the `last()` value. I append these two tables together, and drop the `'MeanAnom'` column. Finally, I restore the index.
+The next code block is a little involved. I am going to group `dat_ext` by `'Scenario'` and get the smallest value for each using `first()`. Make sure you sorted the values in the previous code block or you won't get the expected output! I will label those values "Lower", to represent the lower limit of the model projections, and restore the index, which was changed by `groupby`. I then do the same for the `last()` value, labelling these as "Upper". I append these two tables together, and drop the `'MeanAnom'` column.
 
 
 ```{python, deco=list()}
-dat_ext = dat_ext.groupby('Scenario').first().append(dat_ext.groupby("Scenario").last()).drop("MeanAnom", axis = 1).reset_index()
+lower = dat_ext.groupby('Scenario').first().assign(Limit = "Lower").reset_index()
+upper = dat_ext.groupby("Scenario").last().assign(Limit = "Upper").reset_index()
+dat_ext = lower.append(upper).drop("MeanAnom", axis = 1)
 print(dat_ext)
 ```
 
-Now we have a table of the two extreme models for each scenario. Great! This table suits our needs for this analysis, but if you were to print this table, you should add an additional column or formatting mark to help the reader to quickly identify which rows represent the high extreme and which represent the low extreme. 
+Now we have a table of the two extreme models for each scenario that identifies each model as providing either an upper or lower extreme. Great! This table suits our needs for this analysis.
 
 ### Validating model baselines
 
@@ -106,7 +108,7 @@ $$\textrm{GFCI} = \frac{ \left | T_{\textrm{mod}} - T_{\textrm{obs}} \right |}{\
 $\left | T_{\textrm{mod}} - T_{\textrm{obs}} \right |$ is the absolute difference between the modelled baseline and the observed baseline, and $\sigma_{\textrm{obs}}$ is the standard deviation of the aggregate observed values. In my case, I need to use the mean and standard deviation of the annual aggregate values of our observed Toronto station data. If I want to test for $T_{\textrm{mean}}$, for instance, I would first calculate the annual average $T_{\textrm{mean}}$ for each of the 30-years in our baseline, and then take the mean and standard deviation of those 30 annual values.
 
 ```{block, type="rmdtip"}
-If you are performing a monthly or seasonal analysis, you should use the respective aggregate values. As an example, if you are performing your analysis on winter values, $T_{\textrm{obs}}$ is the average yearly winter temperature and $\sigma_{\textrm{obs}}$ is the standard deviation of those average yearly winter temperatures. You should, of course, also have choosen seasonal output from _Conjuntool_. 
+If you are performing a monthly or seasonal analysis, you should use the respective aggregate values. As an example, if you are performing your analysis on winter values, $T_{\textrm{obs}}$ is the average yearly winter temperature and $\sigma_{\textrm{obs}}$ is the standard deviation of those average yearly winter temperatures. You should, of course, also have chosen seasonal output from _Conjuntool_. 
 ```
 
 **Pandas** doesn't reliably process date information in a _.csv_ file, so we need to fix the `'Date'` column.
@@ -146,10 +148,10 @@ print(dat_gf.sort_values('GFCI').head())
 
 The GFCI defines confidence as follows:
 
-- Values below 1.0 indicate that the bias in the model projections was within one standard deviation of the observed aggregate values. These values are further subdivided:
+  - Values below 1.0 indicate that the bias in the model projections was within one standard deviation of the observed aggregate values. These values are further subdivided:
   - Values between 0.5 and 1.0 are considered to merit moderate confidence
   - Values below 0.5 are considered to merit high confidence
-- Values above 1.0 indicate that the model bias exceeds one standard deviation of the aggregate values. These projections are considered to be suspect and should not be used.
+  - Values above 1.0 indicate that the model bias exceeds one standard deviation of the aggregate values. These projections are considered to be suspect and should not be used.
 
 We can whip this into a simple function so that we can easily classify the confidence that we have in our models. 
 
@@ -221,7 +223,6 @@ You may be concerned that the baseline values are different for the difference s
 ```{python, deco=list()}
 print(dat.groupby(['Scenario']).count().reset_index())
 ```
-
 
 From the above table, it becomes pretty obvious why most studies use RCP4.5 and RCP8.5, they are by far the most modelled. We'll use those scenarios when we apply our change factors, next.
 
@@ -341,23 +342,36 @@ print(recalc_exp(obs=tor[['Date', 'MeanTemp']],
 
 As we might have expected, there is a larger increase in CDDs for the RCP 8.5 Scenario than for the RCP 4.5 scenario. 
 
+The above table is missing an important piece of information. In our `dat_ext` table, we had labelled each model as providing and upper or lower extreme, but this information is not preserved by the `recalc_exp()` function. How can we recover the information? The simplest option might be to replace the values in the `dat_ext.Model` with the values of `dat_ext.Limit`, but this, again, removes some key information from the results, specifically, the model that provided each projection. Another option would be to re-write `recalc_exp()` so that it preserves both pieces of information. The third option, however, is the one that we will use: we already _know_ whether each model in our `recalc_exp()` output represents the upper or lower limit of our projections, since that information is present in `dat_ext`. We can use the same mechanism of merging two tables that we used in in the GFCI section to create a table that includes both pieces of data. 
+
+```{python, deco=list()}
+projected_cdds = recalc_exp(obs=tor[['Date', 'MeanTemp']],
+                            anoms=dat_ext,
+                            stat=sum,
+                            expr="lambda x: 0 if x <= 18 else x - 18",
+                            month=[6,7,8])
+
+print(pd.merge(dat_ext[['Scenario', 'Model', 'Limit']], projected_cdds))
+```
+
 We can also use our `recalc_exp()` function to give us the 30-year daily average CDD, instead of the 30-year total. 
 
 ```{python, deco=list()}
 from numpy import mean
 
-print(recalc_exp(obs=tor[['Date', 'MeanTemp']],
-                 anoms=dat_ext,
-                 stat=mean,
-                 expr="lambda x: 0 if x <= 18 else x - 18",
-                 month=[6,7,8]))
+print(pd.merge(dat_ext[['Scenario', 'Model', 'Limit']], 
+               recalc_exp(obs=tor[['Date', 'MeanTemp']],
+                          anoms=dat_ext,
+                          stat=mean,
+                          expr="lambda x: 0 if x <= 18 else x - 18",
+                          month=[6,7,8])))
 ```
 
 ```{block, type="rmdassignment"}
 
 #### Bonus exercise
 
-The `recalc_exp()` function works on the daily values of each 30-year tridecade. Thus, it returns either the daily average, or the tridecal total of a given exposure unit. These values might not be the most useful metrics for most analysts. It might be more useful to know what we might expect the _annual_ average or sum for a given metric. In our example the seasonal or annual total CDDs might be more useful to policy-makers.
+The `recalc_exp()` function works on the daily values of each 30-year tridecade. Thus, it returns either the daily average, or the tridecadal total of a given exposure unit. These values might not be the most useful metrics for most analysts. It might be more useful to know what we might expect the _annual_ average or sum for a given metric. In our example the seasonal or annual total CDDs might be more useful to policy-makers.
 
 For bonus marks: modify the `recalc_exp()` function above so that it first aggregates the daily values by year (`obs.Date.dt.year`), and then applies the calculation provided by the `stat` argument. For full marks, your function should also retain the original functionality of `recalc_exp()`. (_Hint: you may need to add an extra parameter to the function_).
 
@@ -380,11 +394,12 @@ tor_win = tor_win[tor_win.Date.dt.year.isin(range(1982, 2011))]
 ```
 
 ```{python, deco=list()}
-print(recalc_exp(obs=tor_win[['Date', 'MeanTemp']],
-                 anoms=dat_ext,
-                 stat=sum,
-                 expr="lambda x: 0 if x >= 18 else 18 - x",
-                 month=[12,1,2]))
+print(pd.merge(dat_ext[['Scenario', 'Model', 'Limit']],
+               recalc_exp(obs=tor_win[['Date', 'MeanTemp']],
+                          anoms=dat_ext,
+                          stat=sum,
+                          expr="lambda x: 0 if x >= 18 else 18 - x",
+                          month=[12,1,2])))
 ```
 
 As winter is projected to warm, we see less heating degree days. This change is more rapid in the scenario with more radiative forcing. 
@@ -476,6 +491,6 @@ Great! We have now seen who we can apply GCM-projected change factors to our obs
 - Are the models that best reproduced the _annual_ baseline the same models that best reproduce the _seasonal_ baseline? If not, can we trust our validation results? [2 marks]
 - Re-calculate the changes to the exposure unit using the _seasonal_ data. What differences do you see compared to the annual data? [2 marks]
 - Is it better to use the annual data or the seasonal data for a seasonal study? Why? [2 marks]
-- Produce two multi-panel plots similar to the Figure 10.2. One figure should plot the changes projected by the top-three "validated" models. The other should plot the changes projected by the two extremes and the ensemble average. Make sure that the figures are properly labelled and properly captioned. [2 marks]
+- Produce two multi-panel plots similar to the Figure 10.2. One figure should plot the changes projected by the top-three "validated" models. The other should plot the changes projected by the two extremes and the ensemble average. Make sure that the figures are properly labelled and properly captioned. _Hint: you may find it useful to assign a dummy `"Limit"` variable to the ensemble projections just like we assigned a dummy `"Model"` variable to `dat_ens`. You should also adjust the `id_vars` in when using `pd.melt()`, and adjust the `col` facet in `sns.catplot()`. If you are totally stuck, you can see an [example here](https://gitlab.com/claut/man_ccia/snippets/1830781)._ [2 marks]
 - Compare, contrast, and comment on the three model selection methods explored in this lab. What are their strengths and weaknesses? [5 marks]
 ```

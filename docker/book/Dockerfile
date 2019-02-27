@@ -21,10 +21,13 @@ RUN conda create -y \
           pandas \
           python \
           requests \
-          r-base \
           "r-bookdown>=0.7" \
+          r-dplyr \
           r-plotly \
+          r-readr \
           r-reticulate \
+          r-stringr \
+          r-zoo \
           scipy \
           "seaborn>=0.9.0" &&\
           conda clean -ya
