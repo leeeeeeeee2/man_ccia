@@ -351,7 +351,7 @@ projected_cdds = recalc_exp(obs=tor[['Date', 'MeanTemp']],
                             expr="lambda x: 0 if x <= 18 else x - 18",
                             month=[6,7,8])
 
-print(pd.merge(dat_ext[['Scenario', 'Model', 'Limit']], projected_cdds))
+print(pd.merge(projected_cdds, dat_ext[['Scenario', 'Model', 'Limit']]))
 ```
 
 We can also use our `recalc_exp()` function to give us the 30-year daily average CDD, instead of the 30-year total. 
@@ -359,12 +359,12 @@ We can also use our `recalc_exp()` function to give us the 30-year daily average
 ```{python, deco=list()}
 from numpy import mean
 
-print(pd.merge(dat_ext[['Scenario', 'Model', 'Limit']], 
-               recalc_exp(obs=tor[['Date', 'MeanTemp']],
+print(pd.merge(recalc_exp(obs=tor[['Date', 'MeanTemp']],
                           anoms=dat_ext,
                           stat=mean,
                           expr="lambda x: 0 if x <= 18 else x - 18",
-                          month=[6,7,8])))
+                          month=[6,7,8]),
+               dat_ext[['Scenario', 'Model', 'Limit']]))
 ```
 
 ```{block, type="rmdassignment"}
@@ -394,12 +394,12 @@ tor_win = tor_win[tor_win.Date.dt.year.isin(range(1982, 2011))]
 ```
 
 ```{python, deco=list()}
-print(pd.merge(dat_ext[['Scenario', 'Model', 'Limit']],
-               recalc_exp(obs=tor_win[['Date', 'MeanTemp']],
+print(pd.merge(recalc_exp(obs=tor_win[['Date', 'MeanTemp']],
                           anoms=dat_ext,
                           stat=sum,
                           expr="lambda x: 0 if x >= 18 else 18 - x",
-                          month=[12,1,2])))
+                          month=[12,1,2]),
+               dat_ext[['Scenario', 'Model', 'Limit']]))
 ```
 
 As winter is projected to warm, we see less heating degree days. This change is more rapid in the scenario with more radiative forcing. 
