@@ -254,4 +254,4 @@ for i in range(len(urls)):
     download(urls[i], filenames[i])
 ```
 
-Now that you have the data, we can proceed to analyze it. In Lab 5 (Sec. \@ref{lab5}), we will compare the downscaled GCM data to our observed data and re-assess our exposure unit based on these new data.
+Now that you have the data, we can proceed to analyze it. In Lab 5 (Sec. \@ref(lab5), we will compare the downscaled GCM data to our observed data and re-assess our exposure unit based on these new data.

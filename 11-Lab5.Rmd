@@ -186,7 +186,7 @@ plt.savefig('l5f1.png')
 plt.close()
 ```
 
-```{r l5f1, fig.cap="Toronto $T_{mean}$ (1981\u20122100), comparison between observed station data (yellow) and simulation by a multimodel ensemble using downscaled GCM data."}
+```{r l5f1, echo=FALSE, fig.cap="Toronto $T_{mean}$ (1981\u20122100), comparison between observed station data (yellow) and simulation by a multimodel ensemble using downscaled GCM data."}
 knitr::include_graphics("l5f1.png", dpi = NA)
 ```
 
@@ -215,7 +215,7 @@ plt.savefig('l5f2.png')
 plt.close()
 ```
 
-```{r l5f2, fig.cap="Toronto $T_{min}$ (1981\u20122100), comparison between observed station data (yellow) and simulation by a multimodel ensemble using downscaled GCM data."}
+```{r l5f2, echo=FALSE, fig.cap="Toronto $T_{min}$ (1981\u20122100), comparison between observed station data (yellow) and simulation by a multimodel ensemble using downscaled GCM data."}
 knitr::include_graphics("l5f2.png", dpi = NA)
 ```
 
@@ -244,7 +244,7 @@ plt.savefig('l5f3.png')
 plt.close()
 ```
 
-```{r l5f3, fig.cap="Toronto $T_{max}$ (1981\u20122100), comparison between observed station data (yellow) and simulation by a multimodel ensemble using downscaled GCM data."}
+```{r l5f3, echo=FALSE, fig.cap="Toronto $T_{max}$ (1981\u20122100), comparison between observed station data (yellow) and simulation by a multimodel ensemble using downscaled GCM data."}
 knitr::include_graphics("l5f3.png", dpi = NA)
 ```
 
@@ -297,7 +297,7 @@ plt.savefig('l5f4.png')
 plt.close()
 ```
 
-```{r l5f4, fig.cap="$T_{mean}$ bias in downscaled multi-model ensemble using downscaled GCM data. The ensemble mean is shown as a black line. Shaded regions indicate one standard deviation (light grey), and the full range of individual ensemble-members (dark grey)."}
+```{r l5f4, echo=FALSE, fig.cap="$T_{mean}$ bias in downscaled multi-model ensemble using downscaled GCM data. The ensemble mean is shown as a black line. Shaded regions indicate one standard deviation (light grey), and the full range of individual ensemble-members (dark grey)."}
 knitr::include_graphics("l5f4.png", dpi = NA)
 ```
 
@@ -337,7 +337,7 @@ plt.savefig('l5f5.png')
 plt.close()
 ```
 
-```{r l5f5, fig.cap="Simulated and projected 30-year maximum (orange), minimum (green), and mean (blue) temperatures averages at Toronto for tridecades from the 1990s to the 2080s, as projected by a downscaled multimodel ensemble for RCP4.5 (solid) and RCP8.5 (dashed)."}
+```{r l5f5, echo=FALSE, fig.cap="Simulated and projected 30-year maximum (orange), minimum (green), and mean (blue) temperatures averages at Toronto for tridecades from the 1990s to the 2080s, as projected by a downscaled multimodel ensemble for RCP4.5 (solid) and RCP8.5 (dashed)."}
 knitr::include_graphics("l5f5.png", dpi = NA)
 ```
 
@@ -360,7 +360,7 @@ plt.savefig('l5f6.png')
 plt.close()
 ```
 
-```{r l5f6, fig.cap="Simulated and projected 30-year mean temperatures averages at Toronto for tridecades from the 1990s to the 2080s, as projected by six downscaled GCMs for RCP4.5 (solid) and RCP8.5 (dashed)."}
+```{r l5f6, echo=FALSE, fig.cap="Simulated and projected 30-year mean temperatures averages at Toronto for tridecades from the 1990s to the 2080s, as projected by six downscaled GCMs for RCP4.5 (solid) and RCP8.5 (dashed)."}
 knitr::include_graphics("l5f6.png", dpi = NA)
 ```
 
@@ -371,7 +371,6 @@ plt.figure(figsize=(10,12))
 fg = sns.FacetGrid(hue="Model", row="Scenario", data=plot_data[plot_data.Variable == "tas"], aspect=1.61)
 fg.map(sns.lineplot, "Period", "Value").add_legend()
 fg.set_ylabels("Temperature ($^{\circ}$C)")
-plt.title("Tridecadal annual temperature averages ($^{\circ}$C)")
 ```
 
 ```{python, include=FALSE}
@@ -379,7 +378,7 @@ plt.savefig('l5f7.png')
 plt.close()
 ```
 
-```{r l5f7, fig.cap="Simulated and projected 30-year mean temperatures averages at Toronto for tridecades from the 1990s to the 2080s, as projected by six downscaled GCMs for RCP4.5 (top) and RCP8.5 (bottom)."}
+```{r l5f7, echo=FALSE, fig.cap="Simulated and projected 30-year mean temperatures averages at Toronto for tridecades from the 1990s to the 2080s, as projected by six downscaled GCMs for RCP4.5 (top) and RCP8.5 (bottom)."}
 knitr::include_graphics("l5f7.png", dpi = NA)
 ```
 
@@ -415,7 +414,7 @@ plt.savefig('l5f8.png')
 plt.close()
 ```
 
-```{r l5f8, fig.cap="Simulated and projected 30-year total cooling degree days (CDD) at Toronto for tridecades from the 1990s to the 2080s using downscaled GCMs for RCP4.5 (light) and RCP8.5 (dark)."}
+```{r l5f8, echo=FALSE, fig.cap="Simulated and projected 30-year total cooling degree days (CDD) at Toronto for tridecades from the 1990s to the 2080s using downscaled GCMs for RCP4.5 (light) and RCP8.5 (dark)."}
 knitr::include_graphics("l5f8.png", dpi = NA)
 ```
 
@@ -444,7 +443,7 @@ plt.savefig('l5f9.png')
 plt.close()
 ```
 
-```{r l5f9, fig.cap="Simulated and projected 30-year total cooling degree days (CDD) at Toronto for tridecades from the 1990s to the 2080s using downscaled GCMs for RCP4.5 (light) and RCP8.5. The true historical observed CDDs are shown in dark blue."}
+```{r l5f9, echo=FALSE, fig.cap="Simulated and projected 30-year total cooling degree days (CDD) at Toronto for tridecades from the 1990s to the 2080s using downscaled GCMs for RCP4.5 (light) and RCP8.5. The true historical observed CDDs are shown in dark blue."}
 knitr::include_graphics("l5f9.png", dpi = NA)
 ```
 
