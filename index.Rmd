@@ -19,7 +19,7 @@ We invite your contributions to this book by submitting a [merge request](https:
 
 ## Contributors
 
-This project is coordinated by Conor I. Anderson, and Karen L. Smith. As of this commit, no other contributors have worked on this project. However a number of students have provided us with great feedback on the first edition of this manual. Those students are listed in Appendix \@ref(thanks).
+This project is coordinated by Conor I. Anderson, and Karen L. Smith. As of this commit, no other contributors have worked on this project, however a number of students have provided us with great feedback on the first edition of this manual. Those students are listed in Appendix \@ref(thanks).
 
 ## License
 

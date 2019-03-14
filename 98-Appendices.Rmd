@@ -38,6 +38,19 @@
 
 # Acknowledgements and Appreciation {#thanks}
 
-A huge "thank you" goes out to the first co-hort of students to use this lab manual, the winter 2019 EES1117 class. These folks put up with a ton of typos, some code errors, less-than-clear exercise questions, and my frequent tweaks and experimentation. Thanks (in alphabetical order) to:
+A huge "thank you" goes out to the first cohort of students to use this lab manual: the winter 2019 EES1117 class. These folks put up with a ton of typos, some code errors, less-than-clear exercise questions, and frequent tweaks and experimentation. Thanks (in alphabetical order) to:
 
-Andrew Apostoli, Maralgua Batdelger, Dean Boulding (extra points for opening an issue on GitLab), Samuel Brockmeyer, Mathieu Brunette, Kenneth Chow, Erik Dean, Hongda Ding, Minwen (Amy) Guo, Lee (Allie) Ho, Alexander Lau, Haotian Luo, Ricky Wong, and Minghan (Chase) Yang.
+ - Andrew Apostoli
+ - Maralgua Batdelger
+ - Dean Boulding (extra points for opening an issue on GitLab)
+ - Samuel Brockmeyer
+ - Mathieu Brunette
+ - Kenneth Chow
+ - Erik Dean
+ - Hongda Ding
+ - Minwen (Amy) Guo
+ - Lee (Allie) Ho
+ - Alexander Lau
+ - Haotian Luo
+ - Ricky Wong
+ - Minghan (Chase) Yang
