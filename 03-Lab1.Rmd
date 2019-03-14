@@ -24,7 +24,7 @@ ec3.find_station() # run here to suppress warning
 
 One of the first steps of a climate change impact assessment (CCIA) is to establish a climatological baseline for the climate variable of interest (either an exposure unit or the climate variable most directly linked to the exposure unit). 
 
-An __exposure unit__ is an element or variable that is directly or indirectly affected by the changes in climate. In this exercise you will acquire Canadian climate data for Toronto and perform an analysis of an exposure unit that will be assigned to you. Refer to the Appendix (\@ref(appendix)) for a list of some example exposure units. 
+An __exposure unit__ is an element or variable that is directly or indirectly affected by the changes in climate. In this exercise you will acquire Canadian climate data for Toronto and perform an analysis of an exposure unit that will be assigned to you. Refer to Appendix \@ref(appendix) for a list of some example exposure units. 
 
 What do we mean by baseline? A baseline period is needed to define the observed climate. This observed climate information is combined with GCM output of climate change to determine the climate change impact for a given future climate scenario (e.g. Representative Concentration Pathway (RCP)). When using climate model output, the baseline also serves as the reference period from which the modelled future change in climate is calculated. Future climate change is defined by comparing the years in the baseline period with the similar number of years in the future for a given future climate scenario.
 
