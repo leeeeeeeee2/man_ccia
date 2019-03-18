@@ -93,9 +93,9 @@ plt.plot(np.squeeze(np.mean(np.asarray(baseline.Value[baseline.Variable=='tas'])
 plt.plot(np.squeeze(np.mean(T_hist_CanESM2)*np.ones(x1.size)),
          np.linspace(0,0.045,x1.size),'orange',linewidth=2,label='Raw CanESM2 (~2.8125° grid)')
 
-plt.xlabel('$T_{mean}$ ($^{\circ}$C)')
+plt.xlabel('$T_\mathrm{mean}$ ($^{\circ}$C)')
 plt.ylabel('Probability Density')
-plt.title('$T_{mean}$ at Toronto, 1981‒2010')
+plt.title('$T_\mathrm{mean}$ at Toronto, 1981‒2010')
 plt.legend(loc='upper right',fontsize=12)
 plt.ylim(0,0.045)
 plt.tight_layout()
@@ -103,7 +103,7 @@ plt.savefig('l5f0.png')
 plt.clf()
 ```
 
-```{r l5f0, echo=FALSE, fig.cap="Baseline (1981\u20122100) $T_{mean}$ at Toronto, observed (green), simulated by CanESM2 (yellow), and downscaled by PCIC (blue)."}
+```{r l5f0, echo=FALSE, fig.cap="Baseline (1981\u20122100) $T_\\mathrm{mean}$ at Toronto, observed (green), simulated by CanESM2 (yellow), and downscaled by PCIC (blue)."}
 knitr::include_graphics("l5f0.png", dpi = NA)
 ```
 

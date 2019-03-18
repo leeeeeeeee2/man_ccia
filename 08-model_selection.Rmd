@@ -49,7 +49,7 @@ p_gcm <- plot_ly(data = gcm, x = ~Year, y = ~Value, color = ~Model, linetype = ~
                  hovertext = sprintf("Observed: %s, (historical): %2.1f°C", to_plot$Year,
                                      to_plot$Value)) %>%
   layout(margin = list(b = 60),
-         yaxis = list(title = "<i>T</i><sub>mean</sub> Temperature (°C)"), 
+         yaxis = list(title = "<i>T</i><sub>mean</sub> (°C)"), 
          showlegend = FALSE)
 
 p_gcm
@@ -71,7 +71,7 @@ Another common approach to model selection is validated models based on their ab
 
 Scientists may also choose to use all (or a subset) of the available models to create a multi-model ensemble. In a multi-model ensemble, the output from the selected models is averaged, and that average is used to project future climate. Multi-model ensembles often outperform individual models [@pierce2009selecting]. The ensemble approach partially addresses the varying strengths and weaknesses of individual models, with the hope that model biases will be cancelled out within the averaged output [@knutti2010challenges]. The ensemble approach has been shown to cancel offsetting errors present in individual models [@pierce2009selecting], and can correct for differences in the parametrization of the models [@knutti2010challenges]. Thus, some studies may choose to make use of a full ensemble of all available models, to account for the entire range of available projection data, such as @gough2016ontario.
 
-## Caveats to these strategies {#selection_caveats}
+## Caveats to these strategies {#selectioncaveats}
 
 The above strategies are easy to implement, and are commonly used in the literature, however, there are some important caveats and criticisms to these methods. For instance, a key criticism levelled against the use of the upper and lower extremes is that we typically do not have _a priori_ information regarding _why_ the relevant models offer extreme projections. Perhaps they truly are outliers, and we are creating an artificially wide range of possible scenarios.
 
