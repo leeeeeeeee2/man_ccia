@@ -186,7 +186,7 @@ plt.savefig('l4f1.png')
 plt.clf()
 ```
 
-```{r l4f1, echo=FALSE, fig.cap="GFCI confidence classes for GCM-projected $T_\mathrm{mean}$ at Toronto (1981\u20122010). Lower values indicate less bias in the model projections compared to baseline annual observed average $T_\mathrm{mean}$"}
+```{r l4f1, echo=FALSE, fig.cap="GFCI confidence classes for GCM-projected $T_\\mathrm{mean}$ at Toronto (1981\u20122010). Lower values indicate less bias in the model projections compared to baseline annual observed average $T_\\mathrm{mean}$"}
 knitr::include_graphics("l4f1.png", dpi = NA)
 ```
 

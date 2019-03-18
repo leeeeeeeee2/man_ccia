@@ -186,7 +186,7 @@ plt.savefig('l5f1.png')
 plt.close()
 ```
 
-```{r l5f1, echo=FALSE, fig.cap="Toronto $T_\mathrm{mean}$ (1981\u20122100), comparison between observed station data (yellow) and simulation by a multimodel ensemble using downscaled GCM data."}
+```{r l5f1, echo=FALSE, fig.cap="Toronto $T_\\mathrmean}$ (1981\u20122100), comparison between observed station data (yellow) and simulation by a multimodel ensemble using downscaled GCM data."}
 knitr::include_graphics("l5f1.png", dpi = NA)
 ```
 
@@ -215,7 +215,7 @@ plt.savefig('l5f2.png')
 plt.close()
 ```
 
-```{r l5f2, echo=FALSE, fig.cap="Toronto $T_\mathrm{min}$ (1981\u20122100), comparison between observed station data (yellow) and simulation by a multimodel ensemble using downscaled GCM data."}
+```{r l5f2, echo=FALSE, fig.cap="Toronto $T_\\mathrmin}$ (1981\u20122100), comparison between observed station data (yellow) and simulation by a multimodel ensemble using downscaled GCM data."}
 knitr::include_graphics("l5f2.png", dpi = NA)
 ```
 
@@ -244,7 +244,7 @@ plt.savefig('l5f3.png')
 plt.close()
 ```
 
-```{r l5f3, echo=FALSE, fig.cap="Toronto $T_\mathrm{max}$ (1981\u20122100), comparison between observed station data (yellow) and simulation by a multimodel ensemble using downscaled GCM data."}
+```{r l5f3, echo=FALSE, fig.cap="Toronto $T_\\mathrmax}$ (1981\u20122100), comparison between observed station data (yellow) and simulation by a multimodel ensemble using downscaled GCM data."}
 knitr::include_graphics("l5f3.png", dpi = NA)
 ```
 
@@ -297,7 +297,7 @@ plt.savefig('l5f4.png')
 plt.close()
 ```
 
-```{r l5f4, echo=FALSE, fig.cap="$T_\mathrm{mean}$ bias in downscaled multi-model ensemble using downscaled GCM data. The ensemble mean is shown as a black line. Shaded regions indicate one standard deviation (light grey), and the full range of individual ensemble-members (dark grey)."}
+```{r l5f4, echo=FALSE, fig.cap="$T_\\mathrmean}$ bias in downscaled multi-model ensemble using downscaled GCM data. The ensemble mean is shown as a black line. Shaded regions indicate one standard deviation (light grey), and the full range of individual ensemble-members (dark grey)."}
 knitr::include_graphics("l5f4.png", dpi = NA)
 ```
 
