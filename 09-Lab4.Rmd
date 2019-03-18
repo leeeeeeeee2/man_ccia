@@ -175,7 +175,7 @@ Let's see this information in a figure!
 ```{python, deco=list()}
 plt.figure(figsize=(10,10/1.66))
 fg = sns.scatterplot(x="Model", y="GFCI", hue="Confidence", data=dat_gf)
-plt.title(r'GFCI Values for Model-Projected $T_{mean}$ at Toronto (1981‒2010)')
+plt.title(r'GFCI Values for Model-Projected $T_\mathrm{mean}$ at Toronto (1981‒2010)')
 for label in fg.axes.get_xticklabels():
     label.set_rotation(90)
 plt.tight_layout()
@@ -186,7 +186,7 @@ plt.savefig('l4f1.png')
 plt.clf()
 ```
 
-```{r l4f1, echo=FALSE, fig.cap="GFCI confidence classes for GCM-projected $T_{mean}$ at Toronto (1981\u20122010). Lower values indicate less bias in the model projections compared to baseline annual observed average $T_{mean}$"}
+```{r l4f1, echo=FALSE, fig.cap="GFCI confidence classes for GCM-projected $T_\mathrm{mean}$ at Toronto (1981\u20122010). Lower values indicate less bias in the model projections compared to baseline annual observed average $T_\mathrm{mean}$"}
 knitr::include_graphics("l4f1.png", dpi = NA)
 ```
 
