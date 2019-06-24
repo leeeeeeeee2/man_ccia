@@ -11,8 +11,7 @@ The climate data that we need is made available through the Earth System Grid Fe
 To begin, visit the [ESGF website](https://esgf-node.llnl.gov/projects/esgf-llnl/). I am using the Lawrence-Livermore National Laboratory node, but you could, theoretically, choose any of the other nodes listed on the home page, which looks something like this: 
 
 ```{r l2f1, echo=FALSE, fig.cap="ESGF homepage as of July 2018."}
-download.file("https://screenshotscdn.firefoxusercontent.com/images/a4e37ee9-1d9a-4912-a4e7-3e208a437081.png?download=Screenshot_2018-07-12%20ESGF-LLNL%20-%20Home%20ESGF-CoG.png", "l2f1.png")
-knitr::include_graphics("l2f1.png", dpi = NA)
+knitr::include_graphics("img/Screenshot_2018-07-12_ESGF-LLNL_-_Home_ESGF-CoG.png", dpi = NA)
 ```
 
 ## New user sign-up and registration 
@@ -22,8 +21,7 @@ You will need to complete a few monotonous steps before you can get at the data 
 Next, you will need to register in the "CMIP5 Research" group. Return to the [ESGF home page](https://esgf-node.llnl.gov/projects/esgf-llnl/) and scroll down until you see the following: 
 
 ```{r l2f2, echo=FALSE, fig.cap="GFCI group registration for CMIP5 research (July 2018)."}
-download.file("https://screenshotscdn.firefoxusercontent.com/images/33a09492-a98b-4678-9563-c3f97f45b399.png?download=Screenshot_2018-07-12%20ESGF-LLNL%20-%20Home%20ESGF-CoG.png", "l2f2.png")
-knitr::include_graphics("l2f2.png", dpi = NA)
+knitr::include_graphics("img/Screenshot_2018-07-12_ESGF-LLNL_-_Home_ESGF-CoG_002.png", dpi = NA)
 ```
 
 A direct link to the above is [here](https://esgf-node.llnl.gov/ac/subscribe/CMIP5%20Research/). 
@@ -35,8 +33,7 @@ If at any point during the login/registration process, you are asked for an Open
 To the left of the CMIP5 registration link, is the link to the [CMIP search interface](https://esgf-node.llnl.gov/projects/esgf-llnl/). Click it!
 
 ```{r l2f3, echo=FALSE, fig.cap="ESGF main data search page (July 2018)."}
-download.file("https://screenshotscdn.firefoxusercontent.com/images/37d2a4d8-f8e5-4b9f-b1e6-acdadde3afe9.png?download=Screenshot_2018-07-12%20CMIP5%20Data%20Search%20CMIP5%20ESGF-CoG.png", "l2f3.png")
-knitr::include_graphics("l2f3.png", dpi = NA)
+knitr::include_graphics("img/Screenshot_2018-07-12_CMIP5_Data_Search_CMIP5_ESGF-CoG.png", dpi = NA)
 ```
 
 In the sidebar on the left, you will see a series of search filter options. We will only make use of a few of these in this lab. The options that are of interest to us are summarized in the following table. 
@@ -61,8 +58,7 @@ Try setting your filters as they are in the above table and hit search. You shou
 If you are satisfied with your search results, you can select the "Add all displayed results to Data Cart", and then proceed to your data cart. 
 
 ```{r l2f4, echo=FALSE, fig.cap="Example ESGF search results (July 2018)."}
-download.file("https://screenshotscdn.firefoxusercontent.com/images/eedbb101-b756-41b0-9866-1bf77415906e.png?download=Screenshot_2018-07-12%20CMIP5%20Data%20Search%20CMIP5%20ESGF-CoG.png", "l2f4.png")
-knitr::include_graphics("l2f4.png", dpi = NA)
+knitr::include_graphics("img/Screenshot_2018-07-12_CMIP5_Data_Search_CMIP5_ESGF-CoG_002.png", dpi = NA)
 ```
 
 ## The data cart
@@ -70,15 +66,13 @@ knitr::include_graphics("l2f4.png", dpi = NA)
 Once inside your data cart, you should see a list of results for each individual model-ensemble-scenario. Note, however, that even though we only searched for temperature variables, the ESGF interface gives us a list of files with _all_ available variables. This is more data than we need (and probably more bandwidth than we're willing to expend.)
 
 ```{r l2f5, echo=FALSE, fig.cap="ESGF data cart (July 2018)."}
-download.file("https://screenshotscdn.firefoxusercontent.com/images/7eaa9b5c-68d9-459c-99e5-67427463dc38.png?download=Screenshot_2018-07-12%20ESGF-CoG.png", "l2f5.png")
-knitr::include_graphics("l2f5.png", dpi = NA)
+knitr::include_graphics("img/Screenshot_2018-07-12_ESGF-CoG.png", dpi = NA)
 ```
 
 Use the filter box to the top-right of the data results to narrow down the files that you will download. Note that the box does not support globbing, and expects whole words, i.e. "tas" will not match "tasmax" or "tasmin". If you want all three variables, you can enter multiple search terms separated by commas: "tas, tasmax, tasmin". 
 
 ```{r l2f6, echo=FALSE, fig.cap="ESGF data cart filtering (July 2018)."}
-download.file("https://screenshotscdn.firefoxusercontent.com/images/122bb498-82ad-4586-9eea-948b4a3ffc5c.png?download=Screenshot_2018-07-12%20ESGF-CoG.png&sig=hl1KN5CLZ_YwJ2yEuyLOf4GakeQ", "l2f6.png")
-knitr::include_graphics("l2f6.png", dpi = NA)
+knitr::include_graphics("img/Screenshot_2018-07-12_ESGF-CoG_002.png", dpi = NA)
 ```
 
 ```{block, type='rmddisclaimer'}

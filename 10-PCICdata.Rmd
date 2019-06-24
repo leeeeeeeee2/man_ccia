@@ -183,15 +183,14 @@ Now we can find the relevant indices.
 ```{python, deco=list()}
 target = {"lat": 43.67, "lon": -79.40}
 total_time = len(nc_time)
-time_start = date2index(dt.datetime(1981, 1, 1, 12, 0, 0), nc_time, select="nearest")
+# FIXME: As of the time of writing, using non-zero time_start indeces causes issues
+#time_start = date2index(dt.datetime(1981, 1, 1, 12, 0, 0), nc_time, select="nearest")
+time_start = 0 
 lat_cell = np.argmin(np.abs(nc_lat - target['lat']))
 lon_cell = np.argmin(np.abs(nc_lon - target['lon']))
 print("Our start date is", num2date(nc_time[time_start], nc_time.units, nc_time.calendar),
       "\nWe need data starting at time T={} (of {}), from X={} and Y={}".format(time_start, total_time, lon_cell, lat_cell))
 nc.close()
-
-# FIXME: As of the time of writing, using any non-zero time_start index causes the download to fail
-time_start = 0 
 ```
 
 Now that we know the specific dimensions that we need to download, we can find the keys for the full set of models that we desire, for both RCP4.5 and RCP8.5. We will use a special search pattern called a [regular expression](https://en.wikipedia.org/wiki/Regular_expression) for this. 
@@ -223,12 +222,12 @@ urls = [data[key] for key in keys]
 filenames = [os.path.basename(url) for url in urls]
 
 # FIXME, when the time_start error is fixed, you might want to change the date in the filename
-# filenames = [re.sub('19500101', '19810101', i) for i in filenames]
+#filenames = [re.sub('19500101', '19810101', i) for i in filenames]
 ```
 
-The data portal documentation [[broken link](https://data.pacificclimate.org/portal/docs/raster.html#power-user-howto)] explains that we need to format our request URL with a valid [OPeNDAP](http://opendap.org/) specification. In our case, the URL will look like this:
+The data portal [documentation](https://web.archive.org/web/20190624031923/https://data.pacificclimate.org/portal/docs/raster.html#power-user-howto] explains that we need to format our request URL with a valid [OPeNDAP](http://opendap.org/) specification. In our case, the URL will look like this:
 
-<center> _https://data.pacificclimate.org/data/downscaled_gcms/data/<dataset_id>.nc?<variable>[<time range>][<lon range>][<lat range>]_ </center>
+<center> `https://data.pacificclimate.org/data/downscaled_gcms/data/<datasetid>.nc?<variable>[<time range>][<lon range>][<lat range>]` </center>
 
 We need to fill in the `dataset_id` with the URL from the catalogue that we downloaded earlier. We will complete the DAP specification with either "tasmax" or "tasmin" and `[time_start:time_total][lon_cell:lon_cell][lat_cell:lat_cell]`. You may notice that the requested URL has the _.nc_ extension twice. This is because we are asking the server to access the netCDF file and to return the result as a netCDF file. Other options include _.csv_ and ASCII gridded data, but these are metadata-poor formats and are not recommended.
 

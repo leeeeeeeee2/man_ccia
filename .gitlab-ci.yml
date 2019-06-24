@@ -11,7 +11,7 @@ tikz:
   script:
     - cd tikz
     - for D in 0 1 2 3 4; do pdflatex -shell-escape "${D}d.tex"; done
-    - mkdir ../img
+    - mkdir -p ../img
     - cp *.png ../img/
   artifacts:
     expire_in: 1h
