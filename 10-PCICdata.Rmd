@@ -225,7 +225,7 @@ filenames = [os.path.basename(url) for url in urls]
 #filenames = [re.sub('19500101', '19810101', i) for i in filenames]
 ```
 
-The data portal [documentation](https://web.archive.org/web/20190624031923/https://data.pacificclimate.org/portal/docs/raster.html#power-user-howto] explains that we need to format our request URL with a valid [OPeNDAP](http://opendap.org/) specification. In our case, the URL will look like this:
+The data portal [documentation](https://web.archive.org/web/20190624031923/https://data.pacificclimate.org/portal/docs/raster.html#power-user-howto) explains that we need to format our request URL with a valid [OPeNDAP](http://opendap.org/) specification. In our case, the URL will look like this:
 
 <center> `https://data.pacificclimate.org/data/downscaled_gcms/data/<datasetid>.nc?<variable>[<time range>][<lon range>][<lat range>]` </center>
 

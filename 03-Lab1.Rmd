@@ -62,7 +62,7 @@ print(ec3.get_data.__doc__)
 Let's download the daily data for the "Toronto" station (No. 5051) from 1981 to 2010. We can request the dates that we want using a Python range. Remember that Python ranges are "left inclusive, right exclusive". That means that `range(1981, 2011)` will give us data from 1981 up to (but not including) 2011. _Note that I am turning off the progress bar here because it interferes with the book rendering. You can omit the last argument._
 
 ```{python get_tor, deco=list()}
-tor = ec3.get_data(stations=5051, years=range(1981, 2011))
+tor = ec3.get_data(stations=5051, years=range(1981, 2011), progress=False)
 ```
 
 
