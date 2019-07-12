@@ -21,7 +21,7 @@ RUN conda create -y \
           pandas \
           python \
           requests \
-          "r-bookdown>=0.7" \
+          "r-bookdown>=0.12" \
           r-dplyr \
           r-plotly \
           r-readr \
