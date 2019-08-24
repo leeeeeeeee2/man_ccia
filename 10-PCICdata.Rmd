@@ -112,12 +112,15 @@ knitr::include_graphics("l5f0.png", dpi = NA)
 PCIC provides an intuitive point and click map for accessing the downscaled GCM data. In our exercise in Lab 5, we will use six models (CanESM2, CCSM4, CSIRO-Mk3-6-0, GFDLESM2G, inmcm4 and MIROC5). To download this information manually, follow the steps below. You may instead wish to download these data programatically. Skip to the next section for that process. 
 
 1. Open the link to the downscaled GCM data: http://tools.pacificclimate.org/dataportal/downscaled_gcms/map/. A map of North America should appear on your screen.
-2. In the bar on the right-hand side of your screen. Select "historical + rcp45".
-3. For this exercise, we will only use the BCCAQ downscaled data.
-4. Select one of the downscaled datasets, e.g. BCCAQ+ANUSPLIN300+inmcm4 and click on 'tasmax'. We have to download 'tasmax' and 'tasmin' separately.
-5. Set your start date to 1981-01-01, leave the end date as is at 2100-12-31
-5. Now, click on the pen icon in the top right-hand corner of the map and select the Toronto latitude and longitude (43.67°N and 79.40°W). A small window will pop-up asking if you want to download this data - click 'OK'.
+2. In the bar on the right-hand side of your screen. Select "historical,rcp45".
+3. Select one of the downscaled datasets, e.g. CanESM2, r1i1p1, and 'tasmax'. We have to download 'tasmax' and 'tasmin' separately.
+4. Set your start date to 1981-01-01, leave the end date as is at 2101-01-01.
+5. Now, click on the pencil icon in the top right-hand corner of the map and select the Toronto latitude and longitude (43.67°N and 79.40°W). A small window will pop-up asking if you want to download this data - click 'OK'.
 6. Repeat this process 23 times so that you have data for both 'tasmax' and 'tasmin' for all 6 models for RCP 4.5 and RCP 8.5. 
+
+```{block, type='rmdtip'}
+You can also download whole areas from the PCIC data portal. To do that, use the polygon icon between the pencil and the hand. 
+```
 
 ## Retrieving downscaled GCM data from PCIC programatically
 
@@ -178,18 +181,25 @@ nc_lat = nc.variables['lat'][:].data
 nc_lon = nc.variables['lon'][:].data
 ```
 
-Now we can find the relevant indices.
+Now we can find the relevant indices. Here I am using `d` to represent day, `x` to represent longitude, and `y` to represent latitude.
+
+```{block, type='rmdcomment'}
+While we are only really looking for a single point in our exercises, the code in this chapter requests a box of zero length and zero width. If, in the future, you plan to peform a regional study on a larger spatial scale just set your xmin (left), xmax (right), ymin (bottom) and ymax (top) to capture all of the cells that you are interested in. 
+```
 
 ```{python, deco=list()}
-target = {"lat": 43.67, "lon": -79.40}
-total_time = len(nc_time)
-# FIXME: As of the time of writing, using non-zero time_start indeces causes issues
-#time_start = date2index(dt.datetime(1981, 1, 1, 12, 0, 0), nc_time, select="nearest")
-time_start = 0 
-lat_cell = np.argmin(np.abs(nc_lat - target['lat']))
-lon_cell = np.argmin(np.abs(nc_lon - target['lon']))
-print("Our start date is", num2date(nc_time[time_start], nc_time.units, nc_time.calendar),
-      "\nWe need data starting at time T={} (of {}), from X={} and Y={}".format(time_start, total_time, lon_cell, lat_cell))
+target = {"ymin": 43.67, "xmin": -79.40, "ymax": 43.67, "xmax": -79.40}
+# FIXME: As of the time of writing, using non-zero dmin indeces causes issues
+#dmin = date2index(dt.datetime(1981, 1, 1, 12, 0, 0), nc_time, select="nearest")
+dmin = 0
+dmax = len(nc_time)
+ymin = np.argmin(np.abs(nc_lat - target['ymin']))
+xmin = np.argmin(np.abs(nc_lon - target['xmin']))
+ymax = np.argmin(np.abs(nc_lat - target['ymax']))
+xmax = np.argmin(np.abs(nc_lon - target['xmax']))
+
+print("Our start date is", num2date(nc_time[dmin], nc_time.units, nc_time.calendar),
+      "\nWe need data starting at time T={} (of {}), with Y from {} to {} and X from {} to {}".format(dmin, dmax, ymin, ymax, xmin, xmax))
 nc.close()
 ```
 
@@ -221,18 +231,18 @@ You might expect that you can access the data in the PCIC netCDF files directly,
 urls = [data[key] for key in keys]
 filenames = [os.path.basename(url) for url in urls]
 
-# FIXME, when the time_start error is fixed, you might want to change the date in the filename
+# FIXME, when the dmin error is fixed, you might want to change the date in the filename
 #filenames = [re.sub('19500101', '19810101', i) for i in filenames]
 ```
 
 The data portal [documentation](https://web.archive.org/web/20190624031923/https://data.pacificclimate.org/portal/docs/raster.html#power-user-howto) explains that we need to format our request URL with a valid [OPeNDAP](http://opendap.org/) specification. In our case, the URL will look like this:
 
-<center> `https://data.pacificclimate.org/data/downscaled_gcms/data/<datasetid>.nc?<variable>[<time range>][<lon range>][<lat range>]` </center>
+<center> `https://data.pacificclimate.org/data/downscaled_gcms/data/<datasetid>.nc?<variable>[<dmin:dmax>][<xmin:xmax>][<ymin:ymax>]` </center>
 
-We need to fill in the `dataset_id` with the URL from the catalogue that we downloaded earlier. We will complete the DAP specification with either "tasmax" or "tasmin" and `[time_start:time_total][lon_cell:lon_cell][lat_cell:lat_cell]`. You may notice that the requested URL has the _.nc_ extension twice. This is because we are asking the server to access the netCDF file and to return the result as a netCDF file. Other options include _.csv_ and ASCII gridded data, but these are metadata-poor formats and are not recommended.
+We need to fill in the `dataset_id` with the URL from the catalogue that we downloaded earlier. We will complete the DAP specification with either "tasmax" or "tasmin" and `[<dmin:dmax>][<xmin:xmax>][<ymin:ymax>]`. You may notice that the requested URL has the _.nc_ extension twice. This is because we are asking the server to access the netCDF file and to return the result as a netCDF file. Other options include _.csv_ and ASCII gridded data, but these are metadata-poor formats and are not recommended.
 
 ```{python, deco=list()}
-url_suffix = "[{}:{}][{}:{}][{}:{}]".format(time_start, total_time, lat_cell, lat_cell, lon_cell, lon_cell)
+url_suffix = "[{}:{}][{}:{}][{}:{}]".format(dmin, dmax, ymin, ymax, xmin, xmax)
 urls = [url + ".nc?" + re.search(r'tasm(in|ax)', url)[0] + url_suffix for url in urls]
 ```
 
