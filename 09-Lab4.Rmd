@@ -235,7 +235,7 @@ The methods that we have seen above are quick and useful for pedagogy, but there
 Now that we have chosen our models, let's see how we can apply these change factors to our observed data. For each period, we apply the given change factor to the daily values from our observed data. If we were to graph this, it would look a little bit like a jagged staircase, with each tridecade shifting by some fixed amount. It is not, however, the daily values that are of interest. We cannot reliably forecast daily weather far into the future. Instead, we use the past history, combined with the average tridecadal change to estimate changes in our exposure unit. Since I am looking at $T_{\textrm{mean}}$ here, I won't examine tropical nights as I did in lab 1. Here I will use summer cooling degree days and winter heating degree days for the RCP4.5 and RCP8.5 scenarios.
 
 ```{block, type="rmddisclaimer"}
-In these examples, I am using annual change factors to analyze seasonal exposure units. This is lazy at best and downright wrong at worst. In your research, make sure to use the appropriate change factors for your period of interest. 
+In these examples, I am using annual change factors to analyze seasonal exposure units. This is lazy at best and downright wrong at worst. The sections below are only meant as _code_ examples. In your research, make sure to use the appropriate change factors for your period of interest. 
 ```
 
 I will begin this section by showing how we can manually apply the change factors, and then I will define a function that will make this easier.
@@ -487,7 +487,7 @@ Great! We have now seen who we can apply GCM-projected change factors to our obs
 ## Exercises (what to submit)
 
 ```{block, type='rmdassignment'}
-- Choose either summer tropical nights or winter FDD. Go back to Conjuntool and select the relevant seasonal anomaly data. Describe differences in the results between the annual change factors and the seasonal ones. [2 marks]
+- In Lab 1 (Sec. \@ref(lab1)) we examined the "baseline" summertime Tropical Nights and winter Heating Degree Days for Toronto. Choose either one and use the change factor method to project into the future. Go back to Conjuntool and select the relevant _seasonal_ anomaly data. Describe differences in the results when you use the annual change factors and the seasonal ones. What accounts for the differences? [2 marks]
 - Are the models that best reproduced the _annual_ baseline the same models that best reproduce the _seasonal_ baseline? If not, can we trust our validation results? [2 marks]
 - Re-calculate the changes to the exposure unit using the _seasonal_ data. What differences do you see compared to the annual data? [2 marks]
 - Is it better to use the annual data or the seasonal data for a seasonal study? Why? [2 marks]

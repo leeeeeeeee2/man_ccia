@@ -28,17 +28,17 @@ An __exposure unit__ is an element or variable that is directly or indirectly af
 
 What do we mean by baseline? A baseline period is needed to define the observed climate. This observed climate information is combined with GCM output of climate change to determine the climate change impact for a given future climate scenario (e.g. Representative Concentration Pathway (RCP)). When using climate model output, the baseline also serves as the reference period from which the modelled future change in climate is calculated. Future climate change is defined by comparing the years in the baseline period with the similar number of years in the future for a given future climate scenario.
 
-Environment and Climate Change Canada (ECCC) makes data available over an internet portal. You can [visit this page](http://climate.weather.gc.ca/), and download data manually, but that is a _very_ tedious process. In this lab, I will present you with two options for downloading Canadian climate data: the command-line, and via an R package. 
+Environment and Climate Change Canada (ECCC) makes data available over an internet portal. You can [visit this page](http://climate.weather.gc.ca/), and download data manually, but that is a _very_ tedious process. In this lab, we will use a custom Python module to make it easier to download these data in bulk. 
 
 ## Getting the data
 
-ECCC makes data available over an [FTP site](ftp://client_climate@ftp.tor.ec.gc.ca/Pub/Get_More_Data_Plus_de_donnees/), and gives instructions for downloading data manually via `bash` and `wget`. You can find instructions for using the command line to download data [here](ftp://client_climate@ftp.tor.ec.gc.ca/Pub/Get_More_Data_Plus_de_donnees/Readme.txt).
+ECCC makes data available over an [FTP site](ftp://client_climate@ftp.tor.ec.gc.ca/Pub/Get_More_Data_Plus_de_donnees/), and gives instructions for downloading data manually via Bash and Wget. You can find instructions for using the command line to download data [here](ftp://client_climate@ftp.tor.ec.gc.ca/Pub/Get_More_Data_Plus_de_donnees/Readme.txt).
 
 #### An all-in-Python solution
 
 For convenience, I have written a small Python module, called **ec3** to search for and download data from the ECCC archive. You can review the source code for this module on [GitLab](https://gitlab.com/ConorIA/ec3.py). **ec3** is also available as a stand-alone command-line program, so if you have a colleague who is afraid to learn how to code, they can still use **ec3** to speed up the process of downloading data from ECCC. 
 
-If you followed the tip box in Section \@ref(enviro), then you already have **ec3** installed. If you didn't, you can install it via conda. Note that **ec3** is not available in the official Anaconda channels, and has some dependencies from the "conda-forge" channel. I'll prepend conda-forge to the start of my channels list so that packages get installed from there first, and append my personal channel to the end of the list so that it is only used for packages that are not available in any other channel.
+If you followed the instructions in Section \@ref(enviro), then you already have **ec3** installed. If you didn't, you can install it via Conda. Note that **ec3** is not available in the official Anaconda channels, and has some dependencies from the "conda-forge" channel. First, _prepend_ conda-forge to the start of your channels list so that packages get installed from there first, and _append_ Conor's personal channel to the end of the list so that it is only used for packages that are not available in any other channel.
 
 ```{bash install_ec3, eval=FALSE, deco=list(label="Shell", bc="#000000", tc="#ffffff", icon=list(style="fas", name="terminal"))}
 conda config --prepend channels conda-forge
@@ -59,7 +59,7 @@ The **ec3** module contains two functions: `ec3.find_station()`, and
 print(ec3.get_data.__doc__)
 ```
 
-Let's download the daily data for the "Toronto" station (No. 5051) from 1981 to 2010. We can request the dates that we want using a Python range. Remember that Python ranges are "left inclusive, right exclusive". That means that `range(1981, 2011)` will give us data from 1981 up to (but not including) 2011. _Note that I am turning off the progress bar here because it interferes with the book rendering. You can omit the last argument._
+Let's download the daily data for the "Toronto" station (No. 5051) from 1981 to 2010. We can request the dates that we want using a Python range. Remember that Python ranges are "left inclusive, right exclusive". That means that `range(1981, 2011)` will give us data from 1981 up to (but not including) 2011. _Note that I am turning off the progress bar here because it interferes with the book rendering. You can omit the `progress` argument._
 
 ```{python get_tor, deco=list()}
 tor = ec3.get_data(stations=5051, years=range(1981, 2011), progress=False)
@@ -116,7 +116,7 @@ print(ec3.find_station(target=5051, dist=range(3)))
 
 By the looks of it, "Toronto" and "Toronto City" are co-located! Indeed, in 2003 the "Toronto" station was renamed "Toronto City" and re-coded. Since that date, the daily data is available under station code 31688. 
 
-Let's grab that dataset as of 2000 and compare with station 5051.
+Let's grab that data set as of 2000 and compare with station 5051.
 
 ```{python get_tor2, deco=list()}
 tor2 = ec3.get_data(stations=31688, years=range(2000, 2011), progress=False)
@@ -206,6 +206,8 @@ This code requires that your "Date" column is recognized as such by Python. This
 tor.Date = pd.to_datetime(tor.Date)
 ```
 
+### Example: Tropical nights
+
 Now let's start by adding a new column to our table called "TropNight", which will be a True/False value.
 
 ```{python calc_trop, deco=list()}
@@ -264,6 +266,8 @@ plt.clf()
 ```{r l1f2, echo=FALSE, fig.cap="Total summertime tropical nights at Toronto (1981\u20122010), with linear trend line."}
 knitr::include_graphics("l1f2.png", dpi = NA)
 ```
+
+### Example: Heating degree days
 
 Let's try for a slightly more complicated exposure unit: Winter heating degree days (HDDs). The HDDs represent the difference between the mean temperature and the base temperature of 18 °C. Since HDDs can't be negative, they are only calculated when the mean temperature is below 18 °C. They are used as an indirect measure of energy demand. 
 
@@ -341,9 +345,8 @@ test_trends(tor_hdd.Year, tor_hdd.HDD)
 ## Exercises (what to submit)
 
 ```{block, type='rmdassignment'}
-- You have been assigned an exposure unit and period. Write a brief description of the exposure unit, whether there were any missing or suspicious data, and how these data were treated. [2 marks] 
+- You have been assigned an exposure unit. Write a brief description of the exposure unit, whether there were any missing or suspicious data, and how these data were treated. [2 marks] 
 - Include the time series plots with fitted trend lines for your exposure unit and for the relevant temperature variable, e.g. `MeanTemp` for freezing degree days. [2 marks] 
 - Include a table with the summary statistics for your exposure unit and temperature variable. [2 marks] 
-- Now that we know that Station 5051 was recoded sometime between 2002 and 2003, future analyses might be quicker if we simply merge the 5051 data up to 2002 and the 31688 data from 2003 onward. Does this change in the join date between the two stations affect your results? [2 marks] 
-- Be sure to clearly label your plots and table and include concise figure and table captions. [2 marks]
+- Now that we know that Station 5051 was recoded sometime between 2002 and 2003, future analyses might be quicker if we simply merge the 5051 data up to 2002 and the 31688 data from 2003 onward. Does this change in the join date between the two stations affect your exposure unit analysis results? [2 marks] - Be sure to clearly label your plots and table and include concise figure and table captions. [2 marks]
 ```

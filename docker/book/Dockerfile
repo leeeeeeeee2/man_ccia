@@ -4,6 +4,7 @@ MAINTAINER Conor I. Anderson <conor@conr.ca>
 
 RUN apt-get update -qq &&\
     apt-get -y install --no-install-recommends \
+      curl \
       libgl1-mesa-dev \
       make \
       unzip &&\
@@ -16,6 +17,7 @@ RUN conda config --append channels ConorIA &&\
 RUN conda create -y \
           -n man_ccia \
           ec3 \
+          esgf-pyclient \
           matplotlib \
           netCDF4 \
           pandas \

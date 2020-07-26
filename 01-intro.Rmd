@@ -7,7 +7,7 @@ source("R/init_python.R")
 source("R/deco_hook.R")
 ```
 
-Climate change is a critical issue facing our generation, and has been called the "greatest challenge of our time" by Dr. Thomas F. Stocker, the former co-chairman of the IPCC Working Group I [@gillis2013climate]. At the University of Toronto Scarborough, EES1117 "Climate Change Impact Assessment" (CCIA) focuses on projecting the regional impacts of the changing global climate, and is, arguably, the academic centrepiece of the M.Env.Sc. stream of the same name. This lab manual is a companion to that course, and is designed to walk you through a detailed CCIA process.
+Climate change is a critical issue facing our generation, and has been called the "greatest challenge of our time" by Dr. Thomas F. Stocker, the former co-chairman of the IPCC Working Group I [@gillis2013climate]. At the University of Toronto Scarborough, EES1117 "Climate Change Impact Assessment" (CCIA) focuses on projecting the regional impacts of the changing global climate, and is, arguably, the academic centrepiece of the M.Env.Sc. Climate Change Impacts and Adaptation stream. This lab manual is a companion to that course, and is designed to walk you through a detailed CCIA process.
 
 ## Learning outcomes
 
@@ -17,13 +17,11 @@ Along the way, you will learn some general information about climate model hiera
 
 ## Syntax used in this manual
 
-The help you navigate this book, we will use a specific syntax.
+To help you navigate this book, we will use a specific syntax.
 
 - **bold** is used for the names of Python libraries or modules.
 - _italic_ is used when referencing things like filenames, URLs, email addresses and file extensions. 
 - `constant width` is used to indicate code, commands, or output, as well as variable names and the names of executable files.
-- **`constant width bold`** code should be typed exactly as it appears.
-- _`constant width italic`_ code may have user-defined variables or filenames that need to be replaced by you.
 
 You will also sometimes find specially-formatted call out boxes. These boxes are meant to provide you with helpful tips, important warnings, or provide exercises for you to check your understanding. The boxes look like this:
 
@@ -43,7 +41,7 @@ This is a comment.
 This is a warning or other disclaimer.
 ```
 
-Any code block in this book should be assumed to be Python code, unless specifically highlighed otherwise. 
+The code blocks in this book have been labelled with the icon and name of the programming language. Most of the blocks are Python code, but you will see a few commands that need to be entered in a command prompt or terminal outside of Python. 
 
 ```{python, deco=list()}
 print("This is Python code!")

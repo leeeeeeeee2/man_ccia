@@ -36,11 +36,11 @@ from matplotlib import pyplot as plt
 from netCDF4 import Dataset, date2index, num2date, date2num
 ```
 
-Now, create a list of the netCDF files that we will examine. We have created some miniature netCDF files for use in this book, but you should substitute the directories and filenames below with paths leading to the netCDF files that you downloaded in Lab 2.  
+Now, create a list of the netCDF files that we will examine. We have created some [miniature netCDF files](https://claut.gitlab.io/man_ccia/data/mini/index.html) for use in this book. If you have been following this manual in order, then you should substitute the directories and filenames below with paths leading to the netCDF files that you downloaded in Lab 2.  
 
 ```{python, deco=list()}
-past = "data/tas_Amon_CanESM2_historical_r1i1p1_198001-200512_mini.nc"
-future = ["data/tas_Amon_CanESM2_rcp26_r1i1p1_200601-204012_mini.nc", "data/tas_Amon_CanESM2_rcp45_r1i1p1_200601-204012_mini.nc", "data/tas_Amon_CanESM2_rcp85_r1i1p1_200601-204012_mini.nc"]
+past = "data/mini/tas_Amon_CanESM2_historical_r1i1p1_198001-200512_mini.nc"
+future = ["data/mini/tas_Amon_CanESM2_rcp26_r1i1p1_200601-204012_mini.nc", "data/mini/tas_Amon_CanESM2_rcp45_r1i1p1_200601-204012_mini.nc", "data/mini/tas_Amon_CanESM2_rcp85_r1i1p1_200601-204012_mini.nc"]
 ```
 
 ## The past
@@ -57,7 +57,7 @@ First, we recommend that you get familiar with your data set. For instance, what
 print(nc.dimensions)
 ```
 
-Notice that we have three-dimensional data, stored along X (longitude), Y (latitude), and T (time). Some netCDF files also have a Z dimension (e.g. height). There is no hard limit to the number of dimensions a netCDF file can have, though [it is suggested](https://www.unidata.ucar.edu/software/netcdf/docs/group__dimensions.html) not to exceed 1024. Rest assured, it is unlikely that you will encounter a 1024-D file in the wild. To get a list of the variables stored in your netCDF file, query the `variables` attribute of your loaded dataset. 
+Notice that we have three-dimensional data, stored along X (longitude), Y (latitude), and T (time). Some netCDF files also have a Z dimension (e.g. height). There is no hard limit to the number of dimensions a netCDF file can have, though [it is suggested](https://www.unidata.ucar.edu/software/netcdf/docs/group__dimensions.html) not to exceed 1024. Rest assured, it is unlikely that you will encounter a 1024-D file in the wild. To get a list of the variables stored in your netCDF file, query the `variables` attribute of your loaded data set. 
 
 ```{python, deco=list()}
 print(nc.variables)
@@ -321,7 +321,7 @@ knitr::include_graphics("l3f5.png", dpi = NA)
 
 ## Change Factors
 
-In our next lab, we are going to use change factors to describe changes in our baseline climate. The change factor method (sometimes called $\Delta T$) calculates the projected temperature by adding the observed, baseline temperature time series to the change in the temperature projected by a CGM integration (typically using monthly GCM data). This process removes the bias in the GCM baseline climatology, and represents a simplified form of downscaling. Change factors are described by the following equation:  
+In our next lab, we are going to use change factors to describe changes in our baseline climate. The change factor method (sometimes called $\Delta T$) calculates the projected temperature by adding the observed, baseline temperature time series to the change in the temperature projected by a GCM integration (typically using monthly GCM data). This process removes the bias in the GCM baseline climatology, and represents a simplified form of downscaling. Change factors are described by the following equation:  
 
 <center>$$T_{\mathrm{FUTURE}} = T_{\mathrm{OBSERVED}} + \Delta T_{\mathrm{GCM}}$$</center>
 
@@ -447,8 +447,8 @@ print(pd.DataFrame({"Model": np.repeat("CanESM2", 3),
   - Under "4: Go!", click the "Process!" button and wait for the results.
   - Under "5. Add. Opts.", select the "Baseline Averages" and "Calculate Anomalies" boxes. 
   - Click the "Download Table" option below the table.
-- Compare the output of the models from the _Conjuntool_. Are the model projections largely similar, or different? What might explain some of these similarities or differences. [2 marks]
+- Compare the output of the models from _Conjuntool_. Are the model projections largely similar, or different? What might explain some of these similarities or differences. [2 marks]
 - Provide a brief summary of the _Conjuntool_ output. Which model projects the largest change in temperatures? Which 
-projects the smallest? What is the overall average baseline and change factor for each period across all models? [2 marks]
+projects the smallest? What is the multi-model mean baseline and change factor for each period and scenario? [2 marks]
 ```
 

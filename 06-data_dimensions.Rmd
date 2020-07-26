@@ -68,7 +68,7 @@ for (month in 1:3) {
 }
 ```
 
-The above isn't too unwieldy in my example of a 4 by 5 grid with three layers. The actual data set, however, is on a 36 by 72 grid with over 100 years of data. That required me to do a little bit of [cheeky parsing](https://gitlab.com/ConorIA/claut/blob/master/R/parse_ASCII_grid.R) to read the data into R for a previous analysis. Another disadvantage of text-based data is that it usually requires a separate README file with metadata such as the latitude and longitude coordinates for each cell, and basic facts about the data such as the units, method of collection, licensing and use, etcetera. 
+The above isn't too unwieldy in the example of a 4 by 5 grid with three layers. The actual data set, however, is on a 36 by 72 grid with over 100 years of data. That required me to do a little bit of [cheeky parsing](https://gitlab.com/ConorIA/claut/blob/master/R/parse_ASCII_grid.R) to read the data into R for a previous analysis. Another disadvantage of text-based data is that it usually requires a separate README file with metadata such as the latitude and longitude coordinates for each cell, and basic facts about the data such as the units, method of collection, licensing and use, etc. 
 
 Finding solutions to these challenges falls within the mandate of the [Unidata program](https://www.unidata.ucar.edu/), managed by the [University Corporation for Atmospheric Research](https://www.ucar.edu/). Unidata developed the Network Common Data Form (netCDF) file format as a means of providing an open, portable standard for the storage of geoscience data for education and research. There are some key features of the netCDF file format that make it a good choice for climate scientists.^[See Unidata's [netCDF factsheet](https://www.unidata.ucar.edu/publications/factsheets/current/factsheet_netcdf.pdf).] 
 
@@ -79,10 +79,10 @@ Finding solutions to these challenges falls within the mandate of the [Unidata p
 
 The above benefits of netCDF files have led to the format being endorsed by a number of significant government and academic agencies dedicated to the management of geoscience data. For more details on the netCDF file format, you can visit the [netCDF documentation](https://www.unidata.ucar.edu/software/netcdf/docs/index.html).
 
-The `ncdump` program is a command-line utility (run in `bash`) that is a useful tool to begin to understand the contents of your netCDF files. The command will output information on the dimensions of your data set, the size of each dimension, and additional metadata like units and variable names. The following, for instance, is the output of that command when run on some miniature netCDF files that we have created for this book. You will surely see much more output if you run the tool on the files that you downloaded in Lab 2!
+The `ncdump` program is a command-line utility (run in `bash`) that is a useful tool to begin to understand the contents of your netCDF files. The command will output information on the dimensions of your data set, the size of each dimension, and additional metadata like units and variable names. The following, for instance, is the output of that command when run on some [miniature netCDF files](https://claut.gitlab.io/man_ccia/data/mini/index.html) that we have created for this book. You will surely see much more output if you run the tool on the files that you downloaded in Lab 2!
 
 ```{bash, echo=TRUE, deco=list(label="Shell", bc="#000000", tc="#ffffff", icon=list(style="fas", name="terminal"))}
-ncdump -h data/tas_Amon_CanESM2_historical_r1i1p1_198001-200512_mini.nc
+ncdump -h data/mini/tas_Amon_CanESM2_historical_r1i1p1_198001-200512_mini.nc
 ```
 
 You can check to see if `ncdump` is available on your computer by running `which ncdump`. If it is not installed, fear not! We have written an analogous utility for Python, which you can find [here](https://gitlab.com/claut/man_ccia/snippets/1734337/raw). Download it to your computer import the file, and run it like this:
@@ -91,7 +91,7 @@ You can check to see if `ncdump` is available on your computer by running `which
 source_python('ncdump.py')
 ```
 ```{python, echo=TRUE, deco=list()}
-ncdump("data/tas_Amon_CanESM2_historical_r1i1p1_198001-200512_mini.nc")
+ncdump("data/mini/tas_Amon_CanESM2_historical_r1i1p1_198001-200512_mini.nc")
 ```
 
 In Lab 3 (Sec. \@ref(lab3)), you will learn how to read data from a netCDF file in Python. In that lab, we will focus on a single grid box, but keep in mind that the netCDF files that you acquired in Lab 2 contain much more data, and you can re-use the same files for future analyses of other areas, entire regions or even the entire globe! 

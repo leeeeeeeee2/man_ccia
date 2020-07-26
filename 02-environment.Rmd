@@ -6,18 +6,30 @@ _Last update: `r system("git log -1 --format=\"%ad (%h)\" -- 02-environment.Rmd"
 source("R/deco_hook.R")
 ```
 
-During the labs in this manual, we will make use of a number of different pieces of software. Chiefly among these is Python. We will take for granted that you have already installed Python on your computer, but if you have not, please follow the [instructions to install Anaconda](https://docs.anaconda.com/anaconda/install/) on your operating system. We recommend using Anaconda3. If you already have Anaconda2 installed, fear not! You can still complete the exercises in this book, but you will have to create a new Python 3 environment. Check the tip box, below, for instruction on doing just that. 
+We will use Python for all of the labs in this manual. We will take for granted that you have already installed Python on your computer, but if you have not, please follow the [instructions to install Anaconda](https://docs.anaconda.com/anaconda/install/) on your operating system. We recommend using Anaconda3. If you already have Anaconda2 installed, fear not! You can still complete the exercises in this book, but you will have to create a new Python 3 environment. The instructions, below, will help you accomplish that. 
+
+Whether you are running Anaconda2 or Anaconda3, or one of the [Miniconda](https://conda.io/miniconda.html) variants, we recommend that you create a new Conda environment for this manual. You can accomplish this by writing the following commands from the base Conda environment (i.e from the Anaconda Prompt on Windows or after running `conda activate` from a terminal on MacOS or Linux). 
+
+```{bash, eval=FALSE}
+conda config --prepend channels conda-forge
+conda config --append channels ConorIA
+conda create -n "man_ccia" "python>=3.7.1" ec3 esgf-pyclient matplotlib netCDF4 pandas requests "seaborn>=0.9.0"
+```
+
+This will create a new environment, named "man_ccia", which will contain all of the packages that you will need to complete the exercises contained in this manual, including Python 3.7.1 or higher.
 
 ```{block, type='rmdtip'}
-Whether you are running Anaconda2 or Anaconda3, or one of the [Miniconda](https://conda.io/miniconda.html) variants, we recommend you create a new conda environment for this manual. You can accomplish this by writing the following commands from the base conda environment (i.e from the Anaconda Prompt on Windows or after running `conda activate` from a terminal on MacOS or Linux). 
+If you plan to use Jupyter Lab (the successor to Jupyter Notebook), you can choose to either install Jupyter into your "man_ccia" environment, or use Jupyter from you base environment with an extra kernel for your "man_ccia" environment.
+
+To install Jupyter Lab in the "man_ccia" environment, run the following commands:
 
 <div class="decocode"><div style="background-color:#000000"><p><span style="font-size:90%;color:#ffffff"><i class="fas fa-terminal"></i> <b>Shell</b></span></p>
-    conda config --prepend channels conda-forge
-    conda config --append channels ConorIA
-    conda create -n "man_ccia" "python>=3.7.1" ec3 matplotlib netCDF4 pandas requests "seaborn>=0.9.0"
+    conda activate man_ccia
+    conda install jupyterlab # only needed the first time
+    jupyter lab 
 </div></div>
 
-This will create a new environment, named "man_ccia", which will contain all of the packages that you will need to complete the exercises contained in this manual, including Python 3.7.1 or higher. If you plan to use Jupyter Notebook, your new environment won't be immediately available, however, you can install a "kernel" for your new environment by issuing the following commands: 
+If you prefer to have just one Jupyter installation that can access all of your environments, you can use Jupyter from your "base" environment and install a "kernel" for your "man_ccia" environment by issuing the following commands: 
 
 <div class="decocode"><div style="background-color:#000000"><p><span style="font-size:90%;color:#ffffff"><i class="fas fa-terminal"></i> <b>Shell</b></span></p>
     conda activate man_ccia
@@ -25,94 +37,9 @@ This will create a new environment, named "man_ccia", which will contain all of 
     python -m ipykernel install --user --name="man_ccia" --display-name="man_ccia"
 </div></div>
 
-This command will create a simple JSON file, that tells Jupyter where to look for the Python executable and the packages that are contained in your "man_ccia" environment. Once you have run those commands and re-launched Jupyter Notebook, your "man_ccia" environment should be available under the "New" file creation menu and the "Kernel" options in any running Jupyter Notebook.
-```
-
-## Shell Commands
-
-In addition to Python, we will be using two shell utilities, namely `bash` and `wget`. The following sections will help you to install these two pieces of software 
-
-### Installing on Windows
-
-#### Option 1: The Windows Linux Subsystem
-
-If you are running a recent version of Windows 10 (build 16215 or later), you may wish to install the [Windows Linux Subsystem](https://docs.microsoft.com/en-us/windows/wsl/install-win10). To install Linux on Windows, find PowerShell in your start menu, and run it with administrator privileges. When the shell opens, run:
-
-```{shell, eval=FALSE, deco=list(label="PowerShell", bc="#0872c4", tc="#ffffff", icon=list(style="fab", name="windows"))}
-Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux
-```
-
-Once you have enabled the Windows Linux Subsystem, restart your machine, and install your Linux distribution of choice from the Windows Store, for example, [Ubuntu](https://www.microsoft.com/en-ca/p/ubuntu/9nblggh4msv6). When the install has completed, click "Launch" and choose a username for your Linux user account when prompted. 
-
-The Linux distribution that you install should include `bash` and `wget`. Refer to the "Installing on Linux" (Section \@ref(installing-on-linux)), below, to confirm. 
-
-#### Option 2: Via Cygwyn
-
-If you are running an earlier version of Windows, you should use [Cygwin](https://cygwin.com/), a collection of open source tools that implement a small subset of Linux functionality on Windows.
-
-You can install Cygwin directly from the Cygwin website, or via the Chocolatey package manager. To install directly, follow these steps:
-
-1. Download and run the latest installer from the [Cygwin download page](https://cygwin.com/install.html)
-2. When prompted, set the local package repository to somewhere where you don't mind a bit of clutter.
-3. When given the option to install more packages, search for wget.
-4. Click the "wget" entry that appears under "Internet", and ensure that the "bin" box is selected
-
-If you prefer to install via Chocolatey, find the `cmd.exe` command on your start menu, and run that program as an administration. Enter the following commands (one at a time) to install Chocolatey, Cygwin, and wget. 
-
-```{shell, eval=FALSE, deco=list(label="cmd.exe", bc="#000000", tc="#ffffff", icon=list(style="fab", name="windows"))}
-# Install Chocolately
-@"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))" && SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin"
-```
-
-Now open an instance of Windows Powershell with administrator privileges and run:
-
-```{shell, eval=FALSE, deco=list(label="PowerShell", bc="#0872c4", tc="#ffffff", icon=list(style="fab", name="windows"))}
-choco install cygwin cyg-get
-cyg-get install wget
-```
-
-### Installing on MacOS
-
-The MacOS Terminal app on modern versions of MacOS actually uses bash under the hood, so you are only likely to be missing wget. We will install wget on MacOS using the Homebrew Package Manager.
-
-First, run the following code to install Homebrew
-```{bash, eval=FALSE, deco=list(label="Shell", bc="#000000", tc="#ffffff", icon=list(style="fas", name="terminal"))}
-/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-```
-
-Next, install wget using the newly installed `brew` command: 
-```{bash, eval=FALSE, deco=list(label="Shell", bc="#000000", tc="#ffffff", icon=list(style="fas", name="terminal"))}
-brew install wget
-```
-
-If you prefer to install wget manually, you can download the latest version of the source code from the [GNU website](http://ftp.gnu.org/pub/gnu/wget/). Extract the archive, and run the following commands in the Terminal app;
-
-```{bash, eval=FALSE, deco=list(label="Shell", bc="#000000", tc="#ffffff", icon=list(style="fas", name="terminal"))}
-./configure 
-make
-sudo make install
-```
-
-### Installing on Linux {#installing-on-linux}
-
-If you are running Linux, you almost certainly already have both of these utilities. You can check for the presence of these executable files by opening a shell and typing:
-
-```{bash, deco=list(label="Shell", bc="#000000", tc="#ffffff", icon=list(style="fas", name="terminal"))}
-which bash
-```
-
-```{bash, deco=list(label="Shell", bc="#000000", tc="#ffffff", icon=list(style="fas", name="terminal"))}
-which wget
-```
-
-If either of those commands says `no <command> in (/usr/local/sbin:/usr/local/bin:/usr/bin)`, then you will need to install. Installing programs varies widely by distribution, so refer to your distribution's package manager to find the `wget` and `bash` packages. 
-
-On Ubuntu, for instance, you could run:
-```{bash, eval=FALSE, deco=list(label="Shell", bc="#000000", tc="#ffffff", icon=list(style="fas", name="terminal"))}
-sudo apt-get update
-sudo apt-get install wget
+This command will create a simple JSON file that tells Jupyter where to look for the Python executable and the packages that are contained in your "man_ccia" environment. Once you have run those commands and re-launched Jupyter Lab from your "base" environment (or from Anaconda Navigator), your "man_ccia" kernel should be available under the "New" file creation menu and the "Kernel" options in any running notebook.
 ```
 
 ## Summary
 
-By the end of this chapter, you should have a shiny new conda environment that contains all of the packages and modules that you will need to complete the exercises in this manual. Additionally, you should have `wget` installed, which we will need to download climate model simulation data from the Earth System Grid Federation (ESGF).
+By the end of this chapter, you should have Python 3 installed in a shiny new Conda environment that contains all of the packages and modules that you will need to complete the exercises in this manual.

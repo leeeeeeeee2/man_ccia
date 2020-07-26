@@ -25,7 +25,7 @@ We can improve upon our estimate of the impact of climate change on our exposure
 
 In this exercise, we will use data that has been downscaled using a bias-corrected constructed analogs method (BCCAQ; see @cannon2015bias). One of the advantages of this method is that we can bias-correct and downscale daily GCM data.
 
-The data was provided by @pcic2014statistically, and is downscaled based on a high-quality gridded observed dataset (~10 km grid size) developed by NRCan (ANUSPLIN300). PCIC provides an excellent overview of their downscaling methodology, with citations made to the relevant articles, [here](https://
+The data was provided by @pcic2014statistically, and is downscaled based on a high-quality gridded observed data set (~10 km grid size) developed by NRCan (ANUSPLIN300). PCIC provides an excellent overview of their downscaling methodology, with citations made to the relevant articles, [here](https://
 www.pacificclimate.org/data/statistically-downscaled-climate-scenarios). You should read the entirety of that page before continuing this preface and before starting lab 5.
 
 Figure \@ref(fig:l5f0), below, shows the results of this downscaling process for the Canadian CanESM2 model. Notice that the PCIC product, downscaled to a 10 km grid, is much more closely related to the observed station point data that we downloaded from Environment and Climate Change Canada. Our comparison here still isn't perfect, as we're still comparing a point to a grid cell, but as our grid cell decreases in size, the two series begin to behave more similarly. This definitely looks like a solution to improve the quality of our impact assessment. Read on to learn how to obtain this high-resolution downscaled data directly from PCIC.
@@ -113,7 +113,7 @@ PCIC provides an intuitive point and click map for accessing the downscaled GCM 
 
 1. Open the link to the downscaled GCM data: http://tools.pacificclimate.org/dataportal/downscaled_gcms/map/. A map of North America should appear on your screen.
 2. In the bar on the right-hand side of your screen. Select "historical,rcp45".
-3. Select one of the downscaled datasets, e.g. CanESM2, r1i1p1, and 'tasmax'. We have to download 'tasmax' and 'tasmin' separately.
+3. Select one of the downscaled data sets, e.g. CanESM2, r1i1p1, and 'tasmax'. We have to download 'tasmax' and 'tasmin' separately.
 4. Set your start date to 1981-01-01, leave the end date as is at 2101-01-01.
 5. Now, click on the pencil icon in the top right-hand corner of the map and select the Toronto latitude and longitude (43.67°N and 79.40°W). A small window will pop-up asking if you want to download this data - click 'OK'.
 6. Repeat this process 23 times so that you have data for both 'tasmax' and 'tasmin' for all 6 models for RCP 4.5 and RCP 8.5. 
@@ -124,7 +124,7 @@ You can also download whole areas from the PCIC data portal. To do that, use the
 
 ## Retrieving downscaled GCM data from PCIC programatically
 
-The The Pacific Climate Impacts Consortium (PCIC) data portal can also be accessed programatically via `wget` or your preferred programming language. If you performed any manual downloading, above, you may have noticed that the data portal webpage returns some interesting data set URLs. We can use the same specific URL syntax to automate our downloading. We can do this in Python using the code, below. 
+The The Pacific Climate Impacts Consortium (PCIC) data portal can also be accessed programatically via Python or your preferred programming language. If you performed any manual downloading, above, you may have noticed that the data portal webpage returns some interesting data set URLs. We can use the same specific URL syntax to automate our downloading. We can do this in Python using the code, below. 
 
 As always, we first import the necessary libraries.
 
@@ -139,7 +139,7 @@ from netCDF4 import Dataset, date2index, num2date, date2num
 from tqdm import tqdm
 ```
 
-First, I am going to define a special `download` function with a progressbar so that we can keep track of the files as they download. 
+Here we will use a similar `download` function as the one that we used in Lab 2 (Sec. \@ref(lab2)) so that we can keep track of the files as they download. 
 
 ```{python, deco=list()}
 # Adapted from: https://stackoverflow.com/a/37573701
@@ -165,7 +165,7 @@ with requests.get("http://tools.pacificclimate.org/dataportal/downscaled_gcms/ca
     data = json.loads(r.content)
 ```
 
-We cannot access the data entries with an integer index, but rather need to access the data using the keys. We can print the fill list of keys in the data object using `data.keys()`. This is a very long list, so I will omit it here. Let's say that we are interested in accessing the dataset with the key `tasmax_day_BCCAQv2_CanESM2_historical-rcp26_r1i1p1_19500101-21001231_Canada`. We can find the URL for this like this: 
+We cannot access the data entries with an integer index, but rather need to access the data using the keys. We can print the fill list of keys in the data object using `data.keys()`. This is a very long list, so I will omit it here. Let's say that we are interested in accessing the data set with the key `tasmax_day_BCCAQv2_CanESM2_historical-rcp26_r1i1p1_19500101-21001231_Canada`. We can find the URL for this like this: 
 
 ```{python, deco=list()}
 url = data['tasmax_day_BCCAQv2_CanESM2_historical-rcp26_r1i1p1_19500101-21001231_Canada']
@@ -213,7 +213,7 @@ Here we are collapsing our list of models using '`|`', which operates in our reg
 
 
 ```{python, deco=list()}
-pattern = r'tasm(in|ax).*BCCAQv2.*(' + '|'.join(models) + r').*-rcp(4|8)5.*'
+pattern = r'tasm(in|ax).*BCCAQv2.*(' + '|'.join(models) + r').*-rcp(4|8)5_r1i1p1_.*'
 print(pattern)
 ```
 
@@ -256,7 +256,7 @@ print(filenames[0])
 print(urls[0])
 ```
 
-Now you can proceed to download these files by looping over the `filenames` and `urls` objects. Note that, at the time of writing, the download speeds were _very_ slow (< 500 bits/second or about 0.0625 kb/s). In addition, it seems that subsetting in the time dimension causes downloads to fail after about 3kb are downloaded, so you may in fact need to download the entire time series. Given these current issues, you may prefer to download the data from [this book's repository](https://gitlab.com/claut/man_ccia/tree/master/data/pcic_data).
+Now you can proceed to download these files by looping over the `filenames` and `urls` objects. Note that, at the time of writing, the download speeds were _very_ slow (< 500 bits/second or about 0.0625 kb/s). In addition, it seems that subsetting in the time dimension causes downloads to fail after about 3kb are downloaded, so you may in fact need to download the entire time series. Given these current issues, you may prefer to download the data from [this book's files](https://claut.gitlab.io/man_ccia/data/pcic_data/index.html).
 
 ```{python, eval=FALSE, deco=list()}
 for i in range(len(urls)):
