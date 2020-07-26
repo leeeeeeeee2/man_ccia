@@ -24,14 +24,14 @@
 
 | Extreme Index         | Type    | Code                                 |
 | --------------------- | --------| ------------------------------------ |
-| Hot days              | Boolean | `1 if x > 30 else 0`                 |
-| Summer days           | Boolean | `1 if x > 25 else 0`                 |
-| Ice days              | Boolean | `1 if x < 0 else 0`                  |
-| Frost days            | Boolean | `1 if x < 0 else 0`                  |
-| Tropical nights       | Boolean | `1 if x > 20 else 0`                 |
-| Cold alerts (Toronto) | Boolean | `1 if x <= -15 else 0`               |
+| Hot days              | Boolean | `int(x > 30)`                        |
+| Summer days           | Boolean | `int(x > 25)`                        |
+| Ice days              | Boolean | `int(x < 0)`                         |
+| Frost days            | Boolean | `int(x < 0)`                         |
+| Tropical nights       | Boolean | `int(x > 20)`                        |
+| Cold alerts (Toronto) | Boolean | `int(x <= -15)`                      |
 | Heating degree-days   | Lambda  | `lambda x: 0 if x >= 18 else 18 - x` |
 | Cooling degree-days   | Lambda  | `lambda x: 0 if x <= 18 else x - 18` |
 | Freezing degree-days  | Lambda  | `lambda x: 0 if x >= 0 else 0 - x`   |
-| Dry days              | Boolean | `1 if x > 30 else 0`                 |
-| Wet days              | Boolean | `1 if x > 30 else 0`                 |
+| Dry days              | Boolean | `int(x < 1)`                         |
+| Wet days              | Boolean | `int(x > 1)`                         |

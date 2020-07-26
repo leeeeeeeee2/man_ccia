@@ -3,85 +3,141 @@
 _Last update: `r system("git log -1 --format=\"%ad (%h)\" -- 05-Lab2.Rmd", intern = TRUE)`_
 
 ```{r, include=FALSE}
+source("R/init_python.R")
 source("R/deco_hook.R")
 ```
 
 The climate data that we need is made available through the Earth System Grid Federation (ESGF), a federated network of academic and government data centres in the USA, Europe, and Asia. This is a one-stop shop for all of the climate data from the CMIP5 and the brand new (of the time of writing) output from CMIP6. In this lab, we will focus on the CMIP5 data output. 
 
-To begin, visit the [ESGF website](https://esgf-node.llnl.gov/projects/esgf-llnl/). I am using the Lawrence-Livermore National Laboratory node, but you could, theoretically, choose any of the other nodes listed on the home page, which looks something like this: 
+The ESGF is a network of nodes. For instance, if you visit _this_ [ESGF website](https://esgf-node.llnl.gov/projects/esgf-llnl/), you will be visiting the Lawrence-Livermore National Laboratory node, but you could, theoretically, choose any of the other nodes listed on the ESGF home page. 
 
-```{r l2f1, echo=FALSE, fig.cap="ESGF homepage as of July 2018."}
-knitr::include_graphics("img/Screenshot_2018-07-12_ESGF-LLNL_-_Home_ESGF-CoG.png", dpi = NA)
+```{block, type="rmdtip"}
+The data for the CMIP projects (3-6) are made available without restriction on the ESGF, so you won't need to create an account to access any of the data that we will use in this lab. Some projects, do require registration. If you are interested in any of the projects listed under the ESGF User Guide's ["Authorization for ESGF Data Access"](https://esgf.github.io/esgf-user-support/user_guide.html#authorization-for-esgf-data-access) section, you will need to create an account on the ESGF node of your choice, and then register for the relevant group, e.g. "CMIP5 Research". 
 ```
-
-## New user sign-up and registration 
-
-You will need to complete a few monotonous steps before you can get at the data you need. First, create an account by clicking on the "create account" link in the top-right corner of the homepage. Enter your complete details including your contact information and institution. 
-
-Next, you will need to register in the "CMIP5 Research" group. Return to the [ESGF home page](https://esgf-node.llnl.gov/projects/esgf-llnl/) and scroll down until you see the following: 
-
-```{r l2f2, echo=FALSE, fig.cap="GFCI group registration for CMIP5 research (July 2018)."}
-knitr::include_graphics("img/Screenshot_2018-07-12_ESGF-LLNL_-_Home_ESGF-CoG_002.png", dpi = NA)
-```
-
-A direct link to the above is [here](https://esgf-node.llnl.gov/ac/subscribe/CMIP5%20Research/). 
-
-If at any point during the login/registration process, you are asked for an OpenID, you can click the arrow to the left of the text box and select the node with which you have registered. This will take you to a conventional username/password login page. 
 
 ## Data search 
 
-To the left of the CMIP5 registration link, is the link to the [CMIP search interface](https://esgf-node.llnl.gov/projects/esgf-llnl/). Click it!
+The ESGF features a user-friendly [search interface](https://esgf-node.llnl.gov/projects/esgf-llnl/), but we are not going to use it. Instead, we will be using the **[esgf-pyclient](https://github.com/ESGF/esgf-pyclient)** package, which provides an easy way to access the ESGF [search API](https://esgf.github.io/esgf-user-support/user_guide.html#the-esgf-search-restful-api) directly in Python.
 
-```{r l2f3, echo=FALSE, fig.cap="ESGF main data search page (July 2018)."}
-knitr::include_graphics("img/Screenshot_2018-07-12_CMIP5_Data_Search_CMIP5_ESGF-CoG.png", dpi = NA)
+```{block, type='rmdcomment'}
+The ESGF [documentation](https://esgf.github.io/esgf-user-support/user_guide.html) suggests that you use the web-based search engine and Wget to access CMIP5 data. A previous version of this book documented that process. You can check out those older instructions at the Internet Archive. You will need to follow the [instructions](https://web.archive.org/web/20200118074311/https%3A%2F%2Fclaut.gitlab.io%2Fman_ccia%2Fenviro.html) to install Bash and Wget before you follow the instructions (https://web.archive.org/web/20200706224800/https://claut.gitlab.io/man_ccia/lab2.html) to access the CMIP data. 
 ```
 
-In the sidebar on the left, you will see a series of search filter options. We will only make use of a few of these in this lab. The options that are of interest to us are summarized in the following table. 
+First, we will import the libraries we will need. Specifically, we are importing **pyesgf**, which is the name of the module contained in the **esgf-pyclient** library. We will import both the `search` and the `logon` functions. We will also import **os**, **requests**, and **tqdm**, which we will use in a custom file download function, which you will see later. Finally, we will use **pandas** to create a table from which we will read our results.
 
-| Criteria       | Value                                  |
-|----------------|----------------------------------------|
-| Projects       | CMIP5                                  | 
-| Experiments    | historical, rcp26, rcp45, rcp60, rcp85 |
-| Time Frequency | mon (monthly)                          |
-| Realm          | atmos                                  |
-| CMIP Table     | Amon                                   |
-| Variable       | tas(max/min)                           |
+```{python, deco=list()}
+from pyesgf.search import SearchConnection
+import os
+import pandas as pd
+import requests
+from tqdm import tqdm
+```
+
+Initialize your search by creating a new `SearchConnection` object. Here we will indicate that we want to use the LLNL node as our starting point, and we will ask that our search be distributed across the federated network. 
+
+```{python, deco=list()}
+conn = SearchConnection('https://esgf-node.llnl.gov/esg-search', distrib=True)
+```
+
+Now we need to provide our search criteria. The ESGF API uses a series of defined keywords to find the data that you are looking for. The options that are of interest to us are summarized in the following table. 
+
+| Criteria       | Code                                              |
+|----------------|---------------------------------------------------|
+| Projects       | `project="CMIP5"`                                 | 
+| Model          | `model="CanESM2"`                                 |
+| Experiments    | `experiment="historical,rcp26,rcp45,rcp60,rcp85"` |
+| Time Frequency | `time_frequency="mon"`                            |
+| Realm          | `realm="atmos"`                                   |
+| Variable       | `variable="tas,tasmax,tasmin"`                    |
+| Ensemble       | `ensemble="r1i1p1"`                               |
 
 We are interested in three temperature variables in this Lab: "tas", which is the Near-Surface Air Temperature; "tasmax", which is the Daily Maximum Near-Surface Air Temperature, and "tasmin", the Daily Minimum Near-Surface Air Temperature.
 
 In addition, you may be curious about the 'ensemble' filters. The CMIP5 climate models were compared in a series of ensembles coded as r&lt;N&gt;i&lt;M&gt;p&lt;L&gt;. First, "r" refers to the model run, a different number here indicates that the model was started with a different set of equally realistic initial conditions. Second, "i" refers to the initialization parameters. This number is changed when the model is started using different _methods_. Finally, "p" refers to the perturbed physics used in the model. A different number represents different configurations of the physical parameters for the model ensemble. 
 
-```{block, type='rmdassignment'}
-Try setting your filters as they are in the above table and hit search. You should come up with somewhere around 393 distinct results! In my screenshots, I have used a different set of filters to narrow-in on a single data file. Don't be alarmed that our results will look different! 
+### Searching and parsing the results
+
+Let's pass the above criteria to our search function. Note that we are also passing `latest=True`, which means that we want the latest version of each data set. 
+
+```{python, deco=list()}
+query = conn.new_context(
+    latest=True,
+    facets='null', 
+    project='CMIP5',
+    model='CanESM2',
+    experiment='historical,rcp26,rcp45,rcp60,rcp85',
+    variable='tas,tasmax,tasmin',
+    time_frequency="mon",
+    realm='atmos',
+    ensemble='r1i1p1')
 ```
 
-If you are satisfied with your search results, you can select the "Add all displayed results to Data Cart", and then proceed to your data cart. 
+Execute the search. 
 
-```{r l2f4, echo=FALSE, fig.cap="Example ESGF search results (July 2018)."}
-knitr::include_graphics("img/Screenshot_2018-07-12_CMIP5_Data_Search_CMIP5_ESGF-CoG_002.png", dpi = NA)
+```{python, deco=list()}
+results = query.search()
 ```
 
-## The data cart
+You can find out how many hits your search retrieved by checking the length of `results`. You can also get the `hit_count` property of the `query` object before you search. 
 
-Once inside your data cart, you should see a list of results for each individual model-ensemble-scenario. Note, however, that even though we only searched for temperature variables, the ESGF interface gives us a list of files with _all_ available variables. This is more data than we need (and probably more bandwidth than we're willing to expend.)
-
-```{r l2f5, echo=FALSE, fig.cap="ESGF data cart (July 2018)."}
-knitr::include_graphics("img/Screenshot_2018-07-12_ESGF-CoG.png", dpi = NA)
+```{python, deco=list()}
+print(len(results))
+print(query.hit_count)
+print(query.hit_count == len(results))
 ```
 
-Use the filter box to the top-right of the data results to narrow down the files that you will download. Note that the box does not support globbing, and expects whole words, i.e. "tas" will not match "tasmax" or "tasmin". If you want all three variables, you can enter multiple search terms separated by commas: "tas, tasmax, tasmin". 
+The search results contain "context" objects, which still don't give us the information that we need. Let's process the first hit, so that we can see how the *esgf-pyclient* returns results. 
 
-```{r l2f6, echo=FALSE, fig.cap="ESGF data cart filtering (July 2018)."}
-knitr::include_graphics("img/Screenshot_2018-07-12_ESGF-CoG_002.png", dpi = NA)
+Information about the results is stored in an object property called `json`. You can see all of the details using `results.json`. We won't print the full output here, but we can look at portions of the output. 
+
+Let's look at the identifier for the result.
+
+```{python, deco=list()}
+print(results[0].json['id'])
 ```
 
-```{block, type='rmddisclaimer'}
-You should also pay attention to the data period that you are interested in: historical data is (in most cases) either from 1850-01 to 2005-12 or 1961-01 to 2005-12. Most of the future data is from 2005-01 to 2100-12 or from 2006-01 to 2100-12. There is also some long-term projected data from 2101-01 to 2300-12. There are, of course, some exceptions to the above, including annual or decadal files. 
+This is a record of general CMIP5 output, but it is not something that we can download directly. Frankly, we probably don't want to download it anyway. Let's look at the variables for which the record has data. 
+
+```{python, deco=list()}
+print(results[0].json['variable'])
 ```
 
-### Download options
+That's too much! We don't want to access information for all the variables. We just want `tas`, `tasmax`, and `tasmin`. We can dive deeper into the record by requesting an additional search using the record's `file_context` as input to the search.
 
-There are a few options on the ESGF for data download. If you want to download files one-by-one, you can click the "list files" link, and choose "HTTP download" to download the file through your browser. 
+```{python, deco=list()}
+hit = results[0].file_context().search()
+```
+
+This should now return one result for each file in the parent record. We can see how many records we have. 
+
+```{python, deco=list()}
+print(len(hit))
+```
+
+We can use an anonymous "lambda" function to extract the filename and URL of each result. 
+
+```{python, deco=list()}
+files = map(lambda f : {'filename': f.filename, 'url': f.download_url}, hit)
+```
+
+The `map` function returns an iterator of class `map`. Let's turn it back into a list. 
+
+```{python, deco=list()}
+files = list(files)
+```
+
+You can take a look at the first five records.
+
+```{python, deco=list()}
+print(files[0:5])
+```
+
+We still have information about variables that we are not interested in. Let's drop the items we don't care about. Note that `filter` similarly returns an iterator other than a list, so we'll wrap the call to `filter` in `list`. 
+
+```{python, deco=list()}
+files = list(filter(lambda x: 'tas' in x['filename'], files))
+print(files)
+```
 
 ```{block, type='rmdtip'}
 The netCDF files from the ESGF use a standardized filename format that looks something like this: 
@@ -93,25 +149,100 @@ Consider the following file: `tasmax_Amon_CanESM2_historical_r1i1p1_185001-20051
 Without even looking at the file contents, we can already determine a great deal of information from the filename. This file contains monthly data for maximum temperature, as projected by the Canadian CanESM2 model as part of ensemble r1i1p1. The data were hindcast historical data (1850&ndash;2005).
 ```
 
-Downloading files one-by-one can be cumbersome. Instead, we will use `wget` to speed up the process. _Make sure you have filtered your files_, check the box to "Select All Datasets", and the click the "wget script" button. This will download a script which you can execute in **bash**. 
+Let's repeat this process for the second result from our original search. Instead of running each line individually, we can collapse this into a single call. 
 
-```{bash, eval=FALSE, deco=list(label="Shell", bc="#000000", tc="#ffffff", icon=list(style="fas", name="terminal"))}
-bash wget-20180711205236.sh
+```{python, deco=list()}
+files2 = list(filter(lambda x: 'tas' in x['filename'],
+                     list(map(lambda f : {'filename': f.filename, 'url': f.download_url},
+                              results[1].file_context().search()))))
+print(files2)
 ```
 
-The script is user-authenticated, so you will be asked to log in. Enter your credentials, and the script should run. If, for any reason, the `wget` process stops or has an error, you can try running it again. The script has some built-in hash checking to avoid downloading the same file multiple times. Double check that the files that you downloaded are as expected (I have found that sometimes stray variables can creep into the download scripts). Also make sure that you have all the files that you need (there is a limit to the number of files per script. You may need to split you searches to generate smaller batches of files).
+Now lets add `files2` to the end of `files`. Not that this function is an in-place function, modifying `files` directly without needing to overwrite the object by assigning a value to `files` with an equals sign. 
+
+```{python, deco=list()}
+files.extend(files2)
+```
+
+Two results down, `python len(results) - 2` to go! This could be tedious. Let's use a `for` loop to do the rest of the work for us.
+
+```{python, deco=list()}
+for i in range(2, len(results)):
+    files.extend(list(filter(lambda x: 'tas' in x['filename'],
+                      list(map(lambda f : {'filename': f.filename, 'url': f.download_url},
+                               results[i].file_context().search())))))
+```
+
+### Cleaning up the results
+
+Up to this point, we have being using a list of dictionaries to store our results, but this is becoming a little unwieldy. Let's turn our results into a **Pandas** data frame. 
+
+```{python, deco=list()}
+files = pd.DataFrame.from_dict(files)
+print(files)
+```
+
+```{block, type='rmddisclaimer'}
+You should also pay attention to the data period that you are interested in: historical data is (in most cases) either from 1850-01 to 2005-12 or 1961-01 to 2005-12. Most of the future data is from 2005-01 to 2100-12 or from 2006-01 to 2100-12. There is also some long-term projected data from 2101-01 to 2300-12. There are, of course, some exceptions to the above, including annual or decadal files. 
+```
+
+We can drop the long-range (2101&ndash;2300) projections from our list of downloads. 
+
+```{python, deco=list()}
+files = files[~files['filename'].str.contains("210101")]
+```
+
+You will notice that we have multiple URLs for the same file. We don't need to download each file multiple times, so you can choose to drop the duplicates using `files[['filename']].drop_duplicates()`.
+
+You may also choose to _keep_ the extra URLs as backup sources in case one of the downloads fails. Our download function, below, contains code to check if the file size is as expected, however it does not currently include any code to handle cases when the size is not correct.  
+
+## Downloading the data
+
+Python does not have a built-in file download function, so we can use our own. Define the following function, which will download files from a given URL and save them under the filename that you specify. 
+
+```{python, deco=list()}
+# Adapted from: https://stackoverflow.com/a/37573701
+def download(url, filename):
+    print("Downloading ", filename)
+    r = requests.get(url, stream=True)
+    total_size, block_size = int(r.headers.get('content-length', 0)), 1024
+    with open(filename, 'wb') as f:
+        for data in tqdm(r.iter_content(block_size),
+                         total=total_size//block_size,
+                         unit='KiB', unit_scale=True):
+            f.write(data)
+            
+    if total_size != 0 and os.path.getsize(filename) != total_size:
+        print("Downloaded size does not match expected size!\n",
+              "FYI, the status code was ", r.status_code)
+```
+
+Now you can download a file as follows: 
+
+```{python, eval=FALSE, deco=list()}
+download(files[0]['url'], files[0]['filename'])
+```
+
+Or you could download them all in one go. However, this won't be necessary for the purposes of this lab!
+
+```{python, eval=FALSE, deco=list()}
+for index, row in files.iterrows():
+    if os.path.isfile(row.filename):
+        print("File exists. Skipping.")
+    else:
+        download(row.url, row.filename)
+```
+
+Now that you know how to search for and filter data, practice with different sets of filters, then complete the exercises, below. 
 
 ## Exercises (what to submit)
 
 ```{block, type='rmdassignment'}
-- What is a netCDF file? Why is it superior to a _.csv_ file or a spreadsheet? [2 marks]
+- What is a netCDF file? Why is it superior to a _.csv_ file or a spreadsheet? (Hint: This manual may have some information to help you to answer this question) [2 marks]
 - Given a file named _prc_Amon_MIROC5_rcp85_r1i1p1_200601-210012.nc_, what can you ascertain about the data the file contains? [2 marks]
 - Download the netCDF files for at least one variable from one model in one ensemble. Make sure to include the historical and projected values. How many files did you download? What are the filenames? Describe the steps that you took to download the file, e.g. what filters did you use? [2 marks]
 - To save you time and hard drive space, we will be using _Conjuntool_ to pre-process and subset our data. Visit [_Conjuntool_](https://shiny.conr.ca/conjuntool/) and familiarize yourself with the interface. For the model corresponding to the file named in question 2:
   - Export a time series plot of the entire range of the data.
   - Create overlay maps for two periods: 2011 to 2040 and 2071 to 2100.  [2 marks] 
-- You will have been assigned a specific set of filters. Generate a wget script for the requested filter set and submit it as part of your work. This script will be used to ensure that _Conjuntool_ is fully populated. [2 marks]
-- Pay attention to the clarity and formatting of your submitted lab write-up [2 marks]
-
-_Note: If you plan to perform a CCIA related to a variable that is not present in the Conjuntool, you should submit a wget script for your variable of interest as well._ 
+- Pay attention to the clarity and formatting of your submitted lab write-up. [2 marks]
 ```

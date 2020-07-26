@@ -8,7 +8,7 @@ docker_book: docker_book_build docker_book_push
 
 docker_tinytex: docker_tinytex_build docker_tinytex_push
 
-book: build_book package_book
+book: build_book package_book package_data
 
 docker_book_build:
 	cd docker/book;\
@@ -37,6 +37,12 @@ build_book:
 
 package_book:
 	mv _book public
+
+package_data:
+	mkdir -p public/data;\
+	cp -r data/* public/data/;\
+	cd public/data;\
+	curl https://gitlab.com/claut/man_ccia/snippets/1965702/raw | sh
 
 clean:
 	chown -R 1000:1000 .;\

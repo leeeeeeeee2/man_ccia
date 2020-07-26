@@ -16,3 +16,5 @@ A huge "thank you" goes out to the first cohort of students to use this lab manu
  - Haotian Luo
  - Ricky Wong
  - Minghan (Chase) Yang
+
+Thank you, also, to Paul Kushner for sharing your experience using the book and identifying typos and bugs. 

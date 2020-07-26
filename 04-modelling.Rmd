@@ -2,7 +2,7 @@
 
 _Last update: `r system("git log -1 --format=\"%ad (%h)\" -- 04-modelling.Rmd", intern = TRUE)`_
 
-In Lab 1, we learned how to acquire data for the past, and perform a basic baseline analysis. In Lab 2 (\@ref(lab2)), we will be looking the other direction, towards the future. Before we begin, this chapter serves as a primer on (or, hopefully, review of) basic climate modelling. 
+In Lab 1, we learned how to acquire data for the past, and perform a basic baseline analysis. In Lab 2 (Sec. \@ref(lab2)), we will be looking the other direction, towards the future. Before we begin, this chapter serves as a primer on (or, hopefully, review of) basic climate modelling.
 
 Since we scientists do not have a crystal ball to tell the future of our climate system, we rely on models to provide us with one of many "possible futures". Unlike fortune telling, climate modelling is based on our scientific understanding of the Earth's climate system. Indeed, the most important point to be made for climate modelling is that, in principle, all climate models are based in the laws of physics: conservation of energy, conservation of mass, and conservation of momentum. As such, climate models provide a mathematical representation of the interactions among the distinct components of the Earth's climate system.
 
@@ -14,7 +14,7 @@ The hierarchy of climate models is defined by the number of dimensions represent
 
 #### 0-D models
 
-Among the earliest climate models were the zero-dimension models, which only model the conservation of energy. A famous 0-D model is the Daisyworld model by @watson1983biological The Daisyworld model considered the manipulation of albedo, and its impact on temperature on the fictional planet of Daisyworld. While, by all considerations, a fairly simple model, Daisyworld is key to understanding many of the processes of climate change here on Earth, such as the ice-albedo feedback involved in arctic warming. 
+Among the earliest climate models were the zero-dimensional models, which only model the conservation of energy. A famous 0-D model is the Daisyworld model by @watson1983biological The Daisyworld model considered the manipulation of albedo, and its impact on temperature on the fictional planet of Daisyworld. While, by all considerations, a fairly simple model, Daisyworld is key to understanding many of the processes of climate change here on Earth, such as the ice-albedo feedback involved in arctic warming. 
 
 ```{block, type='rmdtip'}
 If you would like to see the output of a Daisyworld model, you can check out [this implementation for Python](https://gist.githubusercontent.com/arbennett/26c124aeeb1e397b9e35ab8f2047709a/raw/b49f96332b9aa0d3c96998d24fe761dabdf93ac5/daisyworld.py), or [this implementation for R](http://homepage.agrl.ethz.ch/eugsterw/ex/04-Daisyworld.R).
@@ -22,7 +22,7 @@ If you would like to see the output of a Daisyworld model, you can check out [th
 
 #### 1-D models
 
-One dimensional models add a spatial dimension to the 0-D models. Examples of 1-D models include energetic equilibrium models (latitude is the extra dimension), or models of radiative convection (altitude). 
+One-dimensional models add a spatial dimension to the 0-D models. Examples of 1-D models include energetic equilibrium models (latitude is the extra dimension), or models of radiative convection (altitude). 
 
 ```{block, type='rmdcomment'}
 The energetic equilibrium model can be summarized by the following equation: 
@@ -37,13 +37,13 @@ Where $x = \sin\phi$, $\phi$ is the latitude, and $\alpha$ is albedo. $D$ repres
 
 Chances are, if you consider a climate model today, you are probably thinking about a 3-D model, specifically about a General Circulation Model (GCM). Three-dimensional models are based on some important laws of physics: the conservation of energy, the conservation of momentum (atmospheric and oceanic flows), and the conservation of mass (atmospheric gasses, water vapour, and salt in the oceans). These models require, at a minimum, a system of governing mathematical equations that represent our understanding of the Earth's climate system, methods for solving these equations, good observational data of the boundary conditions (e.g. GHGs, aerosols, insolation, orography, etc.), and (without fail) considerable computing resources.
 
-```{block, type="rmdtip"}
+```{block, type="rmdcomment"}
 You may have noticed that we left out 2-D models, above. A two-dimensional climate model starts out as a 3-D model, but removes one of the dimensions (often longitude). By removing a dimension, we reduce the resources needed to compute the model. While 2-D models can be efficient for modelling simple processes, they have become less relevant as the cost of computing resources continues to decline.
 ```
 
 GCMs are sometimes referred to as CGCMs (Coupled General Circulation Models), because they are often comprised of an array of models that represent some component of the climate system (atmosphere, ocean, cryosphere, land surface), which are coupled together. These components influence one another, and together make up the larger overall GCM. 
 
-Throughout the lab exercises, we will make use of model output from the models that formed part of the Coupled Model Intercomparison Project, Phase 5 (CMIP5). CMIP5 involved 29 modelling teams and more than 60 individual models. You can find more information about CMIP5 [here](https://pcmdi.llnl.gov/mips/cmip5/index.html).
+Throughout the lab exercises, we will make use of model output from the models that formed part of the Coupled Model Intercomparison Project, Phase 5 (CMIP5). CMIP5 involved 29 modelling teams and more than 60 individual models. You can find more information about CMIP5 [here](https://pcmdi.llnl.gov/mips/cmip5/index.html). Note that the Couple Model Intercomparison Project, Phase 6 (CMIP6) is currently underway and some early results of that process are already released, however scientists continue to interrogate these results to ensure that the models are working as expected. See, for instance, @zelinka2020causes and @roach2020antarctic. This manual will continue to use CMIP5 data until the CMIP6 data are better understood. 
 
 ## Climate Change Scenarios: The Representative Concentration Pathways
 
@@ -66,4 +66,4 @@ Adapted from @moss2010next.
 The RCPs are not policy prescriptive. The socioeconomic scenarios used to generate the RCPs are not internally consistent, nor unique. The RCPs should not be interpreted as forecasts, nor even as absolute bounds for the future. 
 ```
 
-If you would like to see some examples of the four RCPs and climate model data, poke around the "plots" tab of [_Conjuntool_](https://shiny.conr.ca/conjuntool/), which we will be using in upcoming labs. In Lab 2 (\@ref(lab2)), you will learn how obtain GCM model data from the Earth System Grid Federation (ESGF). In Lab 3 (\@ref(lab3)), we will learn to read the data from these files into Python. 
+If you would like to see some examples of the four RCPs and climate model data, poke around the "plots" tab of [_Conjuntool_](https://shiny.conr.ca/conjuntool/), which we will be using in upcoming labs. In Lab 2 (Sec. \@ref(lab2)), you will learn how to obtain GCM data from the Earth System Grid Federation (ESGF). In Lab 3 (Sec. \@ref(lab3)), we will learn to read the data from these files into Python. 
