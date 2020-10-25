@@ -206,7 +206,7 @@ print(dat_gf)
 ```
 
 ```{block, type="rmddisclaimer"}
-You may have noted that some of the models in our ranking have similar names. This is a good reminder of our caveat about model independence (see Sec. \@ref(selectioncaveats)). Among our top three models, MIROC-ESM and MIROC-ESM-CHEM are almost identical models. Even at the lower end of our confidence range, CESM and CCSM4 are also very closely related. We have ranked our models under the assumption that the models are independent, but in reality our models are not independent. In our example, therefore, one of our top three models will contribute little by the way of new knowledge for our analysis. In this sense, ranking models by their output value may in fact provide a better indicator of model interdependence than of model skill. For more on model independence, see this [blog post](http://www.realclimate.org/index.php/archives/2018/07/model-independence-day/) from [RealClimate](http://www.realclimate.org/).
+You may have noted that some of the models in our ranking have similar names. This is a good reminder of our caveat about model independence (see Sec. \\\@ref(selectioncaveats)). Among our top three models, MIROC-ESM and MIROC-ESM-CHEM are almost identical models. Even at the lower end of our confidence range, CESM and CCSM4 are also very closely related. We have ranked our models under the assumption that the models are independent, but in reality our models are not independent. In our example, therefore, one of our top three models will contribute little by the way of new knowledge for our analysis. In this sense, ranking models by their output value may in fact provide a better indicator of model interdependence than of model skill. For more on model independence, see this [blog post](http://www.realclimate.org/index.php/archives/2018/07/model-independence-day/) from [RealClimate](http://www.realclimate.org/).
 ```
 
 ### Using the multi-model ensemble
@@ -487,7 +487,7 @@ Great! We have now seen who we can apply GCM-projected change factors to our obs
 ## Exercises (what to submit)
 
 ```{block, type='rmdassignment'}
-- In Lab 1 (Sec. \@ref(lab1)) we examined the "baseline" summertime Tropical Nights and winter Heating Degree Days for Toronto. Choose either one and use the change factor method to project into the future. Go back to Conjuntool and select the relevant _seasonal_ anomaly data. Describe differences in the results when you use the annual change factors and the seasonal ones. What accounts for the differences? [2 marks]
+- In Lab 1 (Sec. \\\@ref(lab1)) we examined the "baseline" summertime Tropical Nights and winter Heating Degree Days for Toronto. Choose either one and use the change factor method to project into the future. Go back to Conjuntool and select the relevant _seasonal_ anomaly data. Describe differences in the results when you use the annual change factors and the seasonal ones. What accounts for the differences? [2 marks]
 - Are the models that best reproduced the _annual_ baseline the same models that best reproduce the _seasonal_ baseline? If not, can we trust our validation results? [2 marks]
 - Re-calculate the changes to the exposure unit using the _seasonal_ data. What differences do you see compared to the annual data? [2 marks]
 - Is it better to use the annual data or the seasonal data for a seasonal study? Why? [2 marks]
