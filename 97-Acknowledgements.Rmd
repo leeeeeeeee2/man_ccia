@@ -18,3 +18,5 @@ A huge "thank you" goes out to the first cohort of students to use this lab manu
  - Minghan (Chase) Yang
 
 Thank you, also, to Paul Kushner for sharing your experience using the book and identifying typos and bugs. 
+
+Thanks to [Alfonso Reyes](https://gitlab.com/AlfonsoRReyes) for suggestions to make it easier to build the book locally. 
