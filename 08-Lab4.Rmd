@@ -1,4 +1,4 @@
-# Lab exercise 4: Choosing our models {#lab4}
+# Lab exercise 3: Choosing our models {#lab4}
 
 _Last update: `r system("git log -1 --format=\"%ad (%h)\" -- 09-Lab4.Rmd", intern = TRUE)`_
 
@@ -58,10 +58,10 @@ print(dat.head())
 
 ### Using the extremes
 
-Choosing our models based on the highest and lowest projected changes allows us to get an idea of the "range" of possibilities for the future. Since we are using change factors, we are only considering the changes that each model projects over its own baseline period. So these changes are relative. i.e. The model with the largest projected change is not necessarily the model with the highest projected temperature. 
+Choosing our models based on the highest and lowest projected changes allows us to get an idea of the "range" of possibilities for the future. Since we are using change factors, we are only considering the changes that each model projects over its own baseline period. So these changes are relative. i.e. The model with the largest projected change is not necessarily the model with the highest projected temperature.
 
 ```{block, type='rmddisclaimer'}
-For this and all of our selection methods, I'll made a copy of `dat` to work with using the `copy()` method. This is the safer option, as something like `dat_ext = dat` creates a new reference to the _same_ `dat` table. This isn't an issue if we are just sub-setting and filtering data, but it becomes troublesome if we want to change any of the data points; any modification to the values in `dat_ext` would also appear in `dat`! This will become more relevant later in this lab when we create the `tor_win` data frame. 
+For this and all of our selection methods, I'll made a copy of `dat` to work with using the `copy()` method. This is the safer option, as something like `dat_ext = dat` creates a new reference to the _same_ `dat` table. This isn't an issue if we are just sub-setting and filtering data, but it becomes troublesome if we want to change any of the data points; any modification to the values in `dat_ext` would also appear in `dat`! This will become more relevant later in this lab when we create the `tor_win` data frame.
 ```
 
 ```{python, deco=list()}
@@ -100,7 +100,7 @@ tor = pd.read_csv("tor.csv", index_col = 0)
 print(tor.head())
 ```
 
-We can use the Gough&ndash;Fenech Confidence Index (GFCI) to help us choose our models. The GFCI quantifies the difference in the model-projected baseline as a proportion of the standard deviation of the aggregate observed values using the following equation: 
+We can use the Gough&ndash;Fenech Confidence Index (GFCI) to help us choose our models. The GFCI quantifies the difference in the model-projected baseline as a proportion of the standard deviation of the aggregate observed values using the following equation:
 
 $$\textrm{GFCI} = \frac{ \left | T_{\textrm{mod}} - T_{\textrm{obs}} \right |}{\sigma_{\textrm{obs}}}$$
 
@@ -108,7 +108,7 @@ $$\textrm{GFCI} = \frac{ \left | T_{\textrm{mod}} - T_{\textrm{obs}} \right |}{\
 $\left | T_{\textrm{mod}} - T_{\textrm{obs}} \right |$ is the absolute difference between the modelled baseline and the observed baseline, and $\sigma_{\textrm{obs}}$ is the standard deviation of the aggregate observed values. In my case, I need to use the mean and standard deviation of the annual aggregate values of our observed Toronto station data. If I want to test for $T_{\textrm{mean}}$, for instance, I would first calculate the annual average $T_{\textrm{mean}}$ for each of the 30-years in our baseline, and then take the mean and standard deviation of those 30 annual values.
 
 ```{block, type="rmdtip"}
-If you are performing a monthly or seasonal analysis, you should use the respective aggregate values. As an example, if you are performing your analysis on winter values, $T_{\textrm{obs}}$ is the average yearly winter temperature and $\sigma_{\textrm{obs}}$ is the standard deviation of those average yearly winter temperatures. You should, of course, also have chosen seasonal output from _Conjuntool_. 
+If you are performing a monthly or seasonal analysis, you should use the respective aggregate values. As an example, if you are performing your analysis on winter values, $T_{\textrm{obs}}$ is the average yearly winter temperature and $\sigma_{\textrm{obs}}$ is the standard deviation of those average yearly winter temperatures. You should, of course, also have chosen seasonal output from _Conjuntool_.
 ```
 
 **Pandas** doesn't reliably process date information in a _.csv_ file, so we need to fix the `'Date'` column.
@@ -124,7 +124,7 @@ tor_mean = tor[['Date', 'MeanTemp']].groupby(tor.Date.dt.year).mean()
 print(tor_mean.head())
 ```
 
-Now we calculate the mean and the standard deviation of those values. 
+Now we calculate the mean and the standard deviation of those values.
 
 ```{python, deco=list()}
 tor_tas_mean = tor_mean.MeanTemp.values.mean()
@@ -153,7 +153,7 @@ The GFCI defines confidence as follows:
   - Values below 0.5 are considered to merit high confidence
   - Values above 1.0 indicate that the model bias exceeds one standard deviation of the aggregate values. These projections are considered to be suspect and should not be used.
 
-We can whip this into a simple function so that we can easily classify the confidence that we have in our models. 
+We can whip this into a simple function so that we can easily classify the confidence that we have in our models.
 
 ```{python, deco=list()}
 def confidence(GFCI):
@@ -235,7 +235,7 @@ The methods that we have seen above are quick and useful for pedagogy, but there
 Now that we have chosen our models, let's see how we can apply these change factors to our observed data. For each period, we apply the given change factor to the daily values from our observed data. If we were to graph this, it would look a little bit like a jagged staircase, with each tridecade shifting by some fixed amount. It is not, however, the daily values that are of interest. We cannot reliably forecast daily weather far into the future. Instead, we use the past history, combined with the average tridecadal change to estimate changes in our exposure unit. Since I am looking at $T_{\textrm{mean}}$ here, I won't examine tropical nights as I did in lab 1. Here I will use summer cooling degree days and winter heating degree days for the RCP4.5 and RCP8.5 scenarios.
 
 ```{block, type="rmddisclaimer"}
-In these examples, I am using annual change factors to analyze seasonal exposure units. This is lazy at best and downright wrong at worst. The sections below are only meant as _code_ examples. In your research, make sure to use the appropriate change factors for your period of interest. 
+In these examples, I am using annual change factors to analyze seasonal exposure units. This is lazy at best and downright wrong at worst. The sections below are only meant as _code_ examples. In your research, make sure to use the appropriate change factors for your period of interest.
 ```
 
 I will begin this section by showing how we can manually apply the change factors, and then I will define a function that will make this easier.
@@ -278,7 +278,7 @@ So, what is the projected change to summertime CDD? Let's take a look.
 print(tor_ext[tor_ext.Date.dt.month.isin([6,7,8])].filter(regex = '^CDD').sum())
 ```
 
-It looks like we can expect an increase from `r suppressWarnings(sum(py$tor_ext$CDDObs[format(py$tor_ext$Date, format = "%m") %in% sprintf("%02d", c(6,7,8))], na.rm = TRUE))` total CDDs from the baseline to $`r suppressWarnings(sum(py$tor_ext$CDDhex2020s[format(py$tor_ext$Date, format = "%m") %in% sprintf("%02d", c(6,7,8))], na.rm = TRUE))`$ in the 2020s. This could have serious implications for energy supply for air conditioning! 
+It looks like we can expect an increase from `r suppressWarnings(sum(py$tor_ext$CDDObs[format(py$tor_ext$Date, format = "%m") %in% sprintf("%02d", c(6,7,8))], na.rm = TRUE))` total CDDs from the baseline to $`r suppressWarnings(sum(py$tor_ext$CDDhex2020s[format(py$tor_ext$Date, format = "%m") %in% sprintf("%02d", c(6,7,8))], na.rm = TRUE))`$ in the 2020s. This could have serious implications for energy supply for air conditioning!
 
 Great! That's one projection down; 11 more to go to fill in our first table. This looks like it could turn out to be a monotonous process. Let's whip up a function to do the work for us! This is loosely based on [code](https://gitlab.com/ConorIA/CdeCPeru-CC/blob/master/Ejercicios/recalc_exp.R) that I put together in R in 2015. This version takes five arguments: `obs` is a two-column Data Frame containing the `'Date'` and variable column; `anoms` is the respective `dat_*` table; `stat` is the stat that we want to calculate for the exposure units, e.g. `sum`; `expr` is a lambda expression that we evaluate to calculate the exposure unit (some examples are in the Appendix of this book); finally, `month` is a list of one or more months to filter on, defaulting to `None`. If in doubt, the function has a complete docstring to help you to choose values for each parameter.
 
@@ -340,9 +340,9 @@ print(recalc_exp(obs=tor[['Date', 'MeanTemp']],
                  month=[6,7,8]))
 ```
 
-As we might have expected, there is a larger increase in CDDs for the RCP 8.5 Scenario than for the RCP 4.5 scenario. 
+As we might have expected, there is a larger increase in CDDs for the RCP 8.5 Scenario than for the RCP 4.5 scenario.
 
-The above table is missing an important piece of information. In our `dat_ext` table, we had labelled each model as providing and upper or lower extreme, but this information is not preserved by the `recalc_exp()` function. How can we recover the information? The simplest option might be to replace the values in the `dat_ext.Model` with the values of `dat_ext.Limit`, but this, again, removes some key information from the results, specifically, the model that provided each projection. Another option would be to re-write `recalc_exp()` so that it preserves both pieces of information. The third option, however, is the one that we will use: we already _know_ whether each model in our `recalc_exp()` output represents the upper or lower limit of our projections, since that information is present in `dat_ext`. We can use the same mechanism of merging two tables that we used in in the GFCI section to create a table that includes both pieces of data. 
+The above table is missing an important piece of information. In our `dat_ext` table, we had labelled each model as providing and upper or lower extreme, but this information is not preserved by the `recalc_exp()` function. How can we recover the information? The simplest option might be to replace the values in the `dat_ext.Model` with the values of `dat_ext.Limit`, but this, again, removes some key information from the results, specifically, the model that provided each projection. Another option would be to re-write `recalc_exp()` so that it preserves both pieces of information. The third option, however, is the one that we will use: we already _know_ whether each model in our `recalc_exp()` output represents the upper or lower limit of our projections, since that information is present in `dat_ext`. We can use the same mechanism of merging two tables that we used in in the GFCI section to create a table that includes both pieces of data.
 
 ```{python, deco=list()}
 projected_cdds = recalc_exp(obs=tor[['Date', 'MeanTemp']],
@@ -354,7 +354,7 @@ projected_cdds = recalc_exp(obs=tor[['Date', 'MeanTemp']],
 print(pd.merge(projected_cdds, dat_ext[['Scenario', 'Model', 'Limit']]))
 ```
 
-We can also use our `recalc_exp()` function to give us the 30-year daily average CDD, instead of the 30-year total. 
+We can also use our `recalc_exp()` function to give us the 30-year daily average CDD, instead of the 30-year total.
 
 ```{python, deco=list()}
 from numpy import mean
@@ -375,7 +375,7 @@ The `recalc_exp()` function works on the daily values of each 30-year tridecade.
 
 For bonus marks: modify the `recalc_exp()` function above so that it first aggregates the daily values by year (`obs.Date.dt.year`), and then applies the calculation provided by the `stat` argument. For full marks, your function should also retain the original functionality of `recalc_exp()`. (_Hint: you may need to add an extra parameter to the function_).
 
-Once you have finished changing the code, generate a patch for the original function using software such as [Pretty Diff](https://prettydiff.com/). This will highlight the changes that you made. Submit this patch along with your regular "What to submit" exercises. 
+Once you have finished changing the code, generate a patch for the original function using software such as [Pretty Diff](https://prettydiff.com/). This will highlight the changes that you made. Submit this patch along with your regular "What to submit" exercises.
 ```
 
 What if we want to calculate winter heating degree days? We'll need to shift our Decembers up a year like we did in Lab 1. This isn't hugely necessary at the moment, since I'm looking at 30-year totals, but it is always a good habit to maintain and allows us to be more precise about the seasons in consideration. It will become especially relevant for those of your who undertake the bonus assignment in the box above.
@@ -387,7 +387,7 @@ print(tor_win.head()) # Not shifted
 print(tor_win.tail()) # Shifted
 ```
 
-Let's drop the years that we know to be incomplete, winter 1981/82, which is missing December 1980, and winter 2010/11, which is just December 2010. Remember, a better solution for the former would be to download data for December 1980 so that we can include all 30 winters. 
+Let's drop the years that we know to be incomplete, winter 1981/82, which is missing December 1980, and winter 2010/11, which is just December 2010. Remember, a better solution for the former would be to download data for December 1980 so that we can include all 30 winters.
 
 ```{python, deco=list()}
 tor_win = tor_win[tor_win.Date.dt.year.isin(range(1982, 2011))]
@@ -402,7 +402,7 @@ print(pd.merge(recalc_exp(obs=tor_win[['Date', 'MeanTemp']],
                dat_ext[['Scenario', 'Model', 'Limit']]))
 ```
 
-As winter is projected to warm, we see less heating degree days. This change is more rapid in the scenario with more radiative forcing. 
+As winter is projected to warm, we see less heating degree days. This change is more rapid in the scenario with more radiative forcing.
 
 ### Using the multi-model ensemble
 
@@ -459,7 +459,7 @@ out = recalc_exp(obs=tor_win[['Date', 'MeanTemp']],
 print(out)
 ```
 
-In Lab 3, we used `pd.pivot()` to turn our table from a narrow layout to a wide layout. I stressed, however, that the narrow layout was more efficient for plotting. This time around, we have a wide data frame, which we want to convert to a narrow one. The method that we need to call, the antithesis to `pd.pivot()` is `pd.melt()`. 
+In Lab 2, we used `pd.pivot()` to turn our table from a narrow layout to a wide layout. I stressed, however, that the narrow layout was more efficient for plotting. This time around, we have a wide data frame, which we want to convert to a narrow one. The method that we need to call, the antithesis to `pd.pivot()` is `pd.melt()`.
 
 ```{python, deco=list()}
 out_long = out.melt(id_vars = ['Model', 'Scenario'], var_name = "Period", value_name = "Cooling Degree Days")

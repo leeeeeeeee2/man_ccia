@@ -1,4 +1,4 @@
-# Lab exercise 5: Using Downscaled GCM Data {#lab5}
+# Lab exercise 4: Using Downscaled GCM Data {#lab5}
 
 _Last update: `r system("git log -1 --format=\"%ad (%h)\" -- 11-Lab5.Rmd", intern = TRUE)`_
 
@@ -25,7 +25,7 @@ import seaborn as sns
 from netCDF4 import Dataset, num2date
 ```
 
-In Lab 4 (Sec. \@ref(lab4)) we applied GCM-derived change factors to our observed data as a rudimentary form of downscaling, and removing the bias in the model projections. In that sense, we kept the relative change in the model projections, but discarded the monthly and seasonal signals. In this lab, we will use downscaled data provided by @pcic2014statistically. We downloaded these files, in Section \@ref(pcic).
+In Lab 3 (Sec. \@ref(lab4)) we applied GCM-derived change factors to our observed data as a rudimentary form of downscaling, and removing the bias in the model projections. In that sense, we kept the relative change in the model projections, but discarded the monthly and seasonal signals. In this lab, we will use downscaled data provided by @pcic2014statistically. We downloaded these files, in Section \@ref(pcic).
 
 ## Reading the downscaled data
 
@@ -53,7 +53,7 @@ filenames = os.listdir(data_dir)
 models = ["CanESM2", "CCSM4", "CSIRO-Mk3-6-0", "GFDL-ESM2G", "inmcm4", "MIROC5"]
 ```
 
-We will use some regex patterns to pull some important info out of our filenames. Most of this information is contained in the metadata of the netCDF files, but it is probably easier to match the information from the filenames. 
+We will use some regex patterns to pull some important info out of our filenames. Most of this information is contained in the metadata of the netCDF files, but it is probably easier to match the information from the filenames.
 
 ```{python, deco=list()}
 variable_pattern = r'tasm(in|ax)'
@@ -61,7 +61,7 @@ model_pattern = "|".join(models)
 scenario_pattern = r'rcp(4|8)5'
 ```
 
-Finally, we want to have a list of dates to add to each model. Since we are certain that we are using the same period and calendar in each file, it is more efficient to define the dates once, rather than pulling the date dimension from each netCDF file. These PCIC data use a special "365-day" calendar, which ignores leap years. We could manually generate the date series, but this is not as straightforward in Python as you might hope. Instead, let's pull the `time` dimension out of the first file, and re-use that object for all of our remaining files. 
+Finally, we want to have a list of dates to add to each model. Since we are certain that we are using the same period and calendar in each file, it is more efficient to define the dates once, rather than pulling the date dimension from each netCDF file. These PCIC data use a special "365-day" calendar, which ignores leap years. We could manually generate the date series, but this is not as straightforward in Python as you might hope. Instead, let's pull the `time` dimension out of the first file, and re-use that object for all of our remaining files.
 
 ```{python, deco=list()}
 nc = Dataset(data_dir + "/" + filenames[0])
@@ -70,18 +70,18 @@ time = num2date(nc_time[:], nc_time.units, nc_time.calendar)
 nc.close()
 ```
 
-Now let's loop across all of our files and create one big **pandas** data frame for our data. If you have unrelated files in your data directory, you may want to test for a certain filename pattern and [`continue`](https://docs.python.org/3/tutorial/controlflow.html#break-and-continue-statements-and-else-clauses-on-loops) to the next iteration. 
+Now let's loop across all of our files and create one big **pandas** data frame for our data. If you have unrelated files in your data directory, you may want to test for a certain filename pattern and [`continue`](https://docs.python.org/3/tutorial/controlflow.html#break-and-continue-statements-and-else-clauses-on-loops) to the next iteration.
 
 ```{python, deco=list()}
 for file in filenames:
     var = re.search(variable_pattern, file)[0]
     mod = re.search(model_pattern, file)[0]
     scen = re.search(scenario_pattern, file)[0]
-    
+
     nc = Dataset(data_dir + "/" + file)
     nc_var = np.squeeze(nc.variables[var][:].data)
     nc.close()
-    
+
     try:  # check to see if df already exists
         df
     except NameError:
@@ -140,7 +140,7 @@ baseline_stats_gcm = baseline.groupby(['Scenario','Variable','Month']).agg({'Val
 print(baseline_stats_gcm)
 ```
 
-Let's see how the downscaled data compare to our observed data. Let's read in our observed data that we generated in Lab 1 (Sec. \@ref(lab1)), and generate the same stats. 
+Let's see how the downscaled data compare to our observed data. Let's read in our observed data that we generated in Lab 1 (Sec. \@ref(lab1)), and generate the same stats.
 
 ```{python, deco=list()}
 tor = pd.read_csv("tor.csv", index_col=0)
@@ -157,7 +157,7 @@ tor_stats = tor.groupby(['Month']).agg({'MaxTemp': ['mean', 'std','max','min'],
 print(tor_stats)
 ```
 
-Now we'll plot these two series against one another. 
+Now we'll plot these two series against one another.
 
 ```{python, deco=list()}
 months = np.arange(0.5,12.5,1)
@@ -269,13 +269,13 @@ Now let's plot it!
 plt.figure(figsize=(12,6))
 # The full range (Min minus the Mean and Max minus the Mean; dark gray shading)
 plt.fill_between(months,
-                 np.asarray(baseline_stats_gcm["Value","min"]["rcp45","tas"]) - np.asarray(tor_stats["MeanTemp","mean"]), 
+                 np.asarray(baseline_stats_gcm["Value","min"]["rcp45","tas"]) - np.asarray(tor_stats["MeanTemp","mean"]),
                  np.asarray(baseline_stats_gcm["Value", "max"]["rcp45","tas"]) - np.asarray(tor_stats["MeanTemp","mean"]),
                  color='darkgray')
 
 # One standard deviation (light gray shading)
 plt.fill_between(months,
-                 gcm_bias - np.asarray(baseline_stats_gcm["Value","std"]["rcp45","tas"]), 
+                 gcm_bias - np.asarray(baseline_stats_gcm["Value","std"]["rcp45","tas"]),
                  gcm_bias + np.asarray(baseline_stats_gcm["Value","std"]["rcp45","tas"]),
                  color='lightgray')
 
@@ -303,7 +303,7 @@ knitr::include_graphics("l5f4.png", dpi = NA)
 
 ## Re-assessing the future
 
-Let's take a look at how the downscaled data projects the future climate. We will perform our analysis using the same tridecades that we used in Lab 4. First, we'll filter our data to grab the data from 1981 to 2100, which covers our baseline and our three tridecades. Next, we'll add an empty `"Period"` column, and classify our tridecades by masking the relevant periods and assigning a tridecade name. 
+Let's take a look at how the downscaled data projects the future climate. We will perform our analysis using the same tridecades that we used in Lab 3. First, we'll filter our data to grab the data from 1981 to 2100, which covers our baseline and our three tridecades. Next, we'll add an empty `"Period"` column, and classify our tridecades by masking the relevant periods and assigning a tridecade name.
 
 ```{python, deco=list()}
 dat = df[(df.Date >= cftime.DatetimeNoLeap(1981, 1, 1)) & (df.Date <= cftime.DatetimeNoLeap(2100, 12, 31))]
@@ -428,7 +428,7 @@ observed_cdd = observed_cdd.CDD.sum()
 
 for mod in cdd.Model.unique():
     cdd = cdd.append({'Model': mod, 'Scenario': 'historical', 'Period': '1990s', 'CDD': observed_cdd}, ignore_index=True)
-    
+
 print(cdd.tail())    
 ```
 
@@ -447,13 +447,13 @@ plt.close()
 knitr::include_graphics("l5f9.png", dpi = NA)
 ```
 
-It looks like our models slightly under-estimate baseline CDD. This might be related to the multi-model ensembles underestimation of $T_\mathrm{min}$, which you will explore in the exercises. 
+It looks like our models slightly under-estimate baseline CDD. This might be related to the multi-model ensembles underestimation of $T_\mathrm{min}$, which you will explore in the exercises.
 
 ## Exercises (what to submit)
 
 ```{block, type='rmdassignment'}
 - There is still some considerable difference between the multi-model ensemble-projected $T_\mathrm{min}$ and the observed value. Why might that be? [2 marks]
 - Create a barplot (you may use either **matplotlib** or **seaborn**) of the projected changes to CDD using the six-model ensemble. Remember to include the relevant details such as error bars. [2 marks]
-- How do the results of the downscaled GCM data compare to the change-factor method that you used in Lab 4? [5 marks]
+- How do the results of the downscaled GCM data compare to the change-factor method that you used in Lab 3? [5 marks]
 - Write a brief (max 1 page) review of the CCIA methodology process taken to this point. Ensure that you include the relevant citations to data and methods used.  [6 marks]
 ```
