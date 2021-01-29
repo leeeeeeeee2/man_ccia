@@ -9,16 +9,16 @@ source("R/deco_hook.R")
 ```
 
 ```{bash, include=FALSE}
-curl -L -o ncdump.py https://gitlab.com/claut/man_ccia/snippets/1734337/raw 
+curl -L -o ncdump.py https://gitlab.com/claut/man_ccia/snippets/1734337/raw
 ```
 
 ## The dimensions of data
 
-In Section \@ref(modelling), we discussed climate models in terms of the dimensions of the model. We can also express the dimensions of our data in analogous terms. When we refer to a dimension, we are referring to some characteristic of our data that will influence the value of a variable of interest. A dimension could be temporal (e.g. hour of the day), spatial (e.g. latitude), or even categorical (treatment type). The most important quality of the dimension is that it should be composed of unique, non-overlapping values. In the following subsections, we will provide a brief overview of dimensionality, and provide visual examples of 0-, 1-, 2-, 3-, and 4-D data. ^[Some of the code used in the graphics in this chapter was modified from the [SWAN wave model](http://www.texample.net/tikz/examples/swan-wave-model/) and [Using signed distance functions to embed contours in discrete grids](http://www.texample.net/tikz/examples/contours-grids/) TikZ examples.] 
+In Section \@ref(modelling), we discussed climate models in terms of the dimensions of the model. We can also express the dimensions of our data in analogous terms. When we refer to a dimension, we are referring to some characteristic of our data that will influence the value of a variable of interest. A dimension could be temporal (e.g. hour of the day), spatial (e.g. latitude), or even categorical (treatment type). The most important quality of the dimension is that it should be composed of unique, non-overlapping values. In the following subsections, we will provide a brief overview of dimensionality, and provide visual examples of 0-, 1-, 2-, 3-, and 4-D data. ^[Some of the code used in the graphics in this chapter was modified from the [SWAN wave model](http://www.texample.net/tikz/examples/swan-wave-model/) and [Using signed distance functions to embed contours in discrete grids](http://www.texample.net/tikz/examples/contours-grids/) TikZ examples.]
 
 ### Zero-dimensional data
 
-An obvious starting point (no pun intended) of our explanation of data dimensions is 0-D data. Zero-dimensional data refers to a single point of information. This point may reflect some measure or value at a specific location, time, and/or set of conditions. We cannot ascertain anything about how this data might change over time or space. Figure \@ref(fig:0d) provides an example of 0-D data. 
+An obvious starting point (no pun intended) of our explanation of data dimensions is 0-D data. Zero-dimensional data refers to a single point of information. This point may reflect some measure or value at a specific location, time, and/or set of conditions. We cannot ascertain anything about how this data might change over time or space. Figure \@ref(fig:0d) provides an example of 0-D data.
 
 ```{r 0d, fig.cap="0-D (point) data", fig.align="center"}
 knitr::include_graphics("img/0d.png")
@@ -50,7 +50,7 @@ knitr::include_graphics("img/3d.png")
 
 ### Data with four or more dimensions
 
-While we won't work with data of four or more dimensions in the exercises in this manual, it is important to note that there is by no means a limit of 3 dimensions to any data set. As we add more dimensions, our data becomes harder for us to visualize. A four-dimensional system, for instance, may include time (T), latitude (Y), longitude (X), and altitude (Z). In Figure \@ref(fig:4d), for instance, we've modelled a four-dimensional data set, where each layer of the Z dimension shown in Figure \@ref(fig:3d) contains several additional layers in an altitude (H) dimension. As we add more dimensions, the shape of our data becomes more and more theoretical, and beyond my capabilities to illustrate! 
+While we won't work with data of four or more dimensions in the exercises in this manual, it is important to note that there is by no means a limit of 3 dimensions to any data set. As we add more dimensions, our data becomes harder for us to visualize. A four-dimensional system, for instance, may include time (T), latitude (Y), longitude (X), and altitude (Z). In Figure \@ref(fig:4d), for instance, we've modelled a four-dimensional data set, where each layer of the Z dimension shown in Figure \@ref(fig:3d) contains several additional layers in an altitude (H) dimension. As we add more dimensions, the shape of our data becomes more and more theoretical, and beyond my capabilities to illustrate!
 
 ```{r 4d, fig.cap="4-D (layered grid) data", out.width='70%', fig.align="center"}
 knitr::include_graphics("img/4d.png")
@@ -58,7 +58,7 @@ knitr::include_graphics("img/4d.png")
 
 ## The netCDF file format
 
-Just as higher-dimensioned data becomes difficult for me to illustrate, so too does it become difficult to store in typical text-based file formats like _.csv_ files. Some of the [Global Historical Climatology Network's gridded products](https://www.ncdc.noaa.gov/temp-and-precip/ghcn-gridded-products/), for instance, use an ASCII-formatted grid that looks something like the following: 
+Just as higher-dimensioned data becomes difficult for me to illustrate, so too does it become difficult to store in typical text-based file formats like _.csv_ files. Some of the [Global Historical Climatology Network's gridded products](https://www.ncdc.noaa.gov/temp-and-precip/ghcn-gridded-products/), for instance, use an ASCII-formatted grid that looks something like the following:
 
 ```{r, echo=FALSE}
 for (month in 1:3) {
@@ -68,12 +68,12 @@ for (month in 1:3) {
 }
 ```
 
-The above isn't too unwieldy in the example of a 4 by 5 grid with three layers. The actual data set, however, is on a 36 by 72 grid with over 100 years of data. That required me to do a little bit of [cheeky parsing](https://gitlab.com/ConorIA/claut/blob/master/R/parse_ASCII_grid.R) to read the data into R for a previous analysis. Another disadvantage of text-based data is that it usually requires a separate README file with metadata such as the latitude and longitude coordinates for each cell, and basic facts about the data such as the units, method of collection, licensing and use, etc. 
+The above isn't too unwieldy in the example of a 4 by 5 grid with three layers. The actual data set, however, is on a 36 by 72 grid with over 100 years of data. That required me to do a little bit of [cheeky parsing](https://gitlab.com/ConorIA/claut/blob/master/R/parse_ASCII_grid.R) to read the data into R for a previous analysis. Another disadvantage of text-based data is that it usually requires a separate README file with metadata such as the latitude and longitude coordinates for each cell, and basic facts about the data such as the units, method of collection, licensing and use, etc.
 
-Finding solutions to these challenges falls within the mandate of the [Unidata program](https://www.unidata.ucar.edu/), managed by the [University Corporation for Atmospheric Research](https://www.ucar.edu/). Unidata developed the Network Common Data Form (netCDF) file format as a means of providing an open, portable standard for the storage of geoscience data for education and research. There are some key features of the netCDF file format that make it a good choice for climate scientists.^[See Unidata's [netCDF factsheet](https://www.unidata.ucar.edu/publications/factsheets/current/factsheet_netcdf.pdf).] 
+Finding solutions to these challenges falls within the mandate of the [Unidata program](https://www.unidata.ucar.edu/), managed by the [University Corporation for Atmospheric Research](https://www.ucar.edu/). Unidata developed the Network Common Data Form (netCDF) file format as a means of providing an open, portable standard for the storage of geoscience data for education and research. There are some key features of the netCDF file format that make it a good choice for climate scientists.^[See Unidata's [netCDF factsheet](https://www.unidata.ucar.edu/publications/factsheets/current/factsheet_netcdf.pdf).]
 
-- The format is self-describing: all of the metadata about the file and its contents are contained within the netCDF file, without the need for an external metadata server or file. 
-- NetCDF files are portable across different types of computers. 
+- The format is self-describing: all of the metadata about the file and its contents are contained within the netCDF file, without the need for an external metadata server or file.
+- NetCDF files are portable across different types of computers.
 - The netCDF file also allows for versatility in analysis due to its efficient storage nature, the specifics of which are beyond the scope of this preface.   
 - Perhaps most importantly, support for netCDF files is active and ongoing, and software has been written to access these files in Python, R, and many other programming languages on Linux, Mac, Windows, and more.
 
@@ -94,7 +94,7 @@ source_python('ncdump.py')
 ncdump("data/mini/tas_Amon_CanESM2_historical_r1i1p1_198001-200512_mini.nc")
 ```
 
-In Lab 3 (Sec. \@ref(lab3)), you will learn how to read data from a netCDF file in Python. In that lab, we will focus on a single grid box, but keep in mind that the netCDF files that you acquired in Lab 2 contain much more data, and you can re-use the same files for future analyses of other areas, entire regions or even the entire globe! 
+In Lab 3 (Sec. \@ref(lab3)), you will learn how to read data from a netCDF file in Python. In that lab, we will focus on a single grid box, but keep in mind that the netCDF files that you acquired in Lab 2 contain much more data, and you can re-use the same files for future analyses of other areas, entire regions or even the entire globe!
 
 ```{bash cleanup, include=FALSE}
 rm ncdump.py

@@ -1,4 +1,4 @@
-# Lab exercise 3: Navigating across three dimensions of data {#lab3}
+# Lab exercise 2: Navigating across three dimensions of data {#lab3}
 
 _Last update: `r system("git log -1 --format=\"%ad (%h)\" -- 07-Lab3.Rmd", intern = TRUE)`_
 
@@ -23,7 +23,7 @@ from netCDF4 import Dataset, date2index, num2date, date2num
 ```
 
 
-Now that we have acquired our GCM output data (Lab 2, Sec. \@ref(lab2)), we need to know how to access it and begin to analyze it. In this lab, you will find a spatial and temporal subset of your GCM data matching your observed climate baseline, and will begin to understand the future climate using change factors. By the end of this lab, you will have data from more than 40 GCMs. In Lab 4 (Sec. \@ref(modelselection) and \@ref(lab4)), we will see how we can narrow-down our selection of the models that will inform our climate change impact assessment. We are going to begin by exploring some of the attributes of three dimensional data contained in the downloaded netCDF files. It is strongly recommended that you have a browser tab open with the **netCDF4** library [documentation](http://unidata.github.io/netcdf4-python/) for reference.
+In Lab 5, we will work through an example of how to download GCM output data from one of the primary online archives (Lab 5, Sec. \@ref(lab2)), but for now we will work with some GCM data that has been downloaded for you. In this lab, you will find a spatial and temporal subset of your GCM data matching your observed climate baseline, and will begin to project the future climate using change factors. By the end of this lab, you will have data from more than 40 GCMs. In Lab 3 (Sec. \@ref(modelselection) and \@ref(lab4)), we will see how we can narrow-down our selection of the models that will inform our climate change impact assessment. We are going to begin by exploring some of the attributes of three dimensional data contained in the downloaded netCDF files. It is strongly recommended that you have a browser tab open with the **netCDF4** library [documentation](http://unidata.github.io/netcdf4-python/) for reference.
 
 We begin, as always, by importing the libraries that we will need.
 
@@ -36,7 +36,21 @@ from matplotlib import pyplot as plt
 from netCDF4 import Dataset, date2index, num2date, date2num
 ```
 
-Now, create a list of the netCDF files that we will examine. We have created some [miniature netCDF files](https://claut.gitlab.io/man_ccia/data/mini/index.html) for use in this book. If you have been following this manual in order, then you should substitute the directories and filenames below with paths leading to the netCDF files that you downloaded in Lab 2.  
+Now, create a list of the netCDF files that we will examine. We have created some [miniature netCDF files](https://claut.gitlab.io/man_ccia/data/mini/index.html) for use in this book.
+
+```{block, type='rmdtip'}
+The netCDF files that we have downloaded from the online archive use a standardized filename format that looks something like this:
+
+<center>`variable_domaintime_model_experiment_ensemble_period.nc`</center><br>
+
+Consider the following file:
+
+<center>`tasmax_Amon_CanESM2_historical_r1i1p1_185001-200512.nc`</center><br>
+
+Without even looking at the file contents, we can already determine a great deal of information from the filename. This file contains atmospheric (A) monthly (mon) data for maximum temperature (tasmax), as projected by the Canadian CanESM2 model for the historical scenario over a particular period of time (1850&ndash;2005).
+
+The ensemble member name, **r1i1p1**, is interpreted in the following way: First, "r" refers to the model run, a different number here indicates that the model was started with a different set of equally realistic initial conditions. Second, "i" refers to the initialization parameters. This number is changed when the model is started using different _methods_. Finally, "p" refers to the perturbed physics used in the model. A different number represents different configurations of the physical parameters for the model ensemble.
+```
 
 ```{python, deco=list()}
 past = "data/mini/tas_Amon_CanESM2_historical_r1i1p1_198001-200512_mini.nc"
@@ -57,7 +71,7 @@ First, we recommend that you get familiar with your data set. For instance, what
 print(nc.dimensions)
 ```
 
-Notice that we have three-dimensional data, stored along X (longitude), Y (latitude), and T (time). Some netCDF files also have a Z dimension (e.g. height). There is no hard limit to the number of dimensions a netCDF file can have, though [it is suggested](https://www.unidata.ucar.edu/software/netcdf/docs/group__dimensions.html) not to exceed 1024. Rest assured, it is unlikely that you will encounter a 1024-D file in the wild. To get a list of the variables stored in your netCDF file, query the `variables` attribute of your loaded data set. 
+Notice that we have three-dimensional data, stored along X (longitude), Y (latitude), and T (time). Some netCDF files also have a Z dimension (e.g. height). There is no hard limit to the number of dimensions a netCDF file can have, though [it is suggested](https://www.unidata.ucar.edu/software/netcdf/docs/group__dimensions.html) not to exceed 1024. Rest assured, it is unlikely that you will encounter a 1024-D file in the wild. To get a list of the variables stored in your netCDF file, query the `variables` attribute of your loaded data set.
 
 ```{python, deco=list()}
 print(nc.variables)
@@ -69,9 +83,9 @@ You can query a specific variable as well, e.g. `time`.
 print(nc.variables['time'])
 ```
 
-The above shows us some interesting characteristics of our variable, such as units, current shape, and whether it is an unlimited variable or not. 
+The above shows us some interesting characteristics of our variable, such as units, current shape, and whether it is an unlimited variable or not.
 
-We can store the variable in a Python object, which will help us to get the its values. 
+We can store the variable in a Python object, which will help us to get the its values.
 
 ```{python, deco=list()}
 nc_time = nc.variables['time']
@@ -80,14 +94,14 @@ print(nc_time[0:10])
 
 ### Get subset indices {#getindices}
 
-The time variable isn't very easy for us to read, as it is stored as "Days since January 1, 1850". Luckily, there are a few helper functions to help us get our period of interest: 1981 to 2010. 
+The time variable isn't very easy for us to read, as it is stored as "Days since January 1, 1850". Luckily, there are a few helper functions to help us get our period of interest: 1981 to 2010.
 
 ```{python, deco=list()}
 time_start = date2index(dt.datetime(1981, 1, 1), nc_time, select="nearest")
 time_end = date2index(dt.datetime(2010, 12, 31), nc_time, select="nearest")
 ```
 
-The observant among you may be asking how we can get data up to 2010 in a file that only contains data to 2005. We can't! We have selected the index that contains data _nearest_ to our desired end date. If we check the true date, we will see that we only have data to 2005. 
+The observant among you may be asking how we can get data up to 2010 in a file that only contains data to 2005. We can't! We have selected the index that contains data _nearest_ to our desired end date. If we check the true date, we will see that we only have data to 2005.
 
 ```{python, deco=list()}
 print(num2date(nc_time[time_end], units=nc_time.units, calendar=nc_time.calendar))
@@ -95,7 +109,7 @@ print(num2date(nc_time[time_end], units=nc_time.units, calendar=nc_time.calendar
 
 Most of the CMIP5 climate models force data with the RCPs as of January 2006. This means that we will need to be conscious of the fact that the last five years of our baseline will be forced with the scenario boundary conditions, not the historical boundary conditions. We will deal with this in upcoming labs.
 
-We now know the slice of T that we need. How about X and Y? We will select a single grid cell, based on our station target. First, I will define that target. I have chosen to use a Python dictionary, because I have a tendency to get my "lats" and my "lons" confused. You can use a regular list if you prefer. 
+We now know the slice of T that we need. How about X and Y? We will select a single grid cell, based on our station target. First, I will define that target. I have chosen to use a Python dictionary, because I have a tendency to get my "lats" and my "lons" confused. You can use a regular list if you prefer.
 
 ```{python, deco=list()}
 # Toronto station coords
@@ -111,14 +125,14 @@ if target['lon'] < 0:
 print(target['lon'])
 ```
 
-Now we can get the data for our latitude and longitude variables. Notice the syntax below. We query the variable using `nc.variables.get()`, then we choose the full range of the data using `[:]`, which returns a masked array. We pull the values out of that array with `.data`. 
+Now we can get the data for our latitude and longitude variables. Notice the syntax below. We query the variable using `nc.variables.get()`, then we choose the full range of the data using `[:]`, which returns a masked array. We pull the values out of that array with `.data`.
 
 ```{python, deco=list()}
 nc_lat = nc.variables['lat'][:].data
 nc_lon = nc.variables['lon'][:].data
 ```
 
-Now we can find the latitude and longitude cell that is closest to our target. 
+Now we can find the latitude and longitude cell that is closest to our target.
 
 ```{python, deco=list()}
 lat_cell = np.argmin(np.abs(nc_lat - target['lat']))
@@ -138,7 +152,7 @@ The minimal netCDF files that we've created for this book do not include "bounds
 
 ### Getting the data
 
-Now that we know the indices of X, Y, and T that we are interested in, we can pull these out of the netCDF file. 
+Now that we know the indices of X, Y, and T that we are interested in, we can pull these out of the netCDF file.
 
 ```{python, deco=list()}
 dat = nc.variables['tas'][time_start:(time_end + 1), lat_cell, lon_cell]
@@ -174,7 +188,7 @@ df = pd.DataFrame({'Date': dates, 'MeanTemp': dat, 'Experiment': 'historical'})
 print(df.head())
 ```
 
-Even though we are using monthly data, the date column is still formatted with a full YYYY-MM-DD hh:mm:ss date! The date and time represents approximately the middle of the month (probably from averaging the values from a smaller time scale). In addition, the calendar used in CanESM2 is a "365 day" calendar, which ignores leap years. The `num2date` function that we used above, converts the values of the time dimension into a special `cftime.DatetimeNoLeap` object. Unfortunately, this date format does not react intuitively in plots. Given that we are using monthly data, it doesn't matter to us whether there were 28 or 29 days in February of any given year. As such, let's convert the `cftime.DatetimeNoLeap` object to a regular Python `datetime.date` with a YYYY-MM-DD format. 
+Even though we are using monthly data, the date column is still formatted with a full YYYY-MM-DD hh:mm:ss date! The date and time represents approximately the middle of the month (probably from averaging the values from a smaller time scale). In addition, the calendar used in CanESM2 is a "365 day" calendar, which ignores leap years. The `num2date` function that we used above, converts the values of the time dimension into a special `cftime.DatetimeNoLeap` object. Unfortunately, this date format does not react intuitively in plots. Given that we are using monthly data, it doesn't matter to us whether there were 28 or 29 days in February of any given year. As such, let's convert the `cftime.DatetimeNoLeap` object to a regular Python `datetime.date` with a YYYY-MM-DD format.
 
 ```{python, deco=list()}
 df['Date'] = [dt.date(i.year, i.month, i.day) for i in df.Date]
@@ -207,7 +221,7 @@ plt.clf()
 knitr::include_graphics("l3f1.png", dpi = NA)
 ```
 
-It is always a good idea to close our netCDF file when we are done with it. 
+It is always a good idea to close our netCDF file when we are done with it.
 ```{python, deco=list()}
 nc.close()
 ```
@@ -220,7 +234,7 @@ I will condense the above process into a quick `for` loop across the three netCD
 print(future)
 ```
 
-This loop will process the data from each file in the same way that we processed the historical data, and will create one data frame containing all of our data. 
+This loop will process the data from each file in the same way that we processed the historical data, and will create one data frame containing all of our data.
 
 ```{python, deco=list()}
 for file in future:
@@ -241,7 +255,7 @@ for file in future:
 
 The table that we have created above, is a "long" data frame. A long data frame is what is referred to as a "tidy" data frame in the R universe. Tidy data is characterized by a few simple principles: each column is a variable, each row is an observation, each table contains a unique type of observational unit.
 
-A long layout table is very useful for many operations such as grouping and subsetting, but can be a challenge to plot. For instance: 
+A long layout table is very useful for many operations such as grouping and subsetting, but can be a challenge to plot. For instance:
 
 ```{python, deco=list()}
 df.plot()
@@ -255,7 +269,7 @@ plt.clf()
 knitr::include_graphics("l3f2.png", dpi = NA)
 ```
 
-That doesn't look right. We can manually fix the above by filtering for each projection and adding the line manually. 
+That doesn't look right. We can manually fix the above by filtering for each projection and adding the line manually.
 
 ```{python, deco=list()}
 plt.plot(df.Date[df.Experiment == "rcp26"], df.MeanTemp[df.Experiment == "rcp26"], 'y-', alpha=0.7, label = 'RCP 2.6')
@@ -275,7 +289,7 @@ plt.clf()
 knitr::include_graphics("l3f3.png", dpi = NA)
 ```
 
-What if we want to include the "historical" data? The **seaborn** library can also make this process a little easier. Run the following if you have installed **seaborn**. 
+What if we want to include the "historical" data? The **seaborn** library can also make this process a little easier. Run the following if you have installed **seaborn**.
 
 ```{python, deco=list()}
 import seaborn as sns
@@ -304,7 +318,7 @@ print(df_wide.head())
 print(df_wide.tail())
 ```
 
-This is also easier to plot with the `plot` method built into **pandas**. 
+This is also easier to plot with the `plot` method built into **pandas**.
 
 ```{python, deco=list()}
 df_wide.plot(title = r'CanESM2 Monthly $T_\mathrm{mean}$ at Toronto (1981‒2040)')
@@ -327,7 +341,7 @@ In our next lab, we are going to use change factors to describe changes in our b
 
 The first step for a change factor analysis is to calculate the change projected by a GCM over its baseline period. To do so, we will use 30-year "tridecades", including our baseline (1981--2010), and three common climate change tridecades: the 2020s (2011--2040), the 2050s (2041--2070), and the 2080s (2071--2100). In this case, $T_{\mathrm{OBSERVED}}$ is the observed 30-year average mean temperature over the baseline period, and $\Delta T_{\mathrm{GCM}}$ is the difference between the model-projected 30-year average mean temperature for the baseline period and the model-projected 30-year average mean temperature for each of the tridecades. In your research, you may opt to use a seasonal or monthly average instead of the annual average presented here.
 
-Let's begin by filtering our "long" data frame to our areas of interest. I will only provide examples for the baseline and the 2020s, but you should complete this work for the 2050s and 2080s as well. 
+Let's begin by filtering our "long" data frame to our areas of interest. I will only provide examples for the baseline and the 2020s, but you should complete this work for the 2050s and 2080s as well.
 
 ```{python, deco=list()}
 df_base = df[(df.Date >= dt.date(1981, 1, 1)) & (df.Date <= dt.date(2010, 12, 31))]
@@ -366,8 +380,7 @@ print(pd.DataFrame({"Model": np.repeat("CanESM2", 3),
 ## Exercises (what to submit)
 
 ```{block, type='rmdassignment'}
-- Complete a table similar to the one above for the model that you have used throughout this lab. [2 marks]
-- The table, below, provides the baseline mean temperature (°C) and 2020s anomaly for RCP 2.6 and RCP 4.5 for all five available ensemble members of CanESM2. In some cases, the anomaly for the RCP 2.6 scenario is _higher_ than the RCP 4.5 scenario. What are some possible explanations for this? _Hint: two key terms to consider are "pathway" and "ensemble member"._ [2 marks]
+- The table, below, provides the baseline mean temperature (°C) and 2020s anomaly for RCP 2.6 and RCP 4.5 for all five available ensemble members of CanESM2. In some cases, the anomaly for the RCP 2.6 scenario is _higher_ than the RCP 4.5 scenario. What are some possible explanations for this? _Hint: two key terms to consider are "scenario" and "ensemble member"._ [2 marks]
 
 <style type="text/css">
 .tg  {border-collapse:collapse;border-spacing:0;margin:0px auto;}
@@ -440,15 +453,14 @@ print(pd.DataFrame({"Model": np.repeat("CanESM2", 3),
   </tr>
 </table>
 
-- Using [_Conjuntool_](https://shiny.conr.ca/conjuntool/), create a _.csv_ file for all of the models that are available for ensemble r1i1p1. [2 marks]
+- To assist us going forward, we will use a handy online tool to download GCM output, [_Conjuntool_](https://shiny.conr.ca/conjuntool/). Using _Conjuntool_ download a _.csv_ file for all of the models that are available for ensemble r1i1p1 for monthly mean temperature, tas.
   - Click on the "GCM Anomalies" tab.
-  - Under "1: Def. params", enter the coordinates for Toronto in the "Location" box.
+  - Under "1: Def. params", enter the coordinates for Toronto in the "Location" box. Leave all other parameters as the default.
   - Under "2: Add. filters", ensure that only r1i1p1 is selected
   - Under "4: Go!", click the "Process!" button and wait for the results.
-  - Under "5. Add. Opts.", select the "Baseline Averages" and "Calculate Anomalies" boxes. 
+  - Under "5. Add. Opts.", select the "Baseline Averages" and "Calculate Anomalies" boxes.
   - Click the "Download Table" option below the table.
-- Compare the output of the models from _Conjuntool_. Are the model projections largely similar, or different? What might explain some of these similarities or differences. [2 marks]
-- Provide a brief summary of the _Conjuntool_ output. Which model projects the largest change in temperatures? Which 
-projects the smallest? What is the multi-model mean baseline and change factor for each period and scenario? [2 marks]
+- Compare the output of the models from _Conjuntool_. Are the model projections largely similar, or different? What might explain some of these similarities or differences. Things to consider the scenario, the time period, the modelling centre, etc.[2 marks]
+- Provide a brief summary of the _Conjuntool_ output. Which model simulates the warmest and coldest baseline? Which model projects the largest change in temperatures? Which projects the smallest? What is the multi-model mean baseline and change factor for each period and scenario (try to use python)? Compile your data in a table. Think about how best to present this data in tabular form. [2 marks]
+- Manually (or using python) calculate the future multi-model mean temperature for each period and scenario using the results above (multi-model baseline + change factor). Add these to your table. [2 marks]
 ```
-
