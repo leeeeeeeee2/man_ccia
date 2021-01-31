@@ -26,7 +26,7 @@ knitr::include_graphics("img/0d.png")
 
 ### One-dimensional data
 
-One dimensional data provides us with an additional piece of information: how does our variable of interest vary over some dimension. We can consider each column of the observed data that we collected in Lab 1 (Sec. \@ref(lab1)) as a good example of 1-D data. We are interested in determining how our variable of interest (`MeanTemp`, for instance) varies over time. Don't be confused by the table format that we used to layout our observed data. The `Date` column in our data set amounts to metadata describing the time (T) dimension. Figure \@ref(fig:1d) provides a visual approximation of one-dimensional data.
+One dimensional data provides us with an additional piece of information: how does our variable of interest vary over some dimension. We can consider each column of the observed data that we collected in Lab `r which(grepl("eccc", list.files(pattern = ".*_lab.Rmd")))` (Sec. \@ref(eccclab)) as a good example of 1-D data. We are interested in determining how our variable of interest (`MeanTemp`, for instance) varies over time. Don't be confused by the table format that we used to layout our observed data. The `Date` column in our data set amounts to metadata describing the time (T) dimension. Figure \@ref(fig:1d) provides a visual approximation of one-dimensional data.
 
 ```{r 1d, fig.cap="1-D (vector) data", out.width='40%', fig.align="center"}
 knitr::include_graphics("img/1d.png")
@@ -34,7 +34,7 @@ knitr::include_graphics("img/1d.png")
 
 ### Two-dimensional data
 
-You are probably most accustomed to working with two-dimensional data sets. In 2-D (rectangular) data, we have a mix of two dimensions of variation. In the case of the data that we collected in Lab 1, we can consider our two dimensions as time (T) and variable. Another common pair of dimensions are latitude and longitude. Recall the "Overlay Map" that you generated on _Conjuntool_ in Lab 2 (Sec. \@ref(lab2)). This is a great example of 2-D data: we include latitude, and longitude, but removed the time dimension by averaging. Refer to Figure \@ref(fig:2d) for a visualization of 2-D data.
+You are probably most accustomed to working with two-dimensional data sets. In 2-D (rectangular) data, we have a mix of two dimensions of variation. In the case of the data that we collected in Lab `r which(grepl("eccc", list.files(pattern = ".*_lab.Rmd")))`, we can consider our two dimensions as time (T) and variable. Another common pair of dimensions are latitude and longitude. (You will see this when you generate an "Overlay Map" on _Conjuntool_ in Lab `r which(grepl("esgf", list.files(pattern = ".*_lab.Rmd")))` (Sec. \@ref(esgflab)). This is a great example of 2-D data: we include latitude, and longitude, but removed the time dimension by averaging. Refer to Figure \@ref(fig:2d) for a visualization of 2-D data.
 
 ```{r 2d, fig.cap="2-D (rectangular) data", out.width='55%', fig.align="center"}
 knitr::include_graphics("img/2d.png")
@@ -42,7 +42,7 @@ knitr::include_graphics("img/2d.png")
 
 ### Three-dimensional data
 
-As you have probably ascertained by now, 3-D data refers to a data set that varies over three dimensions. This is most commonly the expression of a set of gridded observations, varying across two spatial axes (X, e.g. longitude and Y, e.g. latitude) and some third dimension such as time (T) or height (Z). The CMIP5 data that you acquired in Lab 2 is an example of three-dimensional data with dimensions (X, Y, and T). When thinking of three-dimensional objects, your mind probably jumps to a cube, which is probably the first 3-D shape any of us learned about in grade school. It is more useful, however, to consider 3-D data as a stack of papers on your desk. Each sheet is a table of X by Y and represents one observation of dimension Z. Have a look at Figure \@ref(fig:3d) to visualize this.  
+As you have probably ascertained by now, 3-D data refers to a data set that varies over three dimensions. This is most commonly the expression of a set of gridded observations, varying across two spatial axes (X, e.g. longitude and Y, e.g. latitude) and some third dimension such as time (T) or height (Z). The CMIP5 data that you will acquire in Lab `r which(grepl("esgf", list.files(pattern = ".*_lab.Rmd")))` is an example of three-dimensional data with dimensions (X, Y, and T). When thinking of three-dimensional objects, your mind probably jumps to a cube, which is probably the first 3-D shape any of us learned about in grade school. It is more useful, however, to consider 3-D data as a stack of papers on your desk. Each sheet is a table of X by Y and represents one observation of dimension Z. Have a look at Figure \@ref(fig:3d) to visualize this.  
 
 ```{r 3d, fig.cap="3-D (gridded) data", out.width='70%', fig.align="center"}
 knitr::include_graphics("img/3d.png")
@@ -79,7 +79,7 @@ Finding solutions to these challenges falls within the mandate of the [Unidata p
 
 The above benefits of netCDF files have led to the format being endorsed by a number of significant government and academic agencies dedicated to the management of geoscience data. For more details on the netCDF file format, you can visit the [netCDF documentation](https://www.unidata.ucar.edu/software/netcdf/docs/index.html).
 
-The `ncdump` program is a command-line utility (run in `bash`) that is a useful tool to begin to understand the contents of your netCDF files. The command will output information on the dimensions of your data set, the size of each dimension, and additional metadata like units and variable names. The following, for instance, is the output of that command when run on some [miniature netCDF files](https://claut.gitlab.io/man_ccia/data/mini/index.html) that we have created for this book. You will surely see much more output if you run the tool on the files that you downloaded in Lab 2!
+The `ncdump` program is a command-line utility (run in `bash`) that is a useful tool to begin to understand the contents of your netCDF files. The command will output information on the dimensions of your data set, the size of each dimension, and additional metadata like units and variable names. The following, for instance, is the output of that command when run on some [miniature netCDF files](https://claut.gitlab.io/man_ccia/data/mini/index.html) that we have created for this book. You will surely see much more output if you run the tool on the files that you download in Lab `r which(grepl("esgf", list.files(pattern = ".*_lab.Rmd")))`!
 
 ```{bash, echo=TRUE, deco=list(label="Shell", bc="#000000", tc="#ffffff", icon=list(style="fas", name="terminal"))}
 ncdump -h data/mini/tas_Amon_CanESM2_historical_r1i1p1_198001-200512_mini.nc
@@ -94,7 +94,7 @@ source_python('ncdump.py')
 ncdump("data/mini/tas_Amon_CanESM2_historical_r1i1p1_198001-200512_mini.nc")
 ```
 
-In Lab 3 (Sec. \@ref(lab3)), you will learn how to read data from a netCDF file in Python. In that lab, we will focus on a single grid box, but keep in mind that the netCDF files that you acquired in Lab 2 contain much more data, and you can re-use the same files for future analyses of other areas, entire regions or even the entire globe!
+In Lab `r which(grepl("dims", list.files(pattern = ".*_lab.Rmd")))` (Sec. \@ref(dimslab)), you will learn how to read data from a netCDF file in Python. In that lab, we will focus on a single grid box, but keep in mind that the netCDF files that you will acquire in Lab `r which(grepl("esgf", list.files(pattern = ".*_lab.Rmd")))` contain much more data, and you can re-use the same files for future analyses of other areas, entire regions or even the entire globe!
 
 ```{bash cleanup, include=FALSE}
 rm ncdump.py

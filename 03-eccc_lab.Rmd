@@ -1,6 +1,6 @@
-# Lab exercise 1: Understanding the recent past {#lab1}
+# Lab `r which(grepl("eccc", list.files(pattern = ".*_lab.Rmd")))`: Understanding the recent past {#eccclab}
 
-_Last update: `r system("git log -1 --format=\"%ad (%h)\" -- 03-Lab1.Rmd", intern = TRUE)`_
+_Last update: `r system("git log -1 --format=\"%ad (%h)\" -- 03-eccc_lab.Rmd", intern = TRUE)`_
 
 ```{r setup, include=FALSE}
 source("R/init_python.R")

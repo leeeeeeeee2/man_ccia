@@ -1,6 +1,6 @@
-# Lab exercise 5: Downloading Climate Data {#lab2}
+# Lab `r which(grepl("esgf", list.files(pattern = ".*_lab.Rmd")))`: Downloading Climate Data {#esgflab}
 
-_Last update: `r system("git log -1 --format=\"%ad (%h)\" -- 05-Lab2.Rmd", intern = TRUE)`_
+_Last update: `r system("git log -1 --format=\"%ad (%h)\" -- 05-esgf_lab.Rmd", intern = TRUE)`_
 
 ```{r, include=FALSE}
 source("R/init_python.R")
@@ -53,7 +53,7 @@ Now we need to provide our search criteria. The ESGF API uses a series of define
 
 We are interested in three temperature variables in this Lab: "tas", which is the Near-Surface Air Temperature; "tasmax", which is the Daily Maximum Near-Surface Air Temperature, and "tasmin", the Daily Minimum Near-Surface Air Temperature.
 
-As discussed briefly in Lab 2, ESGF data files include an 'ensemble' filters. The CMIP5 climate models were compared in a series of ensembles coded as r&lt;N&gt;i&lt;M&gt;p&lt;L&gt;. First, "r" refers to the model run, a different number here indicates that the model was started with a different set of equally realistic initial conditions. Second, "i" refers to the initialization parameters. This number is changed when the model is started using different _methods_. Finally, "p" refers to the perturbed physics used in the model. A different number represents different configurations of the physical parameters for the model ensemble.
+As discussed briefly in Lab `r which(grepl("dims", list.files(pattern = ".*_lab.Rmd")))`, ESGF data files include an 'ensemble' filters. The CMIP5 climate models were compared in a series of ensembles coded as r&lt;N&gt;i&lt;M&gt;p&lt;L&gt;. First, "r" refers to the model run, a different number here indicates that the model was started with a different set of equally realistic initial conditions. Second, "i" refers to the initialization parameters. This number is changed when the model is started using different _methods_. Finally, "p" refers to the perturbed physics used in the model. A different number represents different configurations of the physical parameters for the model ensemble.
 
 ### Searching and parsing the results
 

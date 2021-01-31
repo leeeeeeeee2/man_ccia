@@ -1,6 +1,6 @@
-# Lab exercise 4: Using Downscaled GCM Data {#lab5}
+# Lab `r which(grepl("pcic", list.files(pattern = ".*_lab.Rmd")))`: Using Downscaled GCM Data {#pciclab}
 
-_Last update: `r system("git log -1 --format=\"%ad (%h)\" -- 11-Lab5.Rmd", intern = TRUE)`_
+_Last update: `r system("git log -1 --format=\"%ad (%h)\" -- 11-pcic_lab.Rmd", intern = TRUE)`_
 
 ```{r setup, include=FALSE}
 source("R/init_python.R")
@@ -25,7 +25,7 @@ import seaborn as sns
 from netCDF4 import Dataset, num2date
 ```
 
-In Lab 3 (Sec. \@ref(lab4)) we applied GCM-derived change factors to our observed data as a rudimentary form of downscaling, and removing the bias in the model projections. In that sense, we kept the relative change in the model projections, but discarded the monthly and seasonal signals. In this lab, we will use downscaled data provided by @pcic2014statistically. We downloaded these files, in Section \@ref(pcic).
+In Lab `r which(grepl("select", list.files(pattern = ".*_lab.Rmd")))` (Sec. \@ref(selectlab)) we applied GCM-derived change factors to our observed data as a rudimentary form of downscaling, and removing the bias in the model projections. In that sense, we kept the relative change in the model projections, but discarded the monthly and seasonal signals. In this lab, we will use downscaled data provided by @pcic2014statistically. We downloaded these files, in Section \@ref(pcic).
 
 ## Reading the downscaled data
 
@@ -140,7 +140,7 @@ baseline_stats_gcm = baseline.groupby(['Scenario','Variable','Month']).agg({'Val
 print(baseline_stats_gcm)
 ```
 
-Let's see how the downscaled data compare to our observed data. Let's read in our observed data that we generated in Lab 1 (Sec. \@ref(lab1)), and generate the same stats.
+Let's see how the downscaled data compare to our observed data. Let's read in our observed data that we generated in Lab `r which(grepl("eccc", list.files(pattern = ".*_lab.Rmd")))` (Sec. \@ref(eccclab)), and generate the same stats.
 
 ```{python, deco=list()}
 tor = pd.read_csv("tor.csv", index_col=0)
@@ -303,7 +303,7 @@ knitr::include_graphics("l5f4.png", dpi = NA)
 
 ## Re-assessing the future
 
-Let's take a look at how the downscaled data projects the future climate. We will perform our analysis using the same tridecades that we used in Lab 3. First, we'll filter our data to grab the data from 1981 to 2100, which covers our baseline and our three tridecades. Next, we'll add an empty `"Period"` column, and classify our tridecades by masking the relevant periods and assigning a tridecade name.
+Let's take a look at how the downscaled data projects the future climate. We will perform our analysis using the same tridecades that we used in Lab `r which(grepl("select", list.files(pattern = ".*_lab.Rmd")))`. First, we'll filter our data to grab the data from 1981 to 2100, which covers our baseline and our three tridecades. Next, we'll add an empty `"Period"` column, and classify our tridecades by masking the relevant periods and assigning a tridecade name.
 
 ```{python, deco=list()}
 dat = df[(df.Date >= cftime.DatetimeNoLeap(1981, 1, 1)) & (df.Date <= cftime.DatetimeNoLeap(2100, 12, 31))]
@@ -454,6 +454,6 @@ It looks like our models slightly under-estimate baseline CDD. This might be rel
 ```{block, type='rmdassignment'}
 - There is still some considerable difference between the multi-model ensemble-projected $T_\mathrm{min}$ and the observed value. Why might that be? [2 marks]
 - Create a barplot (you may use either **matplotlib** or **seaborn**) of the projected changes to CDD using the six-model ensemble. Remember to include the relevant details such as error bars. [2 marks]
-- How do the results of the downscaled GCM data compare to the change-factor method that you used in Lab 3? [5 marks]
+- How do the results of the downscaled GCM data compare to the change-factor method that you used in Lab `r which(grepl("select", list.files(pattern = ".*_lab.Rmd")))`? [5 marks]
 - Write a brief (max 1 page) review of the CCIA methodology process taken to this point. Ensure that you include the relevant citations to data and methods used.  [6 marks]
 ```

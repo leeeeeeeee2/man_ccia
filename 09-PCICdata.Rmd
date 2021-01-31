@@ -26,7 +26,7 @@ We can improve upon our estimate of the impact of climate change on our exposure
 In this exercise, we will use data that has been downscaled using a bias-corrected constructed analogs method (BCCAQ; see @cannon2015bias). One of the advantages of this method is that we can bias-correct and downscale daily GCM data.
 
 The data was provided by @pcic2014statistically, and is downscaled based on a high-quality gridded observed data set (~10 km grid size) developed by NRCan (ANUSPLIN300). PCIC provides an excellent overview of their downscaling methodology, with citations made to the relevant articles, [here](https://
-www.pacificclimate.org/data/statistically-downscaled-climate-scenarios). You should read the entirety of that page before continuing this preface and before starting lab 5.
+www.pacificclimate.org/data/statistically-downscaled-climate-scenarios). You should read the entirety of that page before continuing this preface and before starting Lab `r which(grepl("pcic", list.files(pattern = ".*_lab.Rmd")))`.
 
 Figure \@ref(fig:l5f0), below, shows the results of this downscaling process for the Canadian CanESM2 model. Notice that the PCIC product, downscaled to a 10 km grid, is much more closely related to the observed station point data that we downloaded from Environment and Climate Change Canada. Our comparison here still isn't perfect, as we're still comparing a point to a grid cell, but as our grid cell decreases in size, the two series begin to behave more similarly. This definitely looks like a solution to improve the quality of our impact assessment. Read on to learn how to obtain this high-resolution downscaled data directly from PCIC.
 
@@ -109,7 +109,7 @@ knitr::include_graphics("l5f0.png", dpi = NA)
 
 ## Retrieving downscaled data from the data portal website
 
-PCIC provides an intuitive point and click map for accessing the downscaled GCM data. In our exercise in Lab 5, we will use six models (CanESM2, CCSM4, CSIRO-Mk3-6-0, GFDLESM2G, inmcm4 and MIROC5). To download this information manually, follow the steps below. You may instead wish to download these data programatically. Skip to the next section for that process. 
+PCIC provides an intuitive point and click map for accessing the downscaled GCM data. In our exercise in Lab `r which(grepl("pcpc", list.files(pattern = ".*_lab.Rmd")))`, we will use six models (CanESM2, CCSM4, CSIRO-Mk3-6-0, GFDLESM2G, inmcm4 and MIROC5). To download this information manually, follow the steps below. You may instead wish to download these data programatically. Skip to the next section for that process. 
 
 1. Open the link to the downscaled GCM data: http://tools.pacificclimate.org/dataportal/downscaled_gcms/map/. A map of North America should appear on your screen.
 2. In the bar on the right-hand side of your screen. Select "historical,rcp45".
@@ -139,7 +139,7 @@ from netCDF4 import Dataset, date2index, num2date, date2num
 from tqdm import tqdm
 ```
 
-Here we will use a similar `download` function as the one that we used in Lab 2 (Sec. \@ref(lab2)) so that we can keep track of the files as they download. 
+Here we will use a custom `download` function so that we can keep track of the files as they download. 
 
 ```{python, deco=list()}
 # Adapted from: https://stackoverflow.com/a/37573701
@@ -263,4 +263,4 @@ for i in range(len(urls)):
     download(urls[i], filenames[i])
 ```
 
-Now that you have the data, we can proceed to analyze it. In Lab 5 (Sec. \@ref(lab5)), we will compare the downscaled GCM data to our observed data and re-assess our exposure unit based on these new data.
+Now that you have the data, we can proceed to analyze it. In Lab `r which(grepl("pcic", list.files(pattern = ".*_lab.Rmd")))` (Sec. \@ref(pciclab)), we will compare the downscaled GCM data to our observed data and re-assess our exposure unit based on these new data.

@@ -2,7 +2,7 @@
 
 _Last update: `r system("git log -1 --format=\"%ad (%h)\" -- 04-modelling.Rmd", intern = TRUE)`_
 
-In Lab 1, we learned how to acquire data for the past, and perform a basic baseline analysis. In Lab 2 (Sec. \@ref(lab2)), we will be looking the other direction, towards the future. Before we begin, this chapter serves as a primer on (or, hopefully, review of) basic climate modelling.
+In Lab `r which(grepl("eccc", list.files(pattern = ".*_lab.Rmd")))`, we learned how to acquire data for the past, and perform a basic baseline analysis. In the other labs we will be looking the other direction, towards the future. Before we begin, this chapter serves as a primer on (or, hopefully, review of) basic climate modelling.
 
 Since we scientists do not have a crystal ball to tell the future of our climate system, we rely on models to provide us with one of many "possible futures". Unlike fortune telling, climate modelling is based on our scientific understanding of the Earth's climate system. Indeed, the most important point to be made for climate modelling is that, in principle, all climate models are based in the laws of physics: conservation of energy, conservation of mass, and conservation of momentum. As such, climate models provide a mathematical representation of the interactions among the distinct components of the Earth's climate system.
 
@@ -66,4 +66,4 @@ Adapted from @moss2010next.
 The RCPs are not policy prescriptive. The socioeconomic scenarios used to generate the RCPs are not internally consistent, nor unique. The RCPs should not be interpreted as forecasts, nor even as absolute bounds for the future. 
 ```
 
-If you would like to see some examples of the four RCPs and climate model data, poke around the "plots" tab of [_Conjuntool_](https://shiny.conr.ca/conjuntool/), which we will be using in upcoming labs. In Lab 2 (Sec. \@ref(lab2)), you will learn how to obtain GCM data from the Earth System Grid Federation (ESGF). In Lab 3 (Sec. \@ref(lab3)), we will learn to read the data from these files into Python. 
+If you would like to see some examples of the four RCPs and climate model data, poke around the "plots" tab of [_Conjuntool_](https://shiny.conr.ca/conjuntool/), which we will be using in upcoming labs. In Lab `r which(grepl("esgf", list.files(pattern = ".*_lab.Rmd")))` (Sec. \@ref(esgflab)), you will learn how to obtain GCM data from the Earth System Grid Federation (ESGF). In Lab `r which(grepl("dims", list.files(pattern = ".*_lab.Rmd")))` (Sec. \@ref(dimslab)), we will learn to read multi-dimsensional data from files like these into Python. 

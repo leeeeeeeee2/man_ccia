@@ -1,6 +1,6 @@
-# Lab exercise 3: Choosing our models {#lab4}
+# Lab `r which(grepl("select", list.files(pattern = ".*_lab.Rmd")))`: Choosing our models {#selectlab}
 
-_Last update: `r system("git log -1 --format=\"%ad (%h)\" -- 09-Lab4.Rmd", intern = TRUE)`_
+_Last update: `r system("git log -1 --format=\"%ad (%h)\" -- 09-select_lab.Rmd", intern = TRUE)`_
 
 ```{r setup, include=FALSE}
 source("R/init_python.R")
@@ -92,7 +92,7 @@ Now we have a table of the two extreme models for each scenario that identifies 
 
 ### Validating model baselines
 
-Another model selection method is to validate a model against observed baseline values. Before we can validate, we need data to validate against. Here I am using the very same _.csv_ file that we generated in Lab 1. If you no longer have that file, give the code in Lab 1 a quick run and you should be able to re-create it in no time. Note that when we saved the file using `tor.to_csv()`, an index column was included in the file. Use the `index_col` argument to let **Pandas** know about this, or you will end up with an extra unnamed column of numbers from 0 to the number of rows in the file.
+Another model selection method is to validate a model against observed baseline values. Before we can validate, we need data to validate against. Here I am using the very same _.csv_ file that we generated in Lab `r which(grepl("eccc", list.files(pattern = ".*_lab.Rmd")))`. If you no longer have that file, give the code in Lab `r which(grepl("eccc", list.files(pattern = ".*_lab.Rmd")))` a quick run and you should be able to re-create it in no time. Note that when we saved the file using `tor.to_csv()`, an index column was included in the file. Use the `index_col` argument to let **Pandas** know about this, or you will end up with an extra unnamed column of numbers from 0 to the number of rows in the file.
 
 
 ```{python, deco=list()}
@@ -232,7 +232,7 @@ The methods that we have seen above are quick and useful for pedagogy, but there
 
 ## Applying our change factors
 
-Now that we have chosen our models, let's see how we can apply these change factors to our observed data. For each period, we apply the given change factor to the daily values from our observed data. If we were to graph this, it would look a little bit like a jagged staircase, with each tridecade shifting by some fixed amount. It is not, however, the daily values that are of interest. We cannot reliably forecast daily weather far into the future. Instead, we use the past history, combined with the average tridecadal change to estimate changes in our exposure unit. Since I am looking at $T_{\textrm{mean}}$ here, I won't examine tropical nights as I did in lab 1. Here I will use summer cooling degree days and winter heating degree days for the RCP4.5 and RCP8.5 scenarios.
+Now that we have chosen our models, let's see how we can apply these change factors to our observed data. For each period, we apply the given change factor to the daily values from our observed data. If we were to graph this, it would look a little bit like a jagged staircase, with each tridecade shifting by some fixed amount. It is not, however, the daily values that are of interest. We cannot reliably forecast daily weather far into the future. Instead, we use the past history, combined with the average tridecadal change to estimate changes in our exposure unit. Since I am looking at $T_{\textrm{mean}}$ here, I won't examine tropical nights as I did in Lab `r which(grepl("eccc", list.files(pattern = ".*_lab.Rmd")))`. Here I will use summer cooling degree days and winter heating degree days for the RCP4.5 and RCP8.5 scenarios.
 
 ```{block, type="rmddisclaimer"}
 In these examples, I am using annual change factors to analyze seasonal exposure units. This is lazy at best and downright wrong at worst. The sections below are only meant as _code_ examples. In your research, make sure to use the appropriate change factors for your period of interest.
@@ -264,7 +264,7 @@ tor_ext = tor_ext.assign(hex2020s = tor.MeanTemp + anom)
 print(tor_ext.head())
 ```
 
-Now we can (re)calculate our exposure unit using a lambda expression just as we did in Lab 1.
+Now we can (re)calculate our exposure unit using a lambda expression just as we did in Lab `r which(grepl("eccc", list.files(pattern = ".*_lab.Rmd")))`.
 
 ```{python, deco=list()}
 tor_ext['CDDObs'] = tor_ext.MeanTemp.apply(lambda x: 0 if x <= 18 else x - 18)
@@ -378,7 +378,7 @@ For bonus marks: modify the `recalc_exp()` function above so that it first aggre
 Once you have finished changing the code, generate a patch for the original function using software such as [Pretty Diff](https://prettydiff.com/). This will highlight the changes that you made. Submit this patch along with your regular "What to submit" exercises.
 ```
 
-What if we want to calculate winter heating degree days? We'll need to shift our Decembers up a year like we did in Lab 1. This isn't hugely necessary at the moment, since I'm looking at 30-year totals, but it is always a good habit to maintain and allows us to be more precise about the seasons in consideration. It will become especially relevant for those of your who undertake the bonus assignment in the box above.
+What if we want to calculate winter heating degree days? We'll need to shift our Decembers up a year like we did in Lab `r which(grepl("eccc", list.files(pattern = ".*_lab.Rmd")))`. This isn't hugely necessary at the moment, since I'm looking at 30-year totals, but it is always a good habit to maintain and allows us to be more precise about the seasons in consideration. It will become especially relevant for those of your who undertake the bonus assignment in the box above.
 
 ```{python, deco=list()}
 tor_win = tor.copy()
@@ -459,7 +459,7 @@ out = recalc_exp(obs=tor_win[['Date', 'MeanTemp']],
 print(out)
 ```
 
-In Lab 2, we used `pd.pivot()` to turn our table from a narrow layout to a wide layout. I stressed, however, that the narrow layout was more efficient for plotting. This time around, we have a wide data frame, which we want to convert to a narrow one. The method that we need to call, the antithesis to `pd.pivot()` is `pd.melt()`.
+In Lab `r which(grepl("dims", list.files(pattern = ".*_lab.Rmd")))`, we used `pd.pivot()` to turn our table from a narrow layout to a wide layout. I stressed, however, that the narrow layout was more efficient for plotting. This time around, we have a wide data frame, which we want to convert to a narrow one. The method that we need to call, the antithesis to `pd.pivot()` is `pd.melt()`.
 
 ```{python, deco=list()}
 out_long = out.melt(id_vars = ['Model', 'Scenario'], var_name = "Period", value_name = "Cooling Degree Days")
@@ -487,7 +487,7 @@ Great! We have now seen who we can apply GCM-projected change factors to our obs
 ## Exercises (what to submit)
 
 ```{block, type='rmdassignment'}
-- In Lab 1 (Sec. \\\@ref(lab1)) we examined the "baseline" summertime Tropical Nights and winter Heating Degree Days for Toronto. Choose either one and use the change factor method to project into the future. Go back to Conjuntool and select the relevant _seasonal_ anomaly data. Describe differences in the results when you use the annual change factors and the seasonal ones. What accounts for the differences? [2 marks]
+- In Lab `r which(grepl("eccc", list.files(pattern = ".*_lab.Rmd")))` (Sec. \\\@ref(eccclab)) we examined the "baseline" summertime Tropical Nights and winter Heating Degree Days for Toronto. Choose either one and use the change factor method to project into the future. Go back to Conjuntool and select the relevant _seasonal_ anomaly data. Describe differences in the results when you use the annual change factors and the seasonal ones. What accounts for the differences? [2 marks]
 - Are the models that best reproduced the _annual_ baseline the same models that best reproduce the _seasonal_ baseline? If not, can we trust our validation results? [2 marks]
 - Re-calculate the changes to the exposure unit using the _seasonal_ data. What differences do you see compared to the annual data? [2 marks]
 - Is it better to use the annual data or the seasonal data for a seasonal study? Why? [2 marks]
