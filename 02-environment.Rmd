@@ -19,7 +19,7 @@ conda create -n "man_ccia" "python>=3.7.1" ec3 esgf-pyclient matplotlib netCDF4 
 This will create a new environment, named "man_ccia", which will contain all of the packages that you will need to complete the exercises contained in this manual, including Python 3.7.1 or higher.
 
 ```{block, type='rmdtip'}
-If you plan to use Jupyter Lab (the successor to Jupyter Notebook), you can choose to either install Jupyter into your "man_ccia" environment, or use Jupyter from you base environment with an extra kernel for your "man_ccia" environment.
+If you plan to use Jupyter Lab (the successor to Jupyter Notebook), you can choose to either install Jupyter into your "man_ccia" environment, or use Jupyter from your base environment with an extra kernel for your "man_ccia" environment.
 
 To install Jupyter Lab in the "man_ccia" environment, run the following commands:
 

@@ -56,7 +56,7 @@ dat.head()
 
 ### Using the extremes
 
-Choosing our models based on the highest and lowest projected changes allows us to get an idea of the "range" of possibilities for the future. Since we are using change factors, we are only considering the changes that each model projects over its own baseline period. So these changes are relative. i.e. The model with the largest projected change is not necessarily the model with the highest projected temperature. 
+Choosing our models based on the highest and lowest projected changes allows us to get an idea of the "range" of possibilities for the future. Since we are using change factors, we are only considering the changes that each model projects over its own baseline period. So these changes are relative, i.e. the model with the largest projected change is not necessarily the model with the highest projected temperature. 
 
 ```{block, type='rmddisclaimer'}
 For this and all of our selection methods, I'll made a copy of `dat` to work with using the `copy()` method. This is the safer option, as something like `dat_ext = dat` creates a new reference to the _same_ `dat` table. This isn't an issue if we are just sub-setting and filtering data, but it becomes troublesome if we want to change any of the data points; any modification to the values in `dat_ext` would also appear in `dat`! This will become more relevant later in this lab when we create the `tor_win` data frame. 
@@ -76,7 +76,7 @@ dat_ext.head() # Smallest
 dat_ext.tail() # Largest
 ```
 
-The next code block is a little involved. I am going to group `dat_ext` by `'Scenario'` and get the smallest value for each using `first()`. Make sure you sorted the values in the previous code block or you won't get the expected output! I will label those values "Lower", to represent the lower limit of the model projections, and restore the index, which was changed by `groupby`. I then do the same for the `last()` value, labelling these as "Upper". I append these two tables together, and drop the `'MeanAnom'` column.
+The next code block is a little complicated, so let's walk through it: I am going to group `dat_ext` by `'Scenario'` and get the smallest value for each using `first()`. Make sure you sorted the values in the previous code block or you won't get the expected output! I will label those values "Lower", to represent the lower limit of the model projections, and restore the index, which was changed by `groupby`. I then do the same for the `last()` value, labelling these as "Upper". I append these two tables together, and drop the `'MeanAnom'` column.
 
 
 ```{python, deco=list()}
@@ -207,7 +207,7 @@ dat_ens = dat.copy().groupby(['Scenario']).mean().reset_index()
 dat_ens
 ```
 
-You may be concerned that the baseline values are different for the difference scenarios. If you are thinking, "didn't we average the baselines between all the scenarios earlier". You're right. What we're seeing here is an inconsistency based on the number of models that provide projections for each scenario. Since we aren't doing any validation here, it doesn't really matter, but it is nice to know how many models are providing projections for each scenario and period.
+You may be concerned that the baseline values differ across scenarios. If you are thinking, "didn't we average the baselines between all the scenarios earlier". You're right. What we're seeing here is an inconsistency based on the number of models that provide projections for each scenario. Since we aren't doing any validation here, it doesn't really matter, but it is nice to know how many models are providing projections for each scenario and period.
 
 ```{python, deco=list()}
 dat.groupby(['Scenario']).count().reset_index()
@@ -360,14 +360,14 @@ pd.merge(recalc_exp(obs=tor[['Date', 'MeanTemp']],
 
 #### Bonus exercise
 
-The `recalc_exp()` function works on the daily values of each 30-year tridecade. Thus, it returns either the daily average, or the tridecadal total of a given exposure unit. These values might not be the most useful metrics for most analysts. It might be more useful to know what we might expect the _annual_ average or sum for a given metric. In our example the seasonal or annual total CDDs might be more useful to policy-makers.
+The `recalc_exp()` function works on the daily values of each 30-year tridecade. Thus, it returns either the daily average, or the tridecadal total for a given exposure unit. These values might not be useful metrics for most analyses. It might be more useful to know the _annual_ average or sum for a given metric. In our example the seasonal or annual total CDDs might be more useful to policy-makers.
 
 For bonus marks: modify the `recalc_exp()` function above so that it first aggregates the daily values by year (`obs.Date.dt.year`), and then applies the calculation provided by the `stat` argument. For full marks, your function should also retain the original functionality of `recalc_exp()`. (_Hint: you may need to add an extra parameter to the function_).
 
 Once you have finished changing the code, generate a patch for the original function using software such as [Pretty Diff](https://prettydiff.com/). This will highlight the changes that you made. Submit this patch along with your regular "What to submit" exercises. 
 ```
 
-What if we want to calculate winter heating degree days? We'll need to shift our Decembers up a year like we did in Lab 1. This isn't hugely necessary at the moment, since I'm looking at 30-year totals, but it is always a good habit to maintain and allows us to be more precise about the seasons in consideration. It will become especially relevant for those of your who undertake the bonus assignment in the box above.
+What if we want to calculate winter heating degree days? We'll need to shift our Decembers up a year like we did in Lab 1. This isn't hugely necessary at the moment, since I'm looking at 30-year totals, but it is always a good habit to maintain and allows us to be more precise about the seasons in consideration. It will become especially relevant for those of you who undertake the bonus assignment in the box above.
 
 ```{python, deco=list()}
 tor_win = tor.copy()
@@ -462,7 +462,7 @@ sns.catplot(x = "Period", y = "Heating Degree Days", hue = "Scenario", col = "Mo
             palette = "Reds", kind = "bar", ci = None, height = 7, aspect = 0.66)
 ```
 
-Great! We have now seen who we can apply GCM-projected change factors to our observed data to project changes in an exposure unit. In our next lab, we will look at more advanced downscaling methods.
+Great! We have now seen how we can apply GCM-projected change factors to our observed data to project changes in an exposure unit. In our next lab, we will look at more advanced downscaling methods.
 
 ## Exercises (what to submit)
 

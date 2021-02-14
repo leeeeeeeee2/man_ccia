@@ -32,8 +32,6 @@ Environment and Climate Change Canada (ECCC) makes data available over an intern
 
 ECCC makes data available via a web server and gives instructions for downloading data manually via Bash and Wget. You can find instructions for using the command line to download data on [Google Drive](https://drive.google.com/drive/folders/1WJCDEU34c60IfOnG4rv5EPZ4IhhW9vZH/).
 
-#### An all-in-Python solution
-
 For convenience, I have written a small Python module, called **ec3** to search for and download data from the ECCC archive. You can review the source code for this module on [GitLab](https://gitlab.com/ConorIA/ec3.py). **ec3** is also available as a stand-alone command-line program, so if you have a colleague who is afraid to learn how to code, they can still use **ec3** to speed up the process of downloading data from ECCC. 
 
 If you followed the instructions in Section \@ref(enviro), then you already have **ec3** installed. If you didn't, you can install it via Conda. Note that **ec3** is not available in the official Anaconda channels, and has some dependencies from the "conda-forge" channel. First, _prepend_ conda-forge to the start of your channels list so that packages get installed from there first, and _append_ Conor's personal channel to the end of the list so that it is only used for packages that are not available in any other channel.
@@ -64,7 +62,7 @@ tor = ec3.get_data(stations=5051, years=range(1981, 2011), progress=False)
 ```
 
 
-#### Cleaning the data
+## Cleaning the data
 
 Now that we have the data that we need, we can start working with it. First, let's import the libraries we are going to need to manipulate our data. 
 
@@ -79,7 +77,7 @@ Let's take a look at what our columns are named.
 tor.columns
 ```
 
-Hmm, some of those are are a little cumbersome. Let's rename the columns we are going to use and then select only those columns. 
+Hmm, some of those are a little cumbersome. Let's rename the columns we are going to use and then select only those columns. 
 
 ```{python rename_cols, deco=list()}
 tor = tor.rename(columns={'Date/Time': 'Date', 'Max Temp (°C)': 'MaxTemp', 'Min Temp (°C)': 'MinTemp', 'Mean Temp (°C)': 'MeanTemp', 'Total Precip (mm)': 'TotalPrecip'})
@@ -219,7 +217,7 @@ Since our value is Boolean, we can use that column as an index. Let's double-che
 tor[tor.TropNight].head()
 ```
 
-Now let's get an aggregate data set by grouping by the year. 
+In Python, `True` is equal to 1, and `False` is equal to zero. This means that we can easily get an annual data set by grouping our data frame by year and taking the sum of the "TropNight" column for each group. 
 
 ```{python agg_trop, deco=list()}
 tor_trop = tor[['Date', 'TropNight']].groupby(tor.Date.dt.year).sum()
@@ -246,7 +244,7 @@ Now let's make another plot, this time with a trendline.
 ```{python l1f2, deco=list(), results='hold', fig.cap="Total summertime tropical nights at Toronto (1981\u20122010), with linear trend line."}
 plt.plot(tor_trop.Date, tor_trop.TropNight)
 plt.plot(tor_trop.Date, np.polyval(np.polyfit(tor_trop.Date, tor_trop.TropNight, 1), tor_trop.Date))
-plt.title("Total summertime Tropical Nights at Toronto (1981‒2010)")
+plt.title("Total summertime tropical nights at Toronto (1981‒2010)")
 plt.xlabel("Year")
 plt.ylabel("No. of Tropical Nights")
 ```
@@ -269,7 +267,7 @@ We have one more challenge to overcome. A common mistake when performing seasona
 tor['Year'] = tor.Date.apply(lambda x: x.year + 1 if x.month == 12 else x.year)
 ```
 
-Now we can aggregate our heating degree days. Pay close attention to the code below. First, I use two conditional filters in the square brackets. The first drops the two winters that I know are incomplete: winter 1980/81 (which is missing December 1980), and winter 2010/2011, which is really just December 2010 here. A better solution for the first issue would be to download data including December 1980. The second condition filter to just our winter months, 12, 1, and 2. Next, I select only the two columns that are of interest, group them by `'Year'` and aggregate by `sum()`. Finally, I reset the index. 
+Now we can aggregate our heating degree days. Pay close attention to the code below. First, I use two conditional filters in the square brackets. The first condition (`tor.Year.isin(range(1982, 2011))`) selects all years between 1982 and 2011. We use this filter to drop the two winters that we know are incomplete: winter 1980/81 (which is missing December 1980), and winter 2010/2011, which is really just December 2010 here. (A better solution for this issue would be to download data including December 1980). The second condition (`tor.Date.dt.month.isin([12, 1, 2])`) filters out all months except for the winter months: 12, December; 1, January; and 2, February. After filtering, I select the two columns that are of interest (`'Year'` and `'HDD'`), group them by `'Year'` and aggregate by `sum()`. Finally, I reset the index. 
 
 ```{python agg_hdd, deco=list()}
 tor_hdd = tor[tor.Year.isin(range(1982, 2011)) & tor.Date.dt.month.isin([12, 1, 2])][['Year', 'HDD']].groupby('Year').sum().reset_index()
@@ -284,38 +282,58 @@ plt.xlabel("Year")
 plt.ylabel("Heating Degree Days  (HDD)")
 ```
 
-Let's see if we can detect any trends in our baseline values. For convenience, I am going to create a function that will spit out the relevant values. You can run these commands directly, but this might save you time when you get to the exercises (Hint!).
+Let's see if we can detect any trends in our baseline values. For convenience, I am going to create a function that will print the relevant values. You can run these commands directly, but this might save you time when you get to the exercises (Hint!).
 
 ```{python def_test_trends, deco=list()}
 def test_trends(years, values):
+    # Perform linear regression
     slope, intercept, r_value, p_value, std_err = stats.linregress(years, values)
+    # Print the regression statistics
     print("The regression coefficients are", np.round(slope, 3), "for the slope and",
           np.round(intercept, 1), "for the intercept\n")
 
+    # Calculate confidence intervals
     t_crit = stats.t.ppf(0.975, len(years) - 1)
     confidence_interval = t_crit * std_err
     print("The true value of the slope is then", np.round(slope, 3), "+/-",
           np.round(confidence_interval, 3),"\n")
 
+    # Get Pearson's coefficient 
     pearsons_corrcoef, p_corr = stats.pearsonr(years,  values)
+    
+    # Describe the significance level
     levels = [0.001, 0.01, 0.05, 0.1]
     lvl = [i for i in levels if p_corr < i]
+    
+    # Print the correlation statistics
     print("The correlation is", np.round(pearsons_corrcoef, 3), "with a p-value of",
           np.round(p_corr, 5), "(not significant)\n" if lvl == [] else
           "(significant at the " + str(min(lvl)) + " level)\n")
 
+    # Calculate and print the R²
     print("The variance in", values.name, "explained by the linear trend is",
           "quantified by the R²: R² =",
           np.round(100 * pearsons_corrcoef**2, 3), '%.\n')
 ```
 
+Let's use this new function to see some key features of the relationship between the year and the annual summertime tropical nights.
 
 ```{python trends_trop, deco=list()}
 test_trends(tor_trop.Date, tor_trop.TropNight)
 ```
 
+At first glance, it appears that there is a positive correlation between tear and tropical nights (i.e. tropical nights are increasing over time). However, the slope of the trend is only 0.037 tropical nights per year, and the confidence intervals are very wide (0.373). The  fact that the confidence intervals cross zero and the large $p$-value tell use that there doesn't appear to be a trend after all. In fact, the $R^2$ tells us that only about 0.15% of the variance in tropical nights can be explained by the linear trend. 
+
+What about heating degree days?
+
 ```{python trends_hdd, deco=list()}
 test_trends(tor_hdd.Year, tor_hdd.HDD)
+```
+
+For heating degree days, we see the opposite: there is an apparent negative trend (i.e. less heating degree days), but we again have confidence intervals that cross zero, a large p-value, and a small $R^2$.
+
+```{block, type='rmdtip'}
+You may be asking yourself how it is that we didn't see any trends in tropical nights or in HDD. If the overwhelming scientific consensus is that the world is getting warmer, why didn't we see trends in our exposure units? Remember that the climate system is very noisy. We focused our analysis at a given place over a given period of time. While the general rule is that climate analysis requires _at least_ 30 years of data; even 30 years may be insufficient to detect long-term trends. We also examined two very different exposure units. Tropical nights, for instance, are a relatively extreme index at Toronto. It may be unrealistic to expect that we'd find a statistically significant trend. For a look at how the length of our period affects trends in winter temperatures, see @Anderson_Gough_2017. For another paper on long-term trend anaysis at Toronto, see @Mohsin_Gough_2010.
 ```
 
 ## Exercises (what to submit)

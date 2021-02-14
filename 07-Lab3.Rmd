@@ -67,9 +67,9 @@ You can query a specific variable as well, e.g. `time`.
 nc.variables['time']
 ```
 
-The above shows us some interesting characteristics of our variable, such as units, current shape, and whether it is an unlimited variable or not. 
+The above shows us some attributes of our variable, such as units, current shape, and whether it is an unlimited variable or not. 
 
-We can store the variable in a Python object, which will help us to get the its values. 
+We can store the variable in a Python object, which will help us to get its values. 
 
 ```{python, deco=list()}
 nc_time = nc.variables['time']
@@ -124,7 +124,7 @@ lon_cell = np.argmin(np.abs(nc_lon - target['lon']))
 ```
 
 ```{block, type='rmdtip'}
-The minimal netCDF files that we've created for this book do not include "bounds" variables, however, these can be useful. It is not always clear what the "latitude" and "longitude" of a cell refers to: is the centre point? Is it the top-left corner of the grid box? This is where the bounds variables are really useful. The latitude bounds provide the latitude of the top and bottom of each grid box. The longitude bounds provide the right and left sides of the box. Using the bounds can be a safer way to identify the grid box that we are interested in. Depending on the model you have selected, look for a variable called `lat_bnds` or `lat_bounds`.
+The minimal netCDF files that we've created for this book do not include "bounds" variables, however, these can be useful. It is not always clear what the "latitude" and "longitude" of a cell refers to: is it the centre point? Is it the top-left corner of the grid box? This is where the bounds variables are really useful. The latitude bounds provide the latitude of the top and bottom of each grid box. The longitude bounds provide the right and left sides of the box. Using the bounds can be a safer way to identify the grid box that we are interested in. Depending on the model you have selected, look for a variable called `lat_bnds` or `lat_bounds`.
 
 <div class="decocode"><div style="background-color:#366994"><p><span style="font-size:90%;color:#ffffff"><i class="fab fa-python"></i> <b>Python</b></span></p>
     nc_lat_bnds = nc.variables["lat_bnds"][:].data
@@ -234,7 +234,7 @@ A long layout table is very useful for many operations such as grouping and subs
 df.plot()
 ```
 
-That doesn't look right. We can manually fix the above by filtering for each projection and adding the line manually. 
+Somewhere in Figure \@ref{fig:l3f2} is the CanESM2 Monthly $T_\\mathrm{mean}$ at Toronto (2006‒2040) using our three RCP scenarios, but it looks like we need some more sophisticated code to plot this! We can manually fix the above by filtering for each projection and adding the line manually. 
 
 ```{python l3f3, deco=list(), results='hold', fig.cap="Monthly $T_\\mathrm{mean}$ at Toronto (2006\u20122040), as simulated by CanESM2 using three RCP scenarios."}
 plt.plot(df.Date[df.Experiment == "rcp26"], df.MeanTemp[df.Experiment == "rcp26"], 'y-', alpha=0.7, label = 'RCP 2.6')
@@ -246,7 +246,7 @@ plt.xlabel("Year")
 plt.ylabel("Mean Temperature (°C)")
 ```
 
-What if we want to include the "historical" data? The **seaborn** library can also make this process a little easier. Run the following if you have installed **seaborn**. 
+What if we want to include the "historical" data? In Figure \@ref{l3f3} we manually plotted each scenario as a separate line on the same plot. The **seaborn** library can also make this process a little easier. Using **seaborn** we can identify what it is that makes each data series unique and how we want to differentiate between series. We will pass `hue="Experiment"` to our **seaborn** plot, which indicates that we want a different hue (i.e. colour) for each unique value in `"Experiment"`.
 
 ```{python l3f4, deco=list(), results='hold', fig.cap="Historical and future monthly $T_\\mathrm{mean}$ at Toronto (1981\u20122040), as simulated by CanESM2. Future projections are forced using three RCP scenarios."}
 import seaborn as sns

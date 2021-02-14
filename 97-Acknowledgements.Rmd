@@ -20,3 +20,5 @@ A huge "thank you" goes out to the first cohort of students to use this lab manu
 Thank you, also, to Paul Kushner for sharing your experience using the book and identifying typos and bugs. 
 
 Thanks to [Alfonso Reyes](https://gitlab.com/AlfonsoRReyes) for suggestions to make it easier to build the book locally. 
+
+Thank you to [Julia Wagemann](https://gitlab.com/julia.wagemann) for the thorough [review](https://github.com/openjournals/jose-reviews/issues/100) of this manual as part of our submission to [JOSE](https://jose.theoj.org/about).

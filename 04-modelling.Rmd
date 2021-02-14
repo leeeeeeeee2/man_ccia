@@ -8,7 +8,7 @@ Since we scientists do not have a crystal ball to tell the future of our climate
 
 ## Climate model hierarchy
 
-The hierarchy of climate models is defined by the number of dimensions represented in the model, the number of climate system components that the model examines. Models can have between zero to three dimensions, which we will briefly define here. 
+The hierarchy of climate models is defined by the number of dimensions represented in the model, that is, the number of climate system components that the model examines. Models can have between zero to three dimensions, which we will briefly define here. 
 
 ### Lower-dimensioned models 
 
@@ -51,7 +51,7 @@ A model by itself can't project the future without a little guidance. This is wh
 
 In this lab manual, we will focus on the Representative Concentration Pathways [@moss2010next], the generation of climate scenarios which were developed for the IPCC's fifth assessment report [@pachauri2014climate]. These scenarios, abbreviated as RCPs, are a set of consistent climate projections, however, they are not integrated scenarios. They provide the first step for further analysis.
 
-Each of the four RCP scenarios was developed based on scenarios in the climate literature, with the goal that the four scenarios would, together, provide a full range of the scenarios that were present in the literature at the time of their development. RCP8.5 was based on the A2 "business as usual" scenario from the Special Report on Emissions Scenarios (SRES) from the IPCC's fourth assessment report. It is characterized by high energy usage, rapid population growth, low technological development, and poor global political cooperation. RCPs 2.6, 4.5, and 6.0, on the other hand, are based on energy use of between 750 and 900 EJ ($1$ EJ = $1 \times 10^{18}$J) by 2100. These scenarios place a higher focus on alternative and renewable energy. A key difference between these scenarios is the projected population growth and GPD. The four scenarios are summarized in the following table. 
+Each of the four RCP scenarios was developed based on scenarios in the climate literature, with the goal that the four scenarios would, together, provide a full range of the scenarios that were present in the literature at the time of their development. RCP8.5 was based on the A2 "business as usual" scenario from the Special Report on Emissions Scenarios (SRES) from the IPCC's fourth assessment report. It is characterized by high energy usage, rapid population growth, low technological development, and poor global political cooperation. RCPs 2.6, 4.5, and 6.0, on the other hand, are based on energy use of between 750 and 900 EJ ($1$ EJ = $1 \times 10^{18}$J) by 2100. These scenarios place a higher focus on alternative and renewable energy. A key difference between these scenarios is the projected population growth and projected economic conditions. The four scenarios are summarized in the following table. 
 
 
 | Name   | Radiative Forcing      | Concentration (ppm)           | Path          | Model   |
