@@ -1,6 +1,6 @@
 # Lab `r which(grepl("dims", list.files(pattern = ".*_lab.Rmd")))`: Navigating across three dimensions of data {#dimslab}
 
-_Last update: `r system("git log -1 --format=\"%ad (%h)\" -- 07-dims_lab.Rmd", intern = TRUE)`_
+_Last update: `r system("git log -1 --format=\"%ad (%h)\" -- 06-dims_lab.Rmd", intern = TRUE)`_
 
 ```{r setup, include=FALSE}
 source("R/init_python.R")
@@ -335,7 +335,7 @@ knitr::include_graphics("l3f5.png", dpi = NA)
 
 ## Change Factors
 
-In our next lab, we are going to use change factors to describe changes in our baseline climate. The change factor method (sometimes called $\Delta T$) calculates the projected temperature by adding the observed, baseline temperature time series to the change in the temperature projected by a GCM integration (typically using monthly GCM data). This process removes the bias in the GCM baseline climatology, and represents a simplified form of downscaling. Change factors are described by the following equation: 
+In our next lab, we are going to use change factors to describe changes in our baseline climate. The change factor method (sometimes called $\Delta T$) calculates the projected temperature by adding the observed, baseline temperature time series to the change in the temperature projected by a GCM integration (typically using monthly GCM data). This process removes the bias in the GCM baseline climatology, and represents a simplified form of downscaling. Change factors are described by the following equation:
 
 <center>$$T_{\mathrm{FUTURE}} = T_{\mathrm{OBSERVED}} + \Delta T_{\mathrm{GCM}}$$</center>
 

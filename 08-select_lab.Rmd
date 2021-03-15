@@ -1,6 +1,6 @@
 # Lab `r which(grepl("select", list.files(pattern = ".*_lab.Rmd")))`: Choosing our models {#selectlab}
 
-_Last update: `r system("git log -1 --format=\"%ad (%h)\" -- 09-select_lab.Rmd", intern = TRUE)`_
+_Last update: `r system("git log -1 --format=\"%ad (%h)\" -- 08-select_lab.Rmd", intern = TRUE)`_
 
 ```{r setup, include=FALSE}
 source("R/init_python.R")

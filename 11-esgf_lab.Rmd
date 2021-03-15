@@ -1,6 +1,6 @@
 # Lab `r which(grepl("esgf", list.files(pattern = ".*_lab.Rmd")))`: Downloading Climate Data {#esgflab}
 
-_Last update: `r system("git log -1 --format=\"%ad (%h)\" -- 05-esgf_lab.Rmd", intern = TRUE)`_
+_Last update: `r system("git log -1 --format=\"%ad (%h)\" -- 11-esgf_lab.Rmd", intern = TRUE)`_
 
 ```{r, include=FALSE}
 source("R/init_python.R")

@@ -1,6 +1,6 @@
 # Lab `r which(grepl("pcic", list.files(pattern = ".*_lab.Rmd")))`: Using Downscaled GCM Data {#pciclab}
 
-_Last update: `r system("git log -1 --format=\"%ad (%h)\" -- 11-pcic_lab.Rmd", intern = TRUE)`_
+_Last update: `r system("git log -1 --format=\"%ad (%h)\" -- 10-pcic_lab.Rmd", intern = TRUE)`_
 
 ```{r setup, include=FALSE}
 source("R/init_python.R")
