@@ -31,5 +31,6 @@ RUN conda create -y \
           r-stringr \
           r-zoo \
           scipy \
-          "seaborn>=0.9.0" &&\
+          "seaborn>=0.9.0" \
+          xarray &&\
           conda clean -ya
