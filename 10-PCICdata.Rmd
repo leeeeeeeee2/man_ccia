@@ -125,7 +125,7 @@ You can also download whole areas from the PCIC data portal. To do that, use the
 2. Select the time frequency of the data you want. We will select daily.
 3. Select the variable that you want. We will select maximum temperature (tasmax).
 4. Select the location that you want either by searching or by selecting grid boxes on the map. We will select Toronto.
-5. Select the data format. We will select netcdf.
+5. Select the data format. We will select netCDF.
 6. Finally, enter your email address. You will receive an email with a download link.
 7. Note that this [climatedata.ca](https://climatedata.ca) data portal does not allow you to select models or scenarios. Your download will include all available models and scenarios for the PCIC BCCAQv2 data and it will include separate files for each type of daily calendar (e.g. some GCMs include leap years and some do not).
 8. Repeat this process one more time so that you have data for both 'tasmax' and 'tasmin' for all models and scenarios.
@@ -181,7 +181,7 @@ for j in range(len(var)):
             current_time = now.strftime("%H:%M:%S")
             print('Downloading...',scen[i],var[j],model[k],"Current Time =", current_time)
 
-            # define netcdf filename
+            # define netCDF filename
             ncfile = pavics+var[j]+'_day_BCCAQv2+ANUSPLIN300_'+model[k]+'_historical+'+scen[i]+'_r1i1p1_19500101-21001231.nc'
 
             # open file
@@ -207,7 +207,7 @@ for j in range(len(var)):
             # Get the temperature data over bounding box
             tmp = grid[var[j]][start:end,latidx.min():latidx.max(),lonidx.min():lonidx.max()]
 
-            # save to netcdf
+            # save to netCDF
             tmp.to_netcdf(var[j] +'_'+ scen[i] +'_' + model[k]+ ".nc")
 ```
 
