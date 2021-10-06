@@ -220,7 +220,7 @@ def download(url, filename):
 Now you can download a file as follows: 
 
 ```{python, eval=FALSE, deco=list()}
-download(files[0]['url'], files[0]['filename'])
+download(files.url[0], files.filename[0])
 ```
 
 Or you could download them all in one go. However, this won't be necessary for the purposes of this lab!
