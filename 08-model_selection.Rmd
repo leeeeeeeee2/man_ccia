@@ -14,7 +14,7 @@ One of the challenges facing students and practitioners of climate change impact
 
 ```{r ts-plot, message=FALSE, warning=FALSE, fig.cap="Observed and GCM-modelled annual average mean temperature at Toronto (1981\u20122100). The black line traces observed data from the Toronto climate station. Each coloured line represents the projection from one of 39 CMIP5 models. Solid lines indicate historical projections; broken lines are projections forced with the four IPCC RCP scenarios. Mouse over the figure for a detailed tooltip."}
 
-tor <- read_csv("tor.csv") %>% select(-X1)
+tor <- read_csv("tor.csv", col_select = -1)
 source("R/aggregate_with_missing.R")
 tor_annual <- aggregate_with_missing(tor)
 rm(tor, aggregate_with_missing)
