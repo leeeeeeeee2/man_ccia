@@ -13,7 +13,7 @@ Whether you are running Anaconda2 or Anaconda3, or one of the [Miniconda](https:
 ```{bash, eval=FALSE}
 conda config --prepend channels conda-forge
 conda config --append channels ConorIA
-conda create -n "man_ccia" "python>=3.7.1" ec3 esgf-pyclient matplotlib netCDF4 pandas requests "seaborn>=0.9.0"
+conda create -n "man_ccia" "python>=3.7.1" ec3 esgf-pyclient matplotlib netCDF4 pandas requests "seaborn>=0.9.0" xarray
 ```
 
 This will create a new environment, named "man_ccia", which will contain all of the packages that you will need to complete the exercises contained in this manual, including Python 3.7.1 or higher.

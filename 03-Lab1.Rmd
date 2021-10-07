@@ -32,7 +32,7 @@ Environment and Climate Change Canada (ECCC) makes data available over an intern
 
 ## Getting the data
 
-ECCC makes data available over an [FTP site](ftp://client_climate@ftp.tor.ec.gc.ca/Pub/Get_More_Data_Plus_de_donnees/), and gives instructions for downloading data manually via Bash and Wget. You can find instructions for using the command line to download data [here](ftp://client_climate@ftp.tor.ec.gc.ca/Pub/Get_More_Data_Plus_de_donnees/Readme.txt).
+ECCC makes data available via a web server and gives instructions for downloading data manually via Bash and Wget. You can find instructions for using the command line to download data on [Google Drive](https://drive.google.com/drive/folders/1WJCDEU34c60IfOnG4rv5EPZ4IhhW9vZH/).
 
 #### An all-in-Python solution
 
