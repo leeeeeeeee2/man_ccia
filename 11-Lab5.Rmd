@@ -346,7 +346,7 @@ Perhaps we want to see the projections of each model, as well as the ensemble me
 ```{python, deco=list()}
 plot_data = dat.groupby(['Model', 'Scenario', 'Variable', 'Period']).agg('mean').reset_index()
 overall_means = plot_data.groupby(['Period', 'Scenario', 'Variable']).agg({'Value': 'mean'}).reset_index()
-plot_data = plot_data.append(overall_means.assign(Model="MMM"), sort=True)
+plot_data = plot_data.append(overall_means.assign(Model="MMM"), sort=True).reset_index()
 
 plt.figure(figsize=(10,6))
 sns.lineplot(x="Period", y="Value", hue="Model", style="Scenario", data=plot_data[plot_data.Variable == "tas"])
