@@ -27,7 +27,7 @@ RUN conda create -y \
           r-dplyr \
           r-plotly \
           r-readr \
-          r-reticulate \
+          "r-reticulate>=1.2.1" \
           r-stringr \
           r-zoo \
           scipy \

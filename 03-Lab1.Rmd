@@ -9,10 +9,8 @@ source("R/deco_hook.R")
 
 ```{python py_setup, include=FALSE}
 import matplotlib as mpl
-mpl.use("agg") # Needed for the book only
 mpl.rc('font', size = 12)
 from matplotlib import pyplot as plt
-plt.switch_backend('agg') # Might be overkill
 import numpy as np
 import pandas as pd
 pd.set_option('display.max_columns', 10)
@@ -78,7 +76,7 @@ import pandas as pd
 Let's take a look at what our columns are named. 
 
 ```{python print_cols, deco=list()}
-print(tor.columns)
+tor.columns
 ```
 
 Hmm, some of those are are a little cumbersome. Let's rename the columns we are going to use and then select only those columns. 
@@ -91,27 +89,27 @@ tor = tor[['Date', 'MaxTemp', 'MinTemp', 'MeanTemp', 'TotalPrecip']]
 Great. Let's take a look at what we've got. 
 
 ```{python tor_head, deco=list()}
-print(tor.head())
+tor.head()
 ```
 ```{python tor_tail, deco=list()}
-print(tor.tail())
+tor.tail()
 ```
 
 Uhh ohh! It looks like we are missing all of our temperature data at the end of our baseline period. We can test this theory by using an enumerator. The following will tell us the index at which all three of our temperature variables of interest are missing for the first time. 
 ```{python first_missing, deco=list()}
-print(next(i for i, x in enumerate(tor.loc[:, 'MaxTemp':'MeanTemp'].isnull().all(axis=1)) if x) - 1)
+next(i for i, x in enumerate(tor.loc[:, 'MaxTemp':'MeanTemp'].isnull().all(axis=1)) if x) - 1
 ```
 
 Let's take a look at the context around that index. 
 
 ```{python range_missing, deco=list()}
-print(tor[8211:8221])
+tor[8211:8221]
 ```
 
 It looks like we're missing data as of July 2003! Something odd has happened. Let's look for a nearby station (within 2 km) that we can use!
 
 ```{python find_station, deco=list()}
-print(ec3.find_station(target=5051, dist=range(3)))
+ec3.find_station(target=5051, dist=range(3))
 ```
 
 By the looks of it, "Toronto" and "Toronto City" are co-located! Indeed, in 2003 the "Toronto" station was renamed "Toronto City" and re-coded. Since that date, the daily data is available under station code 31688. 
@@ -132,22 +130,22 @@ tor2 = tor2[['Date', 'MaxTemp', 'MinTemp', 'MeanTemp', 'TotalPrecip']]
 We can check the head and the tail of this data too. 
 
 ```{python tor2_head, deco=list()}
-print(tor2.head())
+tor2.head()
 ```
 ```{python tor2_tail, deco=list()}
-print(tor2.tail())
+tor2.tail()
 ```
 
 As expected, we're missing data at the beginning of the file (before 2003). We can use a slightly modified version of our iterator from earlier. This time, we'll check for the first row for which any of the data is present. 
 
 ```{python first_present, deco=list()}
-print(next(i for i, x in enumerate(tor2.loc[:, 'MaxTemp':'MeanTemp'].notnull().any(axis=1)) if x) - 1)
+next(i for i, x in enumerate(tor2.loc[:, 'MaxTemp':'MeanTemp'].notnull().any(axis=1)) if x) - 1
 ```
 
 We'll take a look at that in context again. 
 
 ```{python range_present, deco=list()}
-print(tor2[880:890])
+tor2[880:890]
 ```
 
 It looks like our data starts as of June 04, 2002. 
@@ -155,10 +153,10 @@ It looks like our data starts as of June 04, 2002.
 OK, so we know that we have data at the old station until May 30, 2002. Likewise, we have some data at the new station in May 2002. Let's take a look at the overlap and see if we can merge these files without issue. 
 
 ```{python compare1, deco=list()}
-print(tor[(tor.Date >= "2003-06-25") & (tor.Date <= "2003-07-05")])
+tor[(tor.Date >= "2003-06-25") & (tor.Date <= "2003-07-05")]
 ```
 ```{python compare2, deco=list()}
-print(tor2[(tor2.Date >= "2003-06-25") & (tor2.Date <= "2003-07-05")])
+tor2[(tor2.Date >= "2003-06-25") & (tor2.Date <= "2003-07-05")]
 ```
 
 The data on the overlapping days is virtually identical between the two station codes, so we can be confident that merging these two data sets won't lead to a sudden temperature bump. Let's append the relevant section of `tor2` to `tor`.
@@ -170,10 +168,10 @@ tor = tor[tor.Date < "2003-07-01"].append(tor2[tor2.Date >= "2003-07-01"])
 Now we can make sure that we have a full data set from January 1981 to December 2010. 
 
 ```{python merged_head, deco=list()}
-print(tor.head())
+tor.head()
 ```
 ```{python merged_tail, deco=list()}
-print(tor.tail())
+tor.tail()
 ```
 
 Save your new data set to _csv_ by:
@@ -212,59 +210,45 @@ Now let's start by adding a new column to our table called "TropNight", which wi
 
 ```{python calc_trop, deco=list()}
 tor['TropNight'] = ((tor.MinTemp > 20) & (tor.Date.dt.month.isin([6, 7, 8])))
-print(tor.head())
+tor.head()
 ```
 
 Since our value is Boolean, we can use that column as an index. Let's double-check to make sure that we got the results that we were expecting.
 
 ```{python trop_head, deco=list()}
-print(tor[tor.TropNight].head())
+tor[tor.TropNight].head()
 ```
 
 Now let's get an aggregate data set by grouping by the year. 
 
 ```{python agg_trop, deco=list()}
 tor_trop = tor[['Date', 'TropNight']].groupby(tor.Date.dt.year).sum()
-print(tor_trop.head())
+tor_trop.head()
 ```
 
-We can plot this easily. Note, this book is generated on a machine with no display, if you want to see the plot, run `plot.show()` or set the option `%matplotlib inline` if you are using Jupyter Notebook.
-
-```{python create_l1f1, deco=list()}
+```{python l1f1, deco=list(), results='hold', fig.cap="Total summertime tropical nights at Toronto (1981\u20122010)."}
 tor_trop.plot()
 ```
-```{python save_l1f1, include=FALSE}
-plt.savefig('l1f1.png')
-plt.clf()
-```
 
-```{r l1f1, echo=FALSE, fig.cap="Total summertime tropical nights at Toronto (1981\u20122010)."}
-knitr::include_graphics("l1f1.png", dpi = NA)
+```{block, type='rmdtip'}
+If you don't see a figure after running the code in the previous block, you may need to make an explicit call to `plt.show()`. If you are using Jupyter Notebook, you can add `%matplotlib inline` somewhere after your import statement for **matplotlib** and then the plots will automatically appear in your notebook when they are created. Seeing your plots as you build them is useful to make sure that they look like you might expect them to. Once you have the perfect plot, you can save it to disk using `plt.savefig()`.
 ```
 
 The grouping operation has changed our table index to the years from 1981 to 2010. We want to keep this information in the table, so we can reset our index like this:
 
 ```{python fix_index, deco=list()}
 tor_trop.reset_index(level = 0, inplace = True)
-print(tor_trop.head())
+tor_trop.head()
 ```
 
 Now let's make another plot, this time with a trendline. 
 
-```{python create_l1f2, deco=list()}
+```{python l1f2, deco=list(), results='hold', fig.cap="Total summertime tropical nights at Toronto (1981\u20122010), with linear trend line."}
 plt.plot(tor_trop.Date, tor_trop.TropNight)
 plt.plot(tor_trop.Date, np.polyval(np.polyfit(tor_trop.Date, tor_trop.TropNight, 1), tor_trop.Date))
 plt.title("Total summertime Tropical Nights at Toronto (1981‒2010)")
 plt.xlabel("Year")
 plt.ylabel("No. of Tropical Nights")
-```
-```{python save_l1f2, include = FALSE}
-plt.savefig('l1f2.png')
-plt.clf()
-```
-
-```{r l1f2, echo=FALSE, fig.cap="Total summertime tropical nights at Toronto (1981\u20122010), with linear trend line."}
-knitr::include_graphics("l1f2.png", dpi = NA)
 ```
 
 ### Example: Heating degree days
@@ -289,23 +273,15 @@ Now we can aggregate our heating degree days. Pay close attention to the code be
 
 ```{python agg_hdd, deco=list()}
 tor_hdd = tor[tor.Year.isin(range(1982, 2011)) & tor.Date.dt.month.isin([12, 1, 2])][['Year', 'HDD']].groupby('Year').sum().reset_index()
-print(tor_hdd.head())
+tor_hdd.head()
 ```
 
-```{python create_l1f3, deco=list()}
+```{python l1f3, deco=list(), results='hold', fig.cap="Total wintertime heating degree days (HDD) at Toronto (1981\u20122010), with linear trend line."}
 plt.plot(tor_hdd.Year, tor_hdd.HDD)
 plt.plot(tor_hdd.Year, np.polyval(np.polyfit(tor_hdd.Year, tor_hdd.HDD, 1), tor_hdd.Year))
 plt.title("Winter HDD at Toronto (1981/82‒2009/10)")
 plt.xlabel("Year")
 plt.ylabel("Heating Degree Days  (HDD)")
-```
-```{python save_l1f3, include = FALSE}
-plt.savefig('l1f3.png')
-plt.clf()
-```
-
-```{r l1f3, echo=FALSE, fig.cap="Total wintertime heating degree days (HDD) at Toronto (1981\u20122010), with linear trend line."}
-knitr::include_graphics("l1f3.png", dpi = NA)
 ```
 
 Let's see if we can detect any trends in our baseline values. For convenience, I am going to create a function that will spit out the relevant values. You can run these commands directly, but this might save you time when you get to the exercises (Hint!).

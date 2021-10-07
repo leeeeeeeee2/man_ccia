@@ -10,10 +10,8 @@ source("R/deco_hook.R")
 ```{python py_setup, include=FALSE}
 import matplotlib as mpl
 import seaborn as sns
-mpl.use("agg") # Needed for the book only
 mpl.rc('font', size = 12)
 from matplotlib import pyplot as plt
-plt.switch_backend('agg') # Might be overkill
 import pandas as pd
 pd.set_option('display.max_columns', 10)
 ```
@@ -38,20 +36,20 @@ Now we read it using **Pandas**.
 
 ```{python, deco=list()}
 dat = pd.read_csv(file)
-print(dat.head())
+dat.head()
 ```
 
 Let's see what we're working with.
 
 ```{python, deco=list()}
-print(dat.shape)
+dat.shape
 ```
 
 It looks like we have `r nrow(py$dat)` rows and `r ncol(py$dat)` columns of data. Let's drop our `'Var'`, `'Ensemble'` and `'Note'` columns, which we won't use in this analysis. If you want to analyze more than one ensemble member, you may need to hold on to the `'Ensemble'` column at least.
 
 ```{python, deco=list()}
 dat = dat.drop(['Var', 'Ensemble', 'Note'], axis = 1)
-print(dat.head())
+dat.head()
 ```
 
 ## Selecting our models
@@ -74,8 +72,8 @@ I am going to add a new column, called `'MeanAnom'`, which will contain the aver
 ```{python, deco=list()}
 dat_ext['MeanAnom'] = dat_ext.iloc[:,-3:].mean(axis = 1)
 dat_ext = dat_ext.sort_values('MeanAnom')
-print(dat_ext.head()) # Smallest
-print(dat_ext.tail()) # Largest
+dat_ext.head() # Smallest
+dat_ext.tail() # Largest
 ```
 
 The next code block is a little involved. I am going to group `dat_ext` by `'Scenario'` and get the smallest value for each using `first()`. Make sure you sorted the values in the previous code block or you won't get the expected output! I will label those values "Lower", to represent the lower limit of the model projections, and restore the index, which was changed by `groupby`. I then do the same for the `last()` value, labelling these as "Upper". I append these two tables together, and drop the `'MeanAnom'` column.
@@ -85,7 +83,7 @@ The next code block is a little involved. I am going to group `dat_ext` by `'Sce
 lower = dat_ext.groupby('Scenario').first().assign(Limit = "Lower").reset_index()
 upper = dat_ext.groupby("Scenario").last().assign(Limit = "Upper").reset_index()
 dat_ext = lower.append(upper).drop("MeanAnom", axis = 1)
-print(dat_ext)
+dat_ext
 ```
 
 Now we have a table of the two extreme models for each scenario that identifies each model as providing either an upper or lower extreme. Great! This table suits our needs for this analysis.
@@ -97,7 +95,7 @@ Another model selection method is to validate a model against observed baseline 
 
 ```{python, deco=list()}
 tor = pd.read_csv("tor.csv", index_col = 0)
-print(tor.head())
+tor.head()
 ```
 
 We can use the Gough&ndash;Fenech Confidence Index (GFCI) to help us choose our models. The GFCI quantifies the difference in the model-projected baseline as a proportion of the standard deviation of the aggregate observed values using the following equation: 
@@ -121,7 +119,7 @@ Now we can generate our annual average $T_{\textrm{mean}}$.
 
 ```{python, deco=list()}
 tor_mean = tor[['Date', 'MeanTemp']].groupby(tor.Date.dt.year).mean()
-print(tor_mean.head())
+tor_mean.head()
 ```
 
 Now we calculate the mean and the standard deviation of those values. 
@@ -143,7 +141,7 @@ Now we calculate the GFCI.
 
 ```{python, deco=list()}
 dat_gf = dat_gf.assign(GFCI = abs(dat_gf[['1981-2010']] - tor_tas_mean) / tor_tas_std)
-print(dat_gf.sort_values('GFCI').head())
+dat_gf.sort_values('GFCI').head()
 ```
 
 The GFCI defines confidence as follows:
@@ -167,12 +165,12 @@ def confidence(GFCI):
 
 ```{python, deco=list()}
 dat_gf['Confidence'] = dat_gf.GFCI.apply(confidence)
-print(dat_gf.sort_values('GFCI').head(10))
+dat_gf.sort_values('GFCI').head(10)
 ```
 
 Let's see this information in a figure!
 
-```{python, deco=list()}
+```{python l4f1, deco=list(), results='hold', fig.cap="GFCI confidence classes for GCM-projected $T_\\mathrm{mean}$ at Toronto (1981\u20122010). Lower values indicate less bias in the model projections compared to baseline annual observed average $T_\\mathrm{mean}$"}
 plt.figure(figsize=(10,10/1.66))
 fg = sns.scatterplot(x="Model", y="GFCI", hue="Confidence", data=dat_gf)
 plt.title(r'GFCI Values for Model-Projected $T_\mathrm{mean}$ at Toronto (1981‒2010)')
@@ -181,20 +179,11 @@ for label in fg.axes.get_xticklabels():
 plt.tight_layout()
 ```
 
-```{python, include=FALSE}
-plt.savefig('l4f1.png')
-plt.clf()
-```
-
-```{r l4f1, echo=FALSE, fig.cap="GFCI confidence classes for GCM-projected $T_\\mathrm{mean}$ at Toronto (1981\u20122010). Lower values indicate less bias in the model projections compared to baseline annual observed average $T_\\mathrm{mean}$"}
-knitr::include_graphics("l4f1.png", dpi = NA)
-```
-
 Let's get just the top three models
 
 ```{python, deco=list()}
 dat_gf = dat_gf.sort_values('GFCI').iloc[0:3,:]
-print(dat_gf)
+dat_gf
 ```
 
 Now that we have our models, we need to recover the change factors for these models! We can do this with a left merge of `dat` into `dat_gf`.
@@ -202,7 +191,7 @@ Now that we have our models, we need to recover the change factors for these mod
 
 ```{python, deco=list()}
 dat_gf = pd.merge(dat_gf, dat, how = 'left', on = ['Model', '1981-2010'])
-print(dat_gf)
+dat_gf
 ```
 
 ```{block, type="rmddisclaimer"}
@@ -215,13 +204,13 @@ Using the ensemble is as simple as taking the average for each scenario across e
 
 ```{python, deco=list()}
 dat_ens = dat.copy().groupby(['Scenario']).mean().reset_index()
-print(dat_ens)
+dat_ens
 ```
 
 You may be concerned that the baseline values are different for the difference scenarios. If you are thinking, "didn't we average the baselines between all the scenarios earlier". You're right. What we're seeing here is an inconsistency based on the number of models that provide projections for each scenario. Since we aren't doing any validation here, it doesn't really matter, but it is nice to know how many models are providing projections for each scenario and period.
 
 ```{python, deco=list()}
-print(dat.groupby(['Scenario']).count().reset_index())
+dat.groupby(['Scenario']).count().reset_index()
 ```
 
 From the above table, it becomes pretty obvious why most studies use RCP4.5 and RCP8.5, they are by far the most modelled. We'll use those scenarios when we apply our change factors, next.
@@ -246,14 +235,14 @@ Let's begin by filtering our extreme table to only use the RCP 4.5 and RCP 8.5 s
 
 ```{python, deco=list()}
 dat_ext = dat_ext[dat_ext.Scenario.isin(['RCP4.5', 'RCP8.5'])]
-print(dat_ext)
+dat_ext
 ```
 
 Let's apply the high extreme for RCP 4.5 for the 2020s. There are a number of ways of sub-setting the table, above, use whichever is easiest for you.
 
 ```{python, deco=list()}
 anom = dat_ext.loc[dat_ext.Model == 'MIROC-ESM-CHEM', '2011-2040'].values
-print(anom)
+anom
 ```
 
 Now I'll apply that anomaly to the daily `'MeanTemp'` values in a copy of the `tor` data frame.
@@ -261,7 +250,7 @@ Now I'll apply that anomaly to the daily `'MeanTemp'` values in a copy of the `t
 ```{python, deco=list()}
 tor_ext = tor.copy()[['Date', 'MeanTemp']]
 tor_ext = tor_ext.assign(hex2020s = tor.MeanTemp + anom)
-print(tor_ext.head())
+tor_ext.head()
 ```
 
 Now we can (re)calculate our exposure unit using a lambda expression just as we did in Lab 1.
@@ -269,13 +258,13 @@ Now we can (re)calculate our exposure unit using a lambda expression just as we 
 ```{python, deco=list()}
 tor_ext['CDDObs'] = tor_ext.MeanTemp.apply(lambda x: 0 if x <= 18 else x - 18)
 tor_ext['CDDhex2020s'] = tor_ext.hex2020s.apply(lambda x: 0 if x <= 18 else x - 18)
-print(tor_ext.head())
+tor_ext.head()
 ```
 
 So, what is the projected change to summertime CDD? Let's take a look.
 
 ```{python, deco=list()}
-print(tor_ext[tor_ext.Date.dt.month.isin([6,7,8])].filter(regex = '^CDD').sum())
+tor_ext[tor_ext.Date.dt.month.isin([6,7,8])].filter(regex = '^CDD').sum()
 ```
 
 It looks like we can expect an increase from `r suppressWarnings(sum(py$tor_ext$CDDObs[format(py$tor_ext$Date, format = "%m") %in% sprintf("%02d", c(6,7,8))], na.rm = TRUE))` total CDDs from the baseline to $`r suppressWarnings(sum(py$tor_ext$CDDhex2020s[format(py$tor_ext$Date, format = "%m") %in% sprintf("%02d", c(6,7,8))], na.rm = TRUE))`$ in the 2020s. This could have serious implications for energy supply for air conditioning! 
@@ -333,11 +322,11 @@ def recalc_exp(obs, anoms, stat, expr, month = None):
 Let's take a look at CDDs, based on our extreme models.
 
 ```{python, deco=list()}
-print(recalc_exp(obs=tor[['Date', 'MeanTemp']],
-                 anoms=dat_ext,
-                 stat=sum,
-                 expr="lambda x: 0 if x <= 18 else x - 18",
-                 month=[6,7,8]))
+recalc_exp(obs=tor[['Date', 'MeanTemp']],
+           anoms=dat_ext,
+           stat=sum,
+           expr="lambda x: 0 if x <= 18 else x - 18",
+           month=[6,7,8])
 ```
 
 As we might have expected, there is a larger increase in CDDs for the RCP 8.5 Scenario than for the RCP 4.5 scenario. 
@@ -351,7 +340,7 @@ projected_cdds = recalc_exp(obs=tor[['Date', 'MeanTemp']],
                             expr="lambda x: 0 if x <= 18 else x - 18",
                             month=[6,7,8])
 
-print(pd.merge(projected_cdds, dat_ext[['Scenario', 'Model', 'Limit']]))
+pd.merge(projected_cdds, dat_ext[['Scenario', 'Model', 'Limit']])
 ```
 
 We can also use our `recalc_exp()` function to give us the 30-year daily average CDD, instead of the 30-year total. 
@@ -359,12 +348,12 @@ We can also use our `recalc_exp()` function to give us the 30-year daily average
 ```{python, deco=list()}
 from numpy import mean
 
-print(pd.merge(recalc_exp(obs=tor[['Date', 'MeanTemp']],
-                          anoms=dat_ext,
-                          stat=mean,
-                          expr="lambda x: 0 if x <= 18 else x - 18",
-                          month=[6,7,8]),
-               dat_ext[['Scenario', 'Model', 'Limit']]))
+pd.merge(recalc_exp(obs=tor[['Date', 'MeanTemp']],
+                    anoms=dat_ext,
+                    stat=mean,
+                    expr="lambda x: 0 if x <= 18 else x - 18",
+                    month=[6,7,8]),
+         dat_ext[['Scenario', 'Model', 'Limit']])
 ```
 
 ```{block, type="rmdassignment"}
@@ -383,8 +372,8 @@ What if we want to calculate winter heating degree days? We'll need to shift our
 ```{python, deco=list()}
 tor_win = tor.copy()
 tor_win['Date'] = tor_win.Date.apply(lambda x: x + pd.DateOffset(years=1) if x.month == 12 else x)
-print(tor_win.head()) # Not shifted
-print(tor_win.tail()) # Shifted
+tor_win.head() # Not shifted
+tor_win.tail() # Shifted
 ```
 
 Let's drop the years that we know to be incomplete, winter 1981/82, which is missing December 1980, and winter 2010/11, which is just December 2010. Remember, a better solution for the former would be to download data for December 1980 so that we can include all 30 winters. 
@@ -394,12 +383,12 @@ tor_win = tor_win[tor_win.Date.dt.year.isin(range(1982, 2011))]
 ```
 
 ```{python, deco=list()}
-print(pd.merge(recalc_exp(obs=tor_win[['Date', 'MeanTemp']],
-                          anoms=dat_ext,
-                          stat=sum,
-                          expr="lambda x: 0 if x >= 18 else 18 - x",
-                          month=[12,1,2]),
-               dat_ext[['Scenario', 'Model', 'Limit']]))
+pd.merge(recalc_exp(obs=tor_win[['Date', 'MeanTemp']],
+                    anoms=dat_ext,
+                    stat=sum,
+                    expr="lambda x: 0 if x >= 18 else 18 - x",
+                    month=[12,1,2]),
+         dat_ext[['Scenario', 'Model', 'Limit']])
 ```
 
 As winter is projected to warm, we see less heating degree days. This change is more rapid in the scenario with more radiative forcing. 
@@ -411,7 +400,7 @@ Since the `recalc_exp()` function expects our `anoms` data frame to include a `'
 
 ```{python, deco=list()}
 dat_ens['Model'] = "Ensemble"
-print(dat_ens)
+dat_ens
 ```
 
 Now we can take a look at the projected changes in our exposure units.
@@ -419,21 +408,21 @@ Now we can take a look at the projected changes in our exposure units.
 For CDD:
 
 ```{python, deco=list()}
-print(recalc_exp(obs=tor[['Date', 'MeanTemp']],
-                 anoms=dat_ens[dat_ens.Scenario.isin(['RCP4.5', 'RCP8.5'])],
-                 stat=sum,
-                 expr="lambda x: 0 if x <= 18 else x - 18",
-                 month=[6,7,8]))
+recalc_exp(obs=tor[['Date', 'MeanTemp']],
+           anoms=dat_ens[dat_ens.Scenario.isin(['RCP4.5', 'RCP8.5'])],
+           stat=sum,
+           expr="lambda x: 0 if x <= 18 else x - 18",
+           month=[6,7,8])
 ```
 
 For HDD:
 
 ```{python, deco=list()}
-print(recalc_exp(obs=tor_win[['Date', 'MeanTemp']],
-                 anoms=dat_ens[dat_ens.Scenario.isin(['RCP4.5', 'RCP8.5'])],
-                 stat=sum,
-                 expr="lambda x: 0 if x >= 18 else 18 - x",
-                 month=[12,1,2]))
+recalc_exp(obs=tor_win[['Date', 'MeanTemp']],
+           anoms=dat_ens[dat_ens.Scenario.isin(['RCP4.5', 'RCP8.5'])],
+           stat=sum,
+           expr="lambda x: 0 if x >= 18 else 18 - x",
+           month=[12,1,2])
 ```
 
 ### Using our top-ranked models
@@ -441,11 +430,11 @@ print(recalc_exp(obs=tor_win[['Date', 'MeanTemp']],
 How about our top ranked models? Our function works as expected for CDD:
 
 ```{python, deco=list()}
-print(recalc_exp(obs=tor[['Date', 'MeanTemp']],
-                 anoms=dat_gf[dat_gf.Scenario.isin(['RCP8.5', 'RCP4.5'])],
-                 stat=sum,
-                 expr="lambda x: 0 if x <= 18 else x - 18",
-                 month=[6,7,8]))
+recalc_exp(obs=tor[['Date', 'MeanTemp']],
+           anoms=dat_gf[dat_gf.Scenario.isin(['RCP8.5', 'RCP4.5'])],
+           stat=sum,
+           expr="lambda x: 0 if x <= 18 else x - 18",
+           month=[6,7,8])
 ```
 
 OK, enough tables, let's plot some of these changes! First, I will create a table of results. Called `out`.
@@ -456,7 +445,7 @@ out = recalc_exp(obs=tor_win[['Date', 'MeanTemp']],
                  stat=sum,
                  expr="lambda x: 0 if x >= 18 else 18 - x",
                  month=[12,1,2])
-print(out)
+out
 ```
 
 In Lab 3, we used `pd.pivot()` to turn our table from a narrow layout to a wide layout. I stressed, however, that the narrow layout was more efficient for plotting. This time around, we have a wide data frame, which we want to convert to a narrow one. The method that we need to call, the antithesis to `pd.pivot()` is `pd.melt()`. 
@@ -467,19 +456,10 @@ out_long = out.melt(id_vars = ['Model', 'Scenario'], var_name = "Period", value_
 
 Now we are ready to plot! Play around with the options in the **seaborn** (`sns`) plot below until you've come up with a figure you are happy with. Make sure to add complete labels (like a _title_, for instance).
 
-```{python, deco=list()}
+```{python l4f2, deco=list(), results='hold', fig.cap="Baseline and future summer cooling degree days (CDD) at Toronto. Projections are based on changes to mean temperature forecast by three GCMs under the RCP4.5 and RCP8.5 scenarios."}
 sns.catplot(x = "Period", y = "Cooling Degree Days", hue = "Scenario", col = "Model",
             data = out_long, hue_order=["RCP4.5", "RCP8.5"], saturation = 0.5,
             palette = "Reds", kind = "bar", ci = None, height = 7, aspect = 0.66)
-```
-
-```{python, include=FALSE}
-plt.savefig('l4f2.png')
-plt.clf()
-```
-
-```{r l4f2, echo=FALSE, fig.cap="Baseline and future summer cooling degree days (CDD) at Toronto. Projections are based on changes to mean temperature forecast by three GCMs under the RCP4.5 and RCP8.5 scenarios."}
-knitr::include_graphics("l4f2.png", dpi = NA)
 ```
 
 Great! We have now seen who we can apply GCM-projected change factors to our observed data to project changes in an exposure unit. In our next lab, we will look at more advanced downscaling methods.

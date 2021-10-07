@@ -72,3 +72,10 @@
     padding: 5px;
 }
  
+.caption {
+  color: #F7F7F7
+}
+
+.caption * {
+  padding: 0px;
+}

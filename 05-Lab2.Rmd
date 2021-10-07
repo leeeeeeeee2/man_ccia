@@ -81,9 +81,9 @@ results = query.search()
 You can find out how many hits your search retrieved by checking the length of `results`. You can also get the `hit_count` property of the `query` object before you search. 
 
 ```{python, deco=list()}
-print(len(results))
-print(query.hit_count)
-print(query.hit_count == len(results))
+len(results)
+query.hit_count
+query.hit_count == len(results)
 ```
 
 The search results contain "context" objects, which still don't give us the information that we need. Let's process the first hit, so that we can see how the *esgf-pyclient* returns results. 
@@ -93,13 +93,13 @@ Information about the results is stored in an object property called `json`. You
 Let's look at the identifier for the result.
 
 ```{python, deco=list()}
-print(results[0].json['id'])
+results[0].json['id']
 ```
 
 This is a record of general CMIP5 output, but it is not something that we can download directly. Frankly, we probably don't want to download it anyway. Let's look at the variables for which the record has data. 
 
 ```{python, deco=list()}
-print(results[0].json['variable'])
+results[0].json['variable']
 ```
 
 That's too much! We don't want to access information for all the variables. We just want `tas`, `tasmax`, and `tasmin`. We can dive deeper into the record by requesting an additional search using the record's `file_context` as input to the search.
@@ -111,7 +111,7 @@ hit = results[0].file_context().search()
 This should now return one result for each file in the parent record. We can see how many records we have. 
 
 ```{python, deco=list()}
-print(len(hit))
+len(hit)
 ```
 
 We can use an anonymous "lambda" function to extract the filename and URL of each result. 
@@ -129,14 +129,14 @@ files = list(files)
 You can take a look at the first five records.
 
 ```{python, deco=list()}
-print(files[0:5])
+files[0:5]
 ```
 
 We still have information about variables that we are not interested in. Let's drop the items we don't care about. Note that `filter` similarly returns an iterator other than a list, so we'll wrap the call to `filter` in `list`. 
 
 ```{python, deco=list()}
 files = list(filter(lambda x: 'tas' in x['filename'], files))
-print(files)
+files
 ```
 
 ```{block, type='rmdtip'}
@@ -155,7 +155,7 @@ Let's repeat this process for the second result from our original search. Instea
 files2 = list(filter(lambda x: 'tas' in x['filename'],
                      list(map(lambda f : {'filename': f.filename, 'url': f.download_url},
                               results[1].file_context().search()))))
-print(files2)
+files2
 ```
 
 Now lets add `files2` to the end of `files`. Not that this function is an in-place function, modifying `files` directly without needing to overwrite the object by assigning a value to `files` with an equals sign. 
@@ -179,11 +179,11 @@ Up to this point, we have being using a list of dictionaries to store our result
 
 ```{python, deco=list()}
 files = pd.DataFrame.from_dict(files)
-print(files)
+files
 ```
 
 ```{block, type='rmddisclaimer'}
-You should also pay attention to the data period that you are interested in: historical data is (in most cases) either from 1850-01 to 2005-12 or 1961-01 to 2005-12. Most of the future data is from 2005-01 to 2100-12 or from 2006-01 to 2100-12. There is also some long-term projected data from 2101-01 to 2300-12. There are, of course, some exceptions to the above, including annual or decadal files. 
+You should also pay attention to the data period that you are interested in: historical data is (in most cases) either from 1850-01 to 2005-12 or 1961-01 to 2005-12. Most of the projected data is from 2005-01 to 2100-12 or from 2006-01 to 2100-12. There is also some long-term projected data from 2101-01 to 2300-12. There are, of course, some exceptions to the above, including annual or decadal files. 
 ```
 
 We can drop the long-range (2101&ndash;2300) projections from our list of downloads. 
