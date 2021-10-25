@@ -437,7 +437,7 @@ recalc_exp(obs=tor[['Date', 'MeanTemp']],
            month=[6,7,8])
 ```
 
-OK, enough tables, let's plot some of these changes! First, I will create a table of results. Called `out`.
+OK, enough tables, let's plot some of these changes! Here we will visualize changes in wintertime HDD. Create a table, which we will call `out`, to save our projected changes.
 
 ```{python, deco=list()}
 out = recalc_exp(obs=tor_win[['Date', 'MeanTemp']],
@@ -448,16 +448,16 @@ out = recalc_exp(obs=tor_win[['Date', 'MeanTemp']],
 out
 ```
 
-In Lab 3, we used `pd.pivot()` to turn our table from a narrow layout to a wide layout. I stressed, however, that the narrow layout was more efficient for plotting. This time around, we have a wide data frame, which we want to convert to a narrow one. The method that we need to call, the antithesis to `pd.pivot()` is `pd.melt()`. 
+In Lab 3, we used `pd.pivot()` to turn our table from a narrow layout to a wide layout. We stressed, however, that the narrow layout was more efficient for plotting. This time around, we have a wide data frame, which we want to convert to a narrow one. The method that we need to call, the antithesis to `pd.pivot()` is `pd.melt()`. 
 
 ```{python, deco=list()}
-out_long = out.melt(id_vars = ['Model', 'Scenario'], var_name = "Period", value_name = "Cooling Degree Days")
+out_long = out.melt(id_vars = ['Model', 'Scenario'], var_name = "Period", value_name = "Heating Degree Days")
 ```
 
 Now we are ready to plot! Play around with the options in the **seaborn** (`sns`) plot below until you've come up with a figure you are happy with. Make sure to add complete labels (like a _title_, for instance).
 
-```{python l4f2, deco=list(), results='hold', fig.cap="Baseline and future summer cooling degree days (CDD) at Toronto. Projections are based on changes to mean temperature forecast by three GCMs under the RCP4.5 and RCP8.5 scenarios."}
-sns.catplot(x = "Period", y = "Cooling Degree Days", hue = "Scenario", col = "Model",
+```{python l4f2, deco=list(), results='hold', fig.cap="Baseline and future wintertime heating degree days (HDD) at Toronto. Projections are based on changes to mean temperature forecast by three GCMs under the RCP4.5 and RCP8.5 scenarios."}
+sns.catplot(x = "Period", y = "Heating Degree Days", hue = "Scenario", col = "Model",
             data = out_long, hue_order=["RCP4.5", "RCP8.5"], saturation = 0.5,
             palette = "Reds", kind = "bar", ci = None, height = 7, aspect = 0.66)
 ```
