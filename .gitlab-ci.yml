@@ -29,7 +29,7 @@ test:
     paths:
     - public
   except:
-  - master
+  - main
 
 pages:
   image: registry.gitlab.com/claut/man_ccia/book
@@ -42,4 +42,4 @@ pages:
     paths:
     - public
   only:
-  - master
+  - main
