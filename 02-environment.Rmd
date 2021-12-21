@@ -8,11 +8,16 @@ source("R/deco_hook.R")
 
 We will use Python for all of the labs in this manual. We will take for granted that you have already installed Python on your computer, but if you have not, please follow the [instructions to install Anaconda](https://docs.anaconda.com/anaconda/install/) on your operating system. We recommend using Anaconda3. If you already have Anaconda2 installed, fear not! You can still complete the exercises in this book, but you will have to create a new Python 3 environment. The instructions, below, will help you accomplish that. 
 
+```{block, type="rmdtip"}
+Do you need a refresher on Python? Karen (one of the authors of this book) provides an asynchronous workshop on basic and intermediate Python and you can take the workshop at your own pace. Find all of the workshop materials [here](https://kls2177.github.io/ctl-python-workshop/chapters/index.html).
+```
+
+
 Whether you are running Anaconda2 or Anaconda3, or one of the [Miniconda](https://conda.io/miniconda.html) variants, we recommend that you create a new Conda environment for this manual. You can accomplish this by writing the following commands from the base Conda environment (i.e from the Anaconda Prompt on Windows or after running `conda activate` from a terminal on MacOS or Linux). 
 
-```{bash, eval=FALSE}
+```{bash, eval=FALSE, deco=list(label="Shell", bc="#000000", tc="#ffffff", icon=list(style="fas", name="terminal"))}
 conda config --prepend channels conda-forge
-conda config --append channels ConorIA
+conda config --append channels claut
 conda create -n "man_ccia" "python>=3.7.1" ec3 esgf-pyclient matplotlib netCDF4 pandas requests "seaborn>=0.9.0" xarray
 ```
 
@@ -23,19 +28,19 @@ If you plan to use Jupyter Lab (the successor to Jupyter Notebook), you can choo
 
 To install Jupyter Lab in the "man_ccia" environment, run the following commands:
 
-<div class="decocode"><div style="background-color:#000000"><p><span style="font-size:90%;color:#ffffff"><i class="fas fa-terminal"></i> <b>Shell</b></span></p>
+<div class="decocode" style="background-color:#000000"><p><span class="decotitle" style="font-size:90%;color:#ffffff"><i class="fas fa-terminal"></i> <b>Shell</b></span></p>
     conda activate man_ccia
     conda install jupyterlab # only needed the first time
     jupyter lab 
-</div></div>
+</div>
 
 If you prefer to have just one Jupyter installation that can access all of your environments, you can use Jupyter from your "base" environment and install a "kernel" for your "man_ccia" environment by issuing the following commands: 
 
-<div class="decocode"><div style="background-color:#000000"><p><span style="font-size:90%;color:#ffffff"><i class="fas fa-terminal"></i> <b>Shell</b></span></p>
+<div class="decocode" style="background-color:#000000"><p><span class="decotitle" style="font-size:90%;color:#ffffff"><i class="fas fa-terminal"></i> <b>Shell</b></span></p>
     conda activate man_ccia
     conda install ipykernel
     python -m ipykernel install --user --name="man_ccia" --display-name="man_ccia"
-</div></div>
+</div>
 
 This command will create a simple JSON file that tells Jupyter where to look for the Python executable and the packages that are contained in your "man_ccia" environment. Once you have run those commands and re-launched Jupyter Lab from your "base" environment (or from Anaconda Navigator), your "man_ccia" kernel should be available under the "New" file creation menu and the "Kernel" options in any running notebook.
 ```
