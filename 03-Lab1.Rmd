@@ -23,7 +23,7 @@ ec3.find_station() # run here to suppress warning
 The first step of a climate change impact assessment (CCIA) is to determine the metric or metrics that we will use to understand impacts. You could choose any element or variable that is directly or indirectly affected by changes in the climate. For example, in the newest IPCC report, the term "climatic impact-driver" (CID) is used to describe "physical climate system conditions (e.g., means, events, extremes) that affect an element of society or ecosystems" [@ipcc_2021_summary]. The IPCC report groups CIDs into seven groups: heat & cold (e.g. extreme heat, frost); wet & dry (e.g. heavy precipitation, fire weather); wind (e.g. tropical cyclones); snow & ice (e.g. permafrost, hail); "other" (e.g. air pollution weather); coastal (e.g. relative sea level); and open ocean (e.g. ocean salinity). Other terms are common too, such as "indices", as used by [Climdex]([https://www.climdex.org/learn/indices/) or simply "variables" as used by [ClimateData.ca](https://climatedata.ca/variable/). 
 
 ```{block, type="rmdcomment"}
-The examples that we listed above are all _physical_ variables, but your variable of interest could be a derived variable. For instance, perhaps you are interested in understanding whether there is a link between climate change and school continuity in a "Snowbelt" community such as Barrie, Ontario. Such a study may use an index such annual school closures, or "snow days", to determine whether changes to physical variables such as winter temperatures and snowfall amounts have social effects. 
+The examples that we listed above are all _physical_ variables, but your variable of interest could be a derived variable. For instance, perhaps you are interested in understanding whether there is a link between climate change and school continuity in a "Snowbelt" community such as Barrie, Ontario. Such a study may use an index such as annual school closures, or "snow days", to determine whether changes to physical variables such as winter temperatures and snowfall amounts have social effects. 
 ```
 
 In this lab you will acquire Canadian climate data for Toronto, Ontario, and perform a baseline analysis of multiple climatic indices. For further examples of climate indices or variables, and examples of Python functions to calculate them, refer to Appendix \@ref(appendix). 
@@ -66,7 +66,7 @@ tor = ec3.get_data(stations=5051, years=range(1981, 2011), progress=False)
 ```
 
 ```{block, type="rmdtip"}
-The **ec3** module returns historical climate data in a data structure called a `DataFrame` (or data frame), which comes from the **pandas** library. A data frame is a tabular data object, and includes features that users of spreadsheet might be used to, like labelled columns. **pandas** provides us with a lot of power and flexibility to organized, modify, and plot our data. It is particularly useful for time series, like our data. For more information on **pandas**, refer to the [documentation](https://pandas.pydata.org/pandas-docs/stable/index.html).
+The **ec3** module returns historical climate data in a data structure called a `DataFrame` (or data frame), which comes from the **pandas** library. A data frame is a tabular data object, and includes features that users of spreadsheet software might be used to, like labelled columns. **pandas** provides us with a lot of power and flexibility to organize, modify, and plot our data. It is particularly useful for time series, like our data. For more information on **pandas**, refer to the [documentation](https://pandas.pydata.org/pandas-docs/stable/index.html).
 ```
 
 ## Cleaning the data
@@ -201,7 +201,7 @@ import scipy.stats as stats
 
 As we mentioned in the introduction, the term "climate index" is often used to describe the variable upon which we will focus our analysis of climate change impacts. In this section, we'll calculate two climate indices, starting with a rather simple Boolean (True/False) variable. 
 
-At the time of writing the outside temperature was a sweltering 32 °C (36 with the humidex), so what better climate index to consider than "tropical nights", nights with a minimum temperature above 20 °C. We will limit our analysis to the summer months.
+At the time of writing, the outside temperature was a sweltering 32 °C (36 with the humidex), so what better climate index to consider than "tropical nights", nights with a minimum temperature above 20 °C. We will limit our analysis to the summer months.
 
 This code requires that your "Date" column is recognized as such by Python. This isn't always automatic, so you will likely need to ask **pandas** to convert the column to a `datetime` object. 
 
