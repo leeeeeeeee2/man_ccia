@@ -1,10 +1,10 @@
 # (APPENDIX) Appendix {-}
 
-# Example exposure units {#appendix}
+# Example climate indices {#appendix}
 
-## Exposure unit definitions
+## Climate index (variable) definitions
 
-| Element            | Extreme Index         | Definition                                  | Units          |
+| Element            | Climate Index         | Definition                                  | Units          |
 | ------------------ | --------------------- | ------------------------------------------- | -------------- |
 | _T_<sub>max</sub>  | Hot days              | No. of days with _T_<sub>max</sub> > 30 °C  | days           |
 |                    | Summer days           | No. of days with _T_<sub>max</sub> > 25 °C  | days           |
@@ -20,9 +20,9 @@
 |                    | Wet days              | No. of days with > 1 mm precipitation       | days           |
 |                    | Drought risk          | More than 10 consecutive dry days           | No. of alerts  |
 
-## Exposure unit Python expressions
+## Climate index Python expressions
 
-| Extreme Index         | Type    | Code                                 |
+| Climate Index         | Type    | Code                                 |
 | --------------------- | --------| ------------------------------------ |
 | Hot days              | Boolean | `int(x > 30)`                        |
 | Summer days           | Boolean | `int(x > 25)`                        |

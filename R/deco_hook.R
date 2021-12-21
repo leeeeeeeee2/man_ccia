@@ -10,11 +10,10 @@ knit_hooks$set(deco = function(before, options) {
                    "<i class=\"fab fa-python\"></i>  ",
                    paste0("<i class=\"", options$deco$icon$style,
                           " fa-", options$deco$icon$name, "\"></i>  "))
-    paste0("<div class=decocode>",
-           "<div style=\"background-color:", bc, "\">",
-           "<span style=\"font-size:", sz, ";color:", tc, "\">",
+    paste0("<div class=\"decocode\" style=\"background-color:", bc, "\">",
+           "<span class=\"decotitle\" style=\"font-size:", sz, ";color:", tc, "\">",
            icon, label, "</span>")
   } else {
-    "</div></div>"
+    "</div>"
   }
 })

@@ -1,6 +1,6 @@
 .rmddisclaimer {
   padding: 1em 1em 1em 4em;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
   background: #ffb4b4;
   position:relative;
 }
@@ -16,7 +16,7 @@
 
 .rmdtip {
   padding: 1em 1em 1em 4em;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
   background: #b4b4ff;
   position:relative;
 }
@@ -32,7 +32,7 @@
  
  .rmdcomment {
   padding: 1em 1em 1em 4em;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
   background: #e6e6e6;
   position:relative;
 }
@@ -48,7 +48,7 @@
  
 .rmdassignment {
   padding: 1em 1em 1em 4em;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
   background: #e6e6e6;
   position:relative;
 }
@@ -63,19 +63,17 @@
 }
 
 .decocode {
-  margin: 10px 5px 15px;
   border-radius: 5px;
   overflow-x: auto;
+  padding: 0.1em 0.4em;
+  margin-bottom: 15px;
 }
 
-.decocode * {
-    padding: 5px;
+.decocode .decotitle {
+  padding: 0.2em 0.1em;
 }
- 
-.caption {
+
+.decocode .caption {
+  padding: 0.4em;
   color: #F7F7F7
-}
-
-.caption * {
-  padding: 0px;
 }

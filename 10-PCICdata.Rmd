@@ -1,4 +1,4 @@
-# Downscaled climate data from PCIC {#pcic}
+# Statistically downscaled climate data from PCIC {#pcic}
 
 _Last update: `r system("git log -1 --format=\"%ad (%h)\" -- 10-PCICdata.Rmd", intern = TRUE)`_
 
@@ -20,16 +20,16 @@ import xarray as xr
 from netCDF4 import Dataset, num2date
 ```
 
-We can improve upon our estimate of the impact of climate change on our exposure unit of interest by downscaling GCM data using more sophisticated statistical downscaling techniques.
+We can improve upon our estimate of the impact of climate change on our climate index of interest by downscaling GCM data using more sophisticated statistical downscaling techniques.
 
-In this exercise, we will use data that has been downscaled using a bias-corrected constructed analogs method (BCCAQ; see @cannon2015bias). One of the advantages of this method is that we can bias-correct and downscale daily GCM data.
+In this exercise, we will use data that has been downscaled using a method called "bias correction / constructed analogues with quantile mapping reordering" (BCCAQv2; see @cannon2015bias). One of the advantages of this method is that we can bias-correct and downscale daily GCM data.
 
-The data was provided by @pcic2014statistically, and is downscaled based on a high-quality gridded observed data set (~10 km grid size) developed by NRCan (ANUSPLIN300). PCIC provides an excellent overview of their downscaling methodology, with citations made to the relevant articles, [here](https://
+The data was provided by @pcic2019statistically, and is downscaled based on a high-quality gridded observed data set (~10 km grid size) developed by NRCan (ANUSPLIN300). The Pacific Climate Impacts Consortium ([PCIC](https://www.pacificclimate.org/)) provides an excellent overview of their downscaling methodology, with citations made to the relevant articles, [here](https://
 www.pacificclimate.org/data/statistically-downscaled-climate-scenarios). You should read the entirety of that page before continuing this preface and before starting lab 5.
 
-Figure \@ref(fig:l5f0), below, shows the results of this downscaling process for the Canadian CanESM2 model. Notice that the PCIC product, downscaled to a 10 km grid, is much more closely related to the observed station point data that we downloaded from Environment and Climate Change Canada. Our comparison here still isn't perfect, as we're still comparing a point to a grid cell, but as our grid cell decreases in size, the two series begin to behave more similarly. This definitely looks like a solution to improve the quality of our impact assessment. Read on to learn how to obtain this high-resolution downscaled data directly from PCIC.
+Figure \@ref(fig:l5f0), below, shows the results of this downscaling process for the Canadian CanESM2 model. Notice that the PCIC product, downscaled to a 10 km grid, is much more closely related to the observed station point data that we downloaded from Environment and Climate Change Canada. Our comparison here still isn't perfect, as we're still comparing point data to a grid cell (albeit a smaller grid cell), but it is evident that the downscaled data can improve the quality of our impact assessment. Read on to learn how to obtain this high-resolution downscaled data directly from PCIC.
 
-```{python make_ds_comp_plot, include=FALSE}
+```{python create_l5f0, include=FALSE}
 ## Downscaled Data
 
 filename = {'tasmax': 'data/pcic_data/tasmax_day_BCCAQv2+ANUSPLIN300_CanESM2_historical+rcp45_r1i1p1_19500101-21001231.nc',
@@ -78,9 +78,7 @@ pdf2 = kernel2(x2)
 kernel3 = stats.gaussian_kde(T_hist_CanESM2)
 x3 = np.linspace(2*T_hist_CanESM2.min(), 2*T_hist_CanESM2.max(), 1000)
 pdf3 = kernel3(x3)
-```
 
-```{python l5f0, echo=FALSE, results='hold', fig.cap="Baseline (1981\u20122100) $T_\\mathrm{mean}$ at Toronto, observed (green), simulated by CanESM2 (yellow), and downscaled by PCIC (blue)."}
 fig = plt.figure(figsize=(9,6))
 
 plt.plot(x1, pdf1, color='blue',linewidth=2)
@@ -100,11 +98,24 @@ plt.title('$T_\mathrm{mean}$ at Toronto, 1981‒2010')
 plt.legend(loc='upper right',fontsize=12)
 plt.ylim(0,0.045)
 plt.tight_layout()
+
+plt.savefig('l5f0.png')
+plt.clf()
 ```
 
-## Retrieving downscaled data from the data portal website
+```{r l5f0, echo=FALSE, results='hold', fig.cap="Baseline (1981\u20122100) $T_\\mathrm{mean}$ at Toronto, observed (green), simulated by CanESM2 (yellow), and downscaled by PCIC (blue)."}
+knitr::include_graphics("l5f0.png", dpi = NA)
+```
 
-PCIC provides an intuitive point and click map for accessing the downscaled GCM data. In our exercise in Lab 5, we will use six models (CanESM2, CCSM4, CSIRO-Mk3-6-0, GFDLESM2G, inmcm4 and MIROC5). To download this information manually, follow the steps below. You may instead wish to download these data programatically. Skip to the next section for that process. 
+## Obtaining statistically downscaled PCIC data
+
+There are several places that you can download PCIC's statistically downscaled data. We present four options here, two that use your web browser, and two that you can access directly from Python. 
+
+### Using a web browser to obtain PCIC data
+
+#### Using the PCIC data portal website to obtain PCIC data
+
+PCIC provides an intuitive point-and-click map for accessing the downscaled GCM data. In our exercise in Lab 5, we will use six models (CanESM2, CCSM4, CSIRO-Mk3-6-0, GFDLESM2G, inmcm4 and MIROC5). To download this information manually, follow the steps below. 
 
 1. Open the link to the downscaled GCM data: http://tools.pacificclimate.org/dataportal/downscaled_gcms/map/. A map of North America should appear on your screen.
 2. In the bar on the right-hand side of your screen. Select "historical,rcp45".
@@ -117,9 +128,9 @@ PCIC provides an intuitive point and click map for accessing the downscaled GCM 
 You can also download whole areas from the PCIC data portal. To do that, use the polygon icon between the pencil and the hand.
 ```
 
-## Retrieving downscaled data from climatedata.ca
+#### Using ClimateData.ca to obtain PCIC data
 
-[climatedata.ca](https://climatedata.ca) also provides an intuitive point and click map for accessing the PCIC BCCAQv2 data. To download this information manually, follow the steps below. You may instead wish to download these data programatically. Skip to the next section for that process.
+[ClimateData.ca](https://climatedata.ca) is a collaboration between the Government of Canada (via ECCC), and several research partners (the Computer Research Institute of Montréal ([CRIM](https://www.crim.ca/en/)), [Ouranos](https://www.ouranos.ca/en/ouranos/), [PCIC](https://www.pacificclimate.org/), the [Prairie Climate Centre](https://prairieclimatecentre.ca/), and [HabitatSeven](https://habitatseven.com/)) to provide a platform for access to climate data other information and tools to support decision-making around climate change. Similar to the PCIC data portal, ClimateData.ca also provides an intuitive point-and-click map for accessing the PCIC BCCAQv2 data. To download this information manually, follow the steps below. 
 
 1. Open the link to the downscaled GCM data: https://climatedata.ca/download/. A screen with several drop-down menus and map of Canada should appear on your screen.
 2. Select the time frequency of the data you want. We will select daily.
@@ -127,16 +138,19 @@ You can also download whole areas from the PCIC data portal. To do that, use the
 4. Select the location that you want either by searching or by selecting grid boxes on the map. We will select Toronto.
 5. Select the data format. We will select netCDF.
 6. Finally, enter your email address. You will receive an email with a download link.
-7. Note that this [climatedata.ca](https://climatedata.ca) data portal does not allow you to select models or scenarios. Your download will include all available models and scenarios for the PCIC BCCAQv2 data and it will include separate files for each type of daily calendar (e.g. some GCMs include leap years and some do not).
+7. Note that the ClimateData.ca download page does not allow you to select models or scenarios. Your download will include all available models and scenarios for the PCIC BCCAQv2 data and it will include separate files for each type of daily calendar (e.g. some GCMs include leap years and some do not).
 8. Repeat this process one more time so that you have data for both 'tasmax' and 'tasmin' for all models and scenarios.
 
 ```{block, type='rmdtip'}
 You can download multiple grid cells at a time by holding down the 'Ctrl' key as you click on grid cells on the map.
 ```
 
-## Retrieving downscaled GCM data programmatically using PAVICS
 
-Power Analytics and Visualization for Climate Science (PAVICS) is a new research platform dedicated to climate analysis and visualization. It bundles data search, analytics and visualization services. PAVICS is developed by [Ouranos](https://www.ouranos.ca/en/ouranos/), [CRIM](https://www.crim.ca/en/) and the [birdhouse community](http://bird-house.github.io/) and been funded by the [CANARIE](https://www.canarie.ca/language/) research software program. We can use Python to access the PAVICS server to download the PCIC BCCAQc2 data.
+### Using Python to obtain PCIC data
+
+#### Using PAVICS to obtain PCIC data
+
+Power Analytics and Visualization for Climate Science ([PAVICS](https://pavics.ouranos.ca/index.html)) is a new research platform dedicated to climate analysis and visualization. It bundles data search, analytics and visualization services. PAVICS is developed by [Ouranos](https://www.ouranos.ca/en/ouranos/), [CRIM](https://www.crim.ca/en/) and the [birdhouse community](http://bird-house.github.io/) and been funded by the [CANARIE](https://www.canarie.ca/software/platforms/pavics/) research software program. We can use Python to access the PAVICS server to download the PCIC BCCAQc2 data.
 
 As always, we first import the necessary libraries.
 
@@ -168,7 +182,7 @@ var = ['tasmax','tasmin']
 model = ["inmcm4", "CanESM2","CCSM4","CSIRO-Mk3-6-0", "GFDL-ESM2G","MIROC5"]
 ```
 
-Now, we perform the download by looping over each scenario, variable and model using the above lists. Notice that each time we go through the loop, we define a url that specifies the file name we want to download and the filename is constructed using the elements of the lists above.
+Now, we perform the download by looping over each scenario, variable and model using the above lists. Notice that each time we go through the loop, we define a URL that specifies the file name we want to download and the filename is constructed using the elements of the lists above.
 
 ```{python, deco=list()}
 # loop over variables, scenarios and models
@@ -213,9 +227,9 @@ for j in range(len(var)):
 
 This code downloads the data into your working directory.
 
-## Retrieving downscaled GCM data from PCIC programmatically
+#### Obtaining PCIC data programmatically
 
-The Pacific Climate Impacts Consortium (PCIC) data portal can also be accessed programmatically via Python or your preferred programming language. If you performed any manual downloading, above, you may have noticed that the data portal webpage returns some interesting data set URLs. We can use the same specific URL syntax to automate our downloading. We can do this in Python using the code, below.
+The PCIC data portal can also be accessed programmatically via Python or your preferred programming language. If you performed any manual downloading, above, you may have noticed that the data portal webpage returns some interesting data set URLs. We can use the same specific URL syntax to automate our downloading. We can do this in Python using the code, below.
 
 As always, we first import the necessary libraries.
 
@@ -248,7 +262,6 @@ def download(url, filename):
               "FYI, the status code was ", r.status_code)
 ```
 
-
 PCIC maintains a JSON-formatted catalogue of file IDs and URLs, which we can retrieve in Python directly. 
 
 ```{python, deco=list()}
@@ -275,12 +288,12 @@ nc_lon = nc.variables['lon'][:].data
 Now we can find the relevant indices. Here I am using `d` to represent day, `x` to represent longitude, and `y` to represent latitude.
 
 ```{block, type='rmdcomment'}
-While we are only really looking for a single point in our exercises, the code in this chapter requests a box of zero length and zero width. If, in the future, you plan to peform a regional study on a larger spatial scale just set your xmin (left), xmax (right), ymin (bottom) and ymax (top) to capture all of the cells that you are interested in. 
+While we are only really looking for a single point in our exercises, the code in this chapter requests a box of zero length and zero width. If, in the future, you plan to perform a regional study on a larger spatial scale just set your xmin (left), xmax (right), ymin (bottom) and ymax (top) to capture all of the cells that you are interested in. 
 ```
 
 ```{python, deco=list()}
 target = {"ymin": 43.67, "xmin": -79.40, "ymax": 43.67, "xmax": -79.40}
-# FIXME: As of the time of writing, using non-zero dmin indeces causes issues
+# FIXME: As of the time of writing, using non-zero dmin indices causes issues
 #dmin = date2index(dt.datetime(1981, 1, 1, 12, 0, 0), nc_time, select="nearest")
 dmin = 0
 dmax = len(nc_time)
@@ -354,4 +367,6 @@ for i in range(len(urls)):
     download(urls[i], filenames[i])
 ```
 
-Now that you have the data, we can proceed to analyze it. In Lab 5 (Sec. \@ref(lab5)), we will compare the downscaled GCM data to our observed data and re-assess our exposure unit based on these new data.
+## Ready to analyze downscaled PCIC data
+
+Now that you have the data, we can proceed to analyze it. In Lab 5 (Sec. \@ref(lab5)), we will compare the downscaled GCM data to our observed data and re-assess our climate index based on these new data.

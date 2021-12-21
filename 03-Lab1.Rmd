@@ -20,11 +20,15 @@ import ec3
 ec3.find_station() # run here to suppress warning
 ```
 
-One of the first steps of a climate change impact assessment (CCIA) is to establish a climatological baseline for the climate variable of interest (either an exposure unit or the climate variable most directly linked to the exposure unit). 
+The first step of a climate change impact assessment (CCIA) is to determine the metric or metrics that we will use to understand impacts. You could choose any element or variable that is directly or indirectly affected by changes in the climate. For example, in the newest IPCC report, the term "climatic impact-driver" (CID) is used to describe "physical climate system conditions (e.g., means, events, extremes) that affect an element of society or ecosystems" [@ipcc_2021_summary]. The IPCC report groups CIDs into seven groups: heat & cold (e.g. extreme heat, frost); wet & dry (e.g. heavy precipitation, fire weather); wind (e.g. tropical cyclones); snow & ice (e.g. permafrost, hail); "other" (e.g. air pollution weather); coastal (e.g. relative sea level); and open ocean (e.g. ocean salinity). Other terms are common too, such as "indices", as used by [Climdex]([https://www.climdex.org/learn/indices/) or simply "variables" as used by [ClimateData.ca](https://climatedata.ca/variable/). 
 
-An __exposure unit__ is an element or variable that is directly or indirectly affected by the changes in climate. In this exercise you will acquire Canadian climate data for Toronto and perform an analysis of an exposure unit that will be assigned to you. Refer to Appendix \@ref(appendix) for a list of some example exposure units. 
+```{block, type="rmdcomment"}
+The examples that we listed above are all _physical_ variables, but your variable of interest could be a derived variable. For instance, perhaps you are interested in understanding whether there is a link between climate change and school continuity in a "Snowbelt" community such as Barrie, Ontario. Such a study may use an index such annual school closures, or "snow days", to determine whether changes to physical variables such as winter temperatures and snowfall amounts have social effects. 
+```
 
-What do we mean by baseline? A baseline period is needed to define the observed climate. This observed climate information is combined with GCM output of climate change to determine the climate change impact for a given future climate scenario (e.g. Representative Concentration Pathway (RCP)). When using climate model output, the baseline also serves as the reference period from which the modelled future change in climate is calculated. Future climate change is defined by comparing the years in the baseline period with the similar number of years in the future for a given future climate scenario.
+In this lab you will acquire Canadian climate data for Toronto, Ontario, and perform a baseline analysis of multiple climatic indices. For further examples of climate indices or variables, and examples of Python functions to calculate them, refer to Appendix \@ref(appendix). 
+
+What do we mean by baseline? A baseline period is needed to define the observed climate. This observed climate information is combined with GCM output of climate change to determine the climate change impact for a given future climate scenario (e.g. Representative Concentration Pathway (RCP)). When using climate model output, the baseline also serves as the reference period from which the modelled future change in climate is calculated. Future climate change is defined by comparing climate statistics for the baseline period with similar statistics for a future period of the same length, for a given climate scenario.
 
 Environment and Climate Change Canada (ECCC) makes data available over an internet portal. You can [visit this page](http://climate.weather.gc.ca/), and download data manually, but that is a _very_ tedious process. In this lab, we will use a custom Python module to make it easier to download these data in bulk. 
 
@@ -32,13 +36,13 @@ Environment and Climate Change Canada (ECCC) makes data available over an intern
 
 ECCC makes data available via a web server and gives instructions for downloading data manually via Bash and Wget. You can find instructions for using the command line to download data on [Google Drive](https://drive.google.com/drive/folders/1WJCDEU34c60IfOnG4rv5EPZ4IhhW9vZH/).
 
-For convenience, I have written a small Python module, called **ec3** to search for and download data from the ECCC archive. You can review the source code for this module on [GitLab](https://gitlab.com/ConorIA/ec3.py). **ec3** is also available as a stand-alone command-line program, so if you have a colleague who is afraid to learn how to code, they can still use **ec3** to speed up the process of downloading data from ECCC. 
+For convenience, we have written a small Python module, called **ec3** to search for and download data from the ECCC archive. You can review the source code for this module on [GitLab](https://gitlab.com/ConorIA/ec3.py). **ec3** is also available as a stand-alone command-line program, so if you have a colleague who is afraid to learn how to code, they can still use **ec3** to speed up the process of downloading data from ECCC. 
 
 If you followed the instructions in Section \@ref(enviro), then you already have **ec3** installed. If you didn't, you can install it via Conda. Note that **ec3** is not available in the official Anaconda channels, and has some dependencies from the "conda-forge" channel. First, _prepend_ conda-forge to the start of your channels list so that packages get installed from there first, and _append_ Conor's personal channel to the end of the list so that it is only used for packages that are not available in any other channel.
 
 ```{bash install_ec3, eval=FALSE, deco=list(label="Shell", bc="#000000", tc="#ffffff", icon=list(style="fas", name="terminal"))}
 conda config --prepend channels conda-forge
-conda config --append channels ConorIA
+conda config --append channels claut
 conda install ec3
 ```
 
@@ -55,12 +59,15 @@ The **ec3** module contains two functions: `ec3.find_station()`, and
 print(ec3.get_data.__doc__)
 ```
 
-Let's download the daily data for the "Toronto" station (No. 5051) from 1981 to 2010. We can request the dates that we want using a Python range. Remember that Python ranges are "left inclusive, right exclusive". That means that `range(1981, 2011)` will give us data from 1981 up to (but not including) 2011. _Note that I am turning off the progress bar here because it interferes with the book rendering. You can omit the `progress` argument._
+Let's download the daily data for the "Toronto" station (No. 5051) from 1981 to 2010. We can request the dates that we want using a Python range. Remember that Python ranges are "left inclusive, right exclusive". That means that `range(1981, 2011)` will give us data from 1981 up to (but not including) 2011. _Note that we use `progress=False` to turn off the progress bar here because it interferes with the book rendering. You can omit the `progress` argument._
 
 ```{python get_tor, deco=list()}
 tor = ec3.get_data(stations=5051, years=range(1981, 2011), progress=False)
 ```
 
+```{block, type="rmdtip"}
+The **ec3** module returns historical climate data in a data structure called a `DataFrame` (or data frame), which comes from the **pandas** library. A data frame is a tabular data object, and includes features that users of spreadsheet might be used to, like labelled columns. **pandas** provides us with a lot of power and flexibility to organized, modify, and plot our data. It is particularly useful for time series, like our data. For more information on **pandas**, refer to the [documentation](https://pandas.pydata.org/pandas-docs/stable/index.html).
+```
 
 ## Cleaning the data
 
@@ -192,9 +199,9 @@ from matplotlib import pyplot as plt
 import scipy.stats as stats
 ```
 
-As we mentioned in the introduction, an exposure unit is often the "unit" of our analysis when we want to perform an impact assessment. In this section, we'll calculate two exposure units, starting with a rather simple Boolean (True/False) unit. 
+As we mentioned in the introduction, the term "climate index" is often used to describe the variable upon which we will focus our analysis of climate change impacts. In this section, we'll calculate two climate indices, starting with a rather simple Boolean (True/False) variable. 
 
-As I write this section, the temperature outside is a sweltering 32 °C (36 with the humidex), so what better exposure unit to consider than "tropical nights", nights with a minimum temperature above 20 °C. We will limit our analysis to the summer months.
+At the time of writing the outside temperature was a sweltering 32 °C (36 with the humidex), so what better climate index to consider than "tropical nights", nights with a minimum temperature above 20 °C. We will limit our analysis to the summer months.
 
 This code requires that your "Date" column is recognized as such by Python. This isn't always automatic, so you will likely need to ask **pandas** to convert the column to a `datetime` object. 
 
@@ -224,6 +231,8 @@ tor_trop = tor[['Date', 'TropNight']].groupby(tor.Date.dt.year).sum()
 tor_trop.head()
 ```
 
+Let's see that on a plot! 
+
 ```{python l1f1, deco=list(), results='hold', fig.cap="Total summertime tropical nights at Toronto (1981\u20122010)."}
 tor_trop.plot()
 ```
@@ -251,7 +260,7 @@ plt.ylabel("No. of Tropical Nights")
 
 ### Example: Heating degree days
 
-Let's try for a slightly more complicated exposure unit: Winter heating degree days (HDDs). The HDDs represent the difference between the mean temperature and the base temperature of 18 °C. Since HDDs can't be negative, they are only calculated when the mean temperature is below 18 °C. They are used as an indirect measure of energy demand. 
+Let's try for a slightly more complicated climate index: Winter heating degree days (HDDs). The HDDs represent the difference between the mean temperature and the base temperature of 18 °C. Since HDDs can't be negative, they are only calculated when the mean temperature is below 18 °C. They are used as an indirect measure of energy demand. 
 
 We can apply an anonymous (lambda) function to our `MinTemp` column to capture the following pseudocode expression:
 
@@ -267,12 +276,35 @@ We have one more challenge to overcome. A common mistake when performing seasona
 tor['Year'] = tor.Date.apply(lambda x: x.year + 1 if x.month == 12 else x.year)
 ```
 
-Now we can aggregate our heating degree days. Pay close attention to the code below. First, I use two conditional filters in the square brackets. The first condition (`tor.Year.isin(range(1982, 2011))`) selects all years between 1982 and 2011. We use this filter to drop the two winters that we know are incomplete: winter 1980/81 (which is missing December 1980), and winter 2010/2011, which is really just December 2010 here. (A better solution for this issue would be to download data including December 1980). The second condition (`tor.Date.dt.month.isin([12, 1, 2])`) filters out all months except for the winter months: 12, December; 1, January; and 2, February. After filtering, I select the two columns that are of interest (`'Year'` and `'HDD'`), group them by `'Year'` and aggregate by `sum()`. Finally, I reset the index. 
+Now we can aggregate our heating degree days. Pay close attention to the code below, as it "chains" many operations together into a single line. First, we use two conditional filters in the square brackets. The first condition (`tor.Year.isin(range(1982, 2011))`) selects all years between 1982 and 2011. We use this filter to drop the two winters that we know are incomplete: winter 1980/81 (which is missing December 1980), and winter 2010/2011, which is really just December 2010 here. (A better solution for this issue would be to download data including December 1980). The second condition (`tor.Date.dt.month.isin([12, 1, 2])`) filters out all months except for the winter months: 12, December; 1, January; and 2, February. After filtering, we select the two columns that are of interest (`'Year'` and `'HDD'`), group them by `'Year'` and aggregate by `sum()`. Finally, we reset the index. 
 
 ```{python agg_hdd, deco=list()}
 tor_hdd = tor[tor.Year.isin(range(1982, 2011)) & tor.Date.dt.month.isin([12, 1, 2])][['Year', 'HDD']].groupby('Year').sum().reset_index()
 tor_hdd.head()
 ```
+
+```{block, type="rmdtip"}
+If the line of code above is too complicated, you can break it down into little pieces. See the comments in the code block below. 
+
+<div class="decocode" style="background-color:#366994"><p><span class="decotitle" style="font-size:90%;color:#ffffff"><i class="fab fa-python"></i> <b>Python</b></span></p>
+    # First, filter the Toronto data to only include years from 1982 to 2011
+    # Remember that we just adjusted the year for all Decembers by + 1
+    tor_hdd = tor[tor.Year.isin(range(1982, 2011))]
+    
+    # Now filter to include only December, January and February
+    tor_hdd = tor_hdd[& tor_hdd.Date.dt.month.isin([12, 1, 2])]
+    
+    # Next, select only the 'Year' and 'HDD' columns:
+    tor_hdd = tor_hdd[['Year', 'HDD']]
+    
+    # Group the data by year, and take the sum of the 'HDD' column
+    tor_hdd = tor_hdd.groupby('Year').sum()
+    
+    # Reset the index of the data frame
+    tor_hdd = tor_hdd.reset_index()
+</div>
+```
+
 
 ```{python l1f3, deco=list(), results='hold', fig.cap="Total wintertime heating degree days (HDD) at Toronto (1981\u20122010), with linear trend line."}
 plt.plot(tor_hdd.Year, tor_hdd.HDD)
@@ -282,7 +314,7 @@ plt.xlabel("Year")
 plt.ylabel("Heating Degree Days  (HDD)")
 ```
 
-Let's see if we can detect any trends in our baseline values. For convenience, I am going to create a function that will print the relevant values. You can run these commands directly, but this might save you time when you get to the exercises (Hint!).
+Let's see if we can detect any trends in our baseline values. For convenience, we are going to create a function that will print the relevant values. You can run these commands directly, but this might save you time when you get to the exercises (Hint!).
 
 ```{python def_test_trends, deco=list()}
 def test_trends(years, values):
@@ -322,7 +354,7 @@ Let's use this new function to see some key features of the relationship between
 test_trends(tor_trop.Date, tor_trop.TropNight)
 ```
 
-At first glance, it appears that there is a positive correlation between tear and tropical nights (i.e. tropical nights are increasing over time). However, the slope of the trend is only 0.037 tropical nights per year, and the confidence intervals are very wide (0.373). The  fact that the confidence intervals cross zero and the large $p$-value tell use that there doesn't appear to be a trend after all. In fact, the $R^2$ tells us that only about 0.15% of the variance in tropical nights can be explained by the linear trend. 
+At first glance, it appears that there is a positive correlation between year and tropical nights (i.e. tropical nights are increasing over time). However, the slope of the trend is only 0.037 tropical nights per year, and the confidence intervals are very wide (0.373). The  fact that the confidence intervals cross zero and the large $p$-value tell use that there doesn't appear to be a trend after all. In fact, the $R^2$ tells us that only about 0.15% of the variance in tropical nights can be explained by the linear trend. 
 
 What about heating degree days?
 
@@ -333,14 +365,14 @@ test_trends(tor_hdd.Year, tor_hdd.HDD)
 For heating degree days, we see the opposite: there is an apparent negative trend (i.e. less heating degree days), but we again have confidence intervals that cross zero, a large p-value, and a small $R^2$.
 
 ```{block, type='rmdtip'}
-You may be asking yourself how it is that we didn't see any trends in tropical nights or in HDD. If the overwhelming scientific consensus is that the world is getting warmer, why didn't we see trends in our exposure units? Remember that the climate system is very noisy. We focused our analysis at a given place over a given period of time. While the general rule is that climate analysis requires _at least_ 30 years of data; even 30 years may be insufficient to detect long-term trends. We also examined two very different exposure units. Tropical nights, for instance, are a relatively extreme index at Toronto. It may be unrealistic to expect that we'd find a statistically significant trend. For a look at how the length of our period affects trends in winter temperatures, see @Anderson_Gough_2017. For another paper on long-term trend anaysis at Toronto, see @Mohsin_Gough_2010.
+You may be asking yourself how it is that we didn't see any trends in tropical nights or in HDD. If the overwhelming scientific consensus is that the world is getting warmer, why didn't we see trends in our climatic indices? Remember that the climate system is very noisy. We focused our analysis at a given place over a given period of time. While the general rule is that climate analysis requires _at least_ 30 years of data; even 30 years may be insufficient to detect long-term trends. We also examined two very different climate indices. Tropical nights, for instance, are a relatively extreme index at Toronto. It may be unrealistic to expect that we'd find a statistically significant trend. For a look at how the length of our period affects trends in winter temperatures, see @Anderson_Gough_2017. For another paper on long-term trend analysis at Toronto, see @Mohsin_Gough_2010.
 ```
 
 ## Exercises (what to submit)
 
 ```{block, type='rmdassignment'}
-- You have been assigned an exposure unit. Write a brief description of the exposure unit, whether there were any missing or suspicious data, and how these data were treated. [2 marks] 
-- Include the time series plots with fitted trend lines for your exposure unit and for the relevant temperature variable, e.g. `MeanTemp` for freezing degree days. [2 marks] 
-- Include a table with the summary statistics for your exposure unit and temperature variable. [2 marks] 
-- Now that we know that Station 5051 was recoded sometime between 2002 and 2003, future analyses might be quicker if we simply merge the 5051 data up to 2002 and the 31688 data from 2003 onward. Does this change in the join date between the two stations affect your exposure unit analysis results? [2 marks] - Be sure to clearly label your plots and table and include concise figure and table captions. [2 marks]
+- You have been assigned a climate index. Write a brief description of the climate index, whether there were any missing or suspicious data, and how these data were treated. [2 marks] 
+- Include the time series plots with fitted trend lines for your climate index and for the relevant temperature variable, e.g. `MeanTemp` for freezing degree days. [2 marks] 
+- Include a table with the summary statistics for your climate index and temperature variable. [2 marks] 
+- Now that we know that Station 5051 was recoded sometime between 2002 and 2003, future analyses might be quicker if we simply merge the 5051 data up to 2002 and the 31688 data from 2003 onward. Does this change in the join date between the two stations change the analysis of your climate index? [2 marks] - Be sure to clearly label your plots and table and include concise figure and table captions. [2 marks]
 ```

@@ -175,7 +175,7 @@ for i in range(2, len(results)):
 
 ### Cleaning up the results
 
-Up to this point, we have being using a list of dictionaries to store our results, but this is becoming a little unwieldy. Let's turn our results into a **Pandas** data frame. 
+Up to this point, we have being using a list of dictionaries to store our results, but this is becoming a little unwieldy. Let's turn our results into a **pandas** data frame. 
 
 ```{python, deco=list()}
 files = pd.DataFrame.from_dict(files)
