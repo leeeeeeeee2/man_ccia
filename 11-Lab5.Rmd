@@ -23,7 +23,7 @@ import seaborn as sns
 from netCDF4 import Dataset, num2date
 ```
 
-In Lab 4 (Sec. \@ref(lab4)) we applied GCM-derived change factors to our observed data as a rudimentary form of downscaling, and removing the bias in the model projections. In that sense, we kept the relative change in the model projections, but discarded the monthly and seasonal signals. In this lab, we will use downscaled data provided by @pcic2014statistically. We downloaded these files, in Section \@ref(pcic).
+In Lab 4 (Sec. \@ref(lab4)) we applied GCM-derived change factors to our observed data as a rudimentary form of downscaling, and removing the bias in the model projections. In that sense, we kept the relative change in the model projections, but discarded the monthly and seasonal signals. In this lab, we will use downscaled data provided by @pcic2019statistically. We downloaded these files, in Section \@ref(pcic).
 
 ## Reading the downscaled data
 
@@ -59,13 +59,21 @@ model_pattern = "|".join(models)
 scenario_pattern = r'rcp(4|8)5'
 ```
 
-Finally, we want to have a list of dates to add to each model. Since we are certain that we are using the same period and calendar in each file, it is more efficient to define the dates once, rather than pulling the date dimension from each netCDF file. These PCIC data use a special "365-day" calendar, which ignores leap years. We could manually generate the date series, but this is not as straightforward in Python as you might hope. Instead, let's pull the `time` dimension out of the first file, and re-use that object for all of our remaining files. 
+```{block, type="rmdtip"}
+You no doubt understand that a climate model is a _representation_ of our climate system, but did you know that many models even use an artificial representation of time? Rather than use the "standard" or "Gregorian" calendar that matches ours---with 365 days in a year and a leap year every four years, except for years that are divisible by 100 but not divisible by 400---some models use different calendars. These calendars are defined as part of the [NetCDF Climate and Forecast (CF) Metadata Conventions](http://cfconventions.org/Data/cf-conventions/cf-conventions-1.9/cf-conventions.html#calendar). Some examples include the Julian calendar, which is similar to the standard calendar, but allows leap years on years that are divisible by 100, the "all leap" or "no leap" calendars, in which all years have 366 or 365 days, respectively, and the extra strange 360-day calendar, which uses 12 30-day months to make up a 360-day year.
+```
+
+We need a list of dates to add to each model. In this lab, we are only using models that use the `'365_day'` ("no leap") calendar. Since we are certain that all of the models we chose use the `'365_day'` calendar, and that all of our data files have data for the same period, we can take a shortcut and define the dates once, rather than querying the date dimension from each netCDF file. We could manually generate the date series, but this is not as straightforward in Python as you might hope. Instead, let's use the `time` dimension of the first file, and re-use that object for all of our remaining files.
 
 ```{python, deco=list()}
 nc = Dataset(data_dir + "/" + filenames[0])
 nc_time = nc.variables['time']
 time = num2date(nc_time[:], nc_time.units, nc_time.calendar)
 nc.close()
+```
+
+```{block, type="rmddisclaimer"}
+The code in this lab assumes that you are only working with models that use the `'365_day'` calendar. If you are working with a fuller suite of model outputs, you may encounter errors if you try to combine all of your models into a single data frame (as we are about to do). This is because each calendar has its own data type in Python, and these cannot be easily combined or concatenated. You may choose to try to keep the data from each model in its own data frame, or create a data frame for all models that use each calendar type. You can determine which calendar your model uses by querying `nc.variables['time'].calendar`.
 ```
 
 Now let's loop across all of our files and create one big **pandas** data frame for our data. If you have unrelated files in your data directory, you may want to test for a certain filename pattern and [`continue`](https://docs.python.org/3/tutorial/controlflow.html#break-and-continue-statements-and-else-clauses-on-loops) to the next iteration. 
@@ -319,9 +327,9 @@ sns.relplot(data=plot_data[plot_data.Variable == "tas"],
             aspect=1.61, kind="line").set_ylabels("Temperature ($^{\circ}$C)")
 ```
 
-## Evaluating an exposure unit.
+## Assessing changes to climate indices
 
-We can also use the downscaled data to project changes in our exposure unit. Let's look at summertime cooling degree days (CDD)?
+We can also use the downscaled data to project changes in our climate index. Let's look at summertime cooling degree days (CDD)?
 
 ```{python, deco=list()}
 cdd = dat.assign(Month=dat.Date.apply(lambda x: x.month))

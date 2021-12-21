@@ -4,7 +4,7 @@ A huge "thank you" goes out to the first cohort of students to use this lab manu
 
  - Andrew Apostoli
  - Maralgua Batdelger
- - Dean Boulding (extra points for opening an issue on GitLab)
+ - [Dean Boulding](https://gitlab.com/claut/man_ccia/-/issues?scope=all&state=all&author_username=jakartadean) (extra points for opening an issue on GitLab)
  - Samuel Brockmeyer
  - Mathieu Brunette
  - Kenneth Chow
@@ -19,4 +19,6 @@ A huge "thank you" goes out to the first cohort of students to use this lab manu
 
 Thank you, also, to Paul Kushner for sharing your experience using the book and identifying typos and bugs. 
 
-Thanks to [Alfonso Reyes](https://gitlab.com/AlfonsoRReyes) for suggestions to make it easier to build the book locally. 
+Thanks to [Alfonso Reyes](https://gitlab.com/claut/man_ccia/-/merge_requests?scope=all&state=opened&author_username=AlfonsoRReyes) for suggestions to make it easier to build the book locally. 
+
+Thank you to [Julia Wagemann](https://gitlab.com/claut/man_ccia/-/issues?scope=all&state=all&author_username=julia.wagemann) and [Jeremy Fyke](https://gitlab.com/claut/man_ccia/-/issues?scope=all&state=all&author_username=JeremyFyke) for their fantastic comments and thorough [review](https://github.com/openjournals/jose-reviews/issues/100) of this manual as part of our submission to [JOSE](https://jose.theoj.org/about).
