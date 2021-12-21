@@ -23,7 +23,7 @@ The ESGF features a user-friendly [search interface](https://esgf-node.llnl.gov/
 The ESGF [documentation](https://esgf.github.io/esgf-user-support/user_guide.html) suggests that you use the web-based search engine and Wget to access CMIP5 data. A previous version of this book documented that process. You can check out those older instructions at the Internet Archive. You will need to follow the [instructions](https://web.archive.org/web/20200118074311/https%3A%2F%2Fclaut.gitlab.io%2Fman_ccia%2Fenviro.html) to install Bash and Wget before you follow the instructions (https://web.archive.org/web/20200706224800/https://claut.gitlab.io/man_ccia/lab2.html) to access the CMIP data. 
 ```
 
-First, we will import the libraries we will need. Specifically, we are importing **pyesgf**, which is the name of the module contained in the **esgf-pyclient** library. We will import both the `search` and the `logon` functions. We will also import **os**, **requests**, and **tqdm**, which we will use in a custom file download function, which you will see later. Finally, we will use **pandas** to create a table from which we will read our results.
+First, we will import the libraries we will need. Specifically, we are importing **pyesgf**, which is the name of the module contained in the **esgf-pyclient** library. We will import the search-related functions from the module. We will also import **os**, **requests**, and **tqdm**, which we will use in a custom file download function, which you will see later. Finally, we will use **pandas** to create a table from which we will read our results.
 
 ```{python, deco=list()}
 from pyesgf.search import SearchConnection
@@ -140,7 +140,7 @@ files
 ```
 
 ```{block, type='rmdtip'}
-The netCDF files from the ESGF use a standardized filename format that looks something like this: 
+The files from the ESGF use a standardized filename format that looks something like this: 
 
 <center>`variable_time_model_experiment_ensemble_period.nc`</center><br>
 
@@ -175,7 +175,7 @@ for i in range(2, len(results)):
 
 ### Cleaning up the results
 
-Up to this point, we have being using a list of dictionaries to store our results, but this is becoming a little unwieldy. Let's turn our results into a **Pandas** data frame. 
+Up to this point, we have being using a list of dictionaries to store our results, but this is becoming a little unwieldy. Let's turn our results into a **pandas** data frame. 
 
 ```{python, deco=list()}
 files = pd.DataFrame.from_dict(files)
@@ -238,7 +238,7 @@ Now that you know how to search for and filter data, practice with different set
 ## Exercises (what to submit)
 
 ```{block, type='rmdassignment'}
-- What is a netCDF file? Why is it superior to a _.csv_ file or a spreadsheet? (Hint: This manual may have some information to help you to answer this question) [2 marks]
+- The files that we downloaded in this lab are in the netCDF file format. Describe this file format. Why is it superior to a _.csv_ file or a spreadsheet? (Hint: You will probably need to do a little bit of reading to be able to answer this question; this manual may have some information to help you!) [2 marks]
 - Given a file named _prc_Amon_MIROC5_rcp85_r1i1p1_200601-210012.nc_, what can you ascertain about the data the file contains? [2 marks]
 - Download the netCDF files for at least one variable from one model in one ensemble. Make sure to include the historical and projected values. How many files did you download? What are the filenames? Describe the steps that you took to download the file, e.g. what filters did you use? [2 marks]
 - To save you time and hard drive space, we will be using _Conjuntool_ to pre-process and subset our data. Visit [_Conjuntool_](https://shiny.conr.ca/conjuntool/) and familiarize yourself with the interface. For the model corresponding to the file named in question 2:

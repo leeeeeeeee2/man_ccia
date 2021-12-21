@@ -1,0 +1,29 @@
+# Summary and Next Steps {#conclusions}
+
+_Last update: `r system("git log -1 --format=\"%ad (%h)\" -- 12-conclusions.Rmd", intern = TRUE)`_
+
+If you made it this far---congratulations---you've learned the skills you'll need to complete a climate change impact assessment! *To recap:* in Lab 1 (Sec. \@ref(lab1)), you acquired observed historical Canadian climate data from Environment and Climate Change Canada (programatically), and performed some basic analyses of meteorological variables and climate indices. In Lab 2 (Sec. \@ref(lab2)), you learned how to obtain raw data from CMIP5 models via the ESGF. In Lab 3 (Sec. \@ref(lab3)), you learned to navigate across the dimensions of these modelled data, and to extract data for the spatial and temporal "slice" that you are interested in. In Lab 4 (Sec. \@ref(lab4)), you brought all of those previous skills together to project changes to your climate indices through the year 2100 using the change factor method, completing a mini CCIA! You also learned, however, that raw GCM output is very coarse and that there are limitations to the change factor method, so in Lab 5 (Sec. \@ref(lab5)), you learned how you can make use of statistically downscaled GCM data for Canada [@cannon2015bias] to improve your CCIA results. 
+
+As you worked your way through the labs, you also gained important contextual knowledge. In Sec. \@ref(modelling), you learned about climate model complexity and the scenarios that drive the models. You undertook some critical thinking about model selection strategies in Sec. \@ref(modelselection). You learned all about the netCDF file format, and multidimensional data series in Sec. \@ref(dimensions). Finally, we hope that you also learned some neat coding tricks in Python! 
+
+## What to do next
+
+Your learning doesn't have to end here. Here are some ideas for places where you can direct your intellectual capacity next:
+
+**Learn additional Python modules and libraries**
+
+ - In this lab manual, we restricted our analysis to time series data; however, you may want to assess climate change impacts over a particular region and, therefore, require climate data that has both spatial and time dimensions. **[xarray](http://xarray.pydata.org/en/stable/user-guide/index.html)**, which we briefly mentioned earlier in this lab manual, is a powerful Python module that allows you to undertake this type of analysis, and will be a useful tool as your analytical appetite grows! 
+ - We developed our climate indices and indicators from scratch in Python. The **[xclim](https://xclim.readthedocs.io/en/stable/notebooks/usage.html)** package provides a library of functions to compute climate indices for you, allowing you to focus on the analysis. 
+ 
+**Contribute to this course**
+
+ - Did you find something in this book to be confusing, or did you learn a new skill that you think should have been included in this book? Please help us to [improve this book](https://gitlab.com/claut/man_ccia) by submitting your code in a [merge request](https://gitlab.com/claut/man_ccia/-/merge_requests).
+ - Want to help up to enhance or maintain [ec3](https://gitlab.com/claut/ec3.py)? You can send [merge requests](https://gitlab.com/claut/ec3.py/-/merge_requests) for that too!
+
+ **Explore CCIA Applications***
+ 
+- Climate Change Impact Assessment (CCIA) is an important step in cimate change risk management and adaptation planning, but it is often only the first step. Explore how CCIA informs critical decision-making through [Canada's Map of Adaptation Actions](https://changingclimate.ca/case-studies/#reports)
+
+## Thank you
+
+We hope that this lab manual has provided you with an engaging and informative introduction to Climate Change Impact Assessment. 

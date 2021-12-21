@@ -26,13 +26,13 @@ import seaborn as sns
 from matplotlib import pyplot as plt
 ```
 
-Next, we need to find our downloaded anomaly data, as produced by the "Download Table" button in _Conjuntool_. In my case, I have this saved in a _data_ subdirectory. I am also using the default name used by _Conjuntool_, which is heavy on the details (for lack of better metadata capabilities in a _.csv_ file). If you have renamed your file, or saved it somewhere strange, adjust this line as necessary.
+Next, we need to find our downloaded anomaly data, as produced by the "Download Table" button in _Conjuntool_. In the example below, the data was saved in a _data_ subdirectory using the default name provided by _Conjuntool_, which is heavy on the details (for lack of better metadata capabilities in a _.csv_ file). If you have renamed your file, or saved it somewhere strange, adjust this line as necessary.
 
 ```{python, deco=list()}
 file = "data/4367_-7940_bsln-1981‒2010_proj-2011‒2100_Annual.csv"
 ```
 
-Now we read it using **Pandas**.
+Now we read it using **pandas**.
 
 ```{python, deco=list()}
 dat = pd.read_csv(file)
@@ -56,17 +56,17 @@ dat.head()
 
 ### Using the extremes
 
-Choosing our models based on the highest and lowest projected changes allows us to get an idea of the "range" of possibilities for the future. Since we are using change factors, we are only considering the changes that each model projects over its own baseline period. So these changes are relative. i.e. The model with the largest projected change is not necessarily the model with the highest projected temperature. 
+Choosing our models based on the highest and lowest projected changes allows us to get an idea of the "range" of possibilities for the future. Since we are using change factors, we are only considering the changes that each model projects over its own baseline period. So these changes are relative, i.e. the model with the largest projected change is not necessarily the model with the highest projected temperature. 
 
 ```{block, type='rmddisclaimer'}
-For this and all of our selection methods, I'll made a copy of `dat` to work with using the `copy()` method. This is the safer option, as something like `dat_ext = dat` creates a new reference to the _same_ `dat` table. This isn't an issue if we are just sub-setting and filtering data, but it becomes troublesome if we want to change any of the data points; any modification to the values in `dat_ext` would also appear in `dat`! This will become more relevant later in this lab when we create the `tor_win` data frame. 
+For this and all of our selection methods, we will made a copy of `dat` to work with using the `copy()` method. This is the safer option, as something like `dat_ext = dat` creates a new reference to the _same_ `dat` table. This isn't an issue if we are just sub-setting and filtering data, but it becomes troublesome if we want to change any of the data points; any modification to the values in `dat_ext` would also appear in `dat`! This will become more relevant later in this lab when we create the `tor_win` data frame. 
 ```
 
 ```{python, deco=list()}
 dat_ext = dat.copy()
 ```
 
-I am going to add a new column, called `'MeanAnom'`, which will contain the average tridecadal anomaly, or change factor, produced by each model. This will be sorted from smallest change to largest.
+Add a new column, called `'MeanAnom'`, which will contain the average tridecadal anomaly, or change factor, produced by each model, then sort this new column from smallest change to largest.
 
 
 ```{python, deco=list()}
@@ -76,7 +76,7 @@ dat_ext.head() # Smallest
 dat_ext.tail() # Largest
 ```
 
-The next code block is a little involved. I am going to group `dat_ext` by `'Scenario'` and get the smallest value for each using `first()`. Make sure you sorted the values in the previous code block or you won't get the expected output! I will label those values "Lower", to represent the lower limit of the model projections, and restore the index, which was changed by `groupby`. I then do the same for the `last()` value, labelling these as "Upper". I append these two tables together, and drop the `'MeanAnom'` column.
+The next code block is a little complicated, so let's walk through it: first, we group `dat_ext` by `'Scenario'` and get the smallest value for each using `first()`. Make sure you sorted the values in the previous code block or you won't get the expected output! We label these first values as "Lower", to represent the lower limit of the model projections, and restore the index, which was changed by `groupby`. We then do the same for the `last()` value, labelling these as "Upper". Finally, we append these two tables together, and drop the `'MeanAnom'` column.
 
 
 ```{python, deco=list()}
@@ -90,7 +90,7 @@ Now we have a table of the two extreme models for each scenario that identifies 
 
 ### Validating model baselines
 
-Another model selection method is to validate a model against observed baseline values. Before we can validate, we need data to validate against. Here I am using the very same _.csv_ file that we generated in Lab 1. If you no longer have that file, give the code in Lab 1 a quick run and you should be able to re-create it in no time. Note that when we saved the file using `tor.to_csv()`, an index column was included in the file. Use the `index_col` argument to let **Pandas** know about this, or you will end up with an extra unnamed column of numbers from 0 to the number of rows in the file.
+Another model selection method is to validate a model against observed baseline values. Before we can validate, we need data to validate against. Here we are using the very same _.csv_ file that we generated in Lab 1. If you no longer have that file, give the code in Lab 1 a quick run and you should be able to re-create it in no time. Note that when we saved the file using `tor.to_csv()`, an index column was included in the file. Use the `index_col` argument to let **pandas** know about this, or you will end up with an extra unnamed column of numbers from 0 to the number of rows in the file.
 
 
 ```{python, deco=list()}
@@ -103,13 +103,13 @@ We can use the Gough&ndash;Fenech Confidence Index (GFCI) to help us choose our 
 $$\textrm{GFCI} = \frac{ \left | T_{\textrm{mod}} - T_{\textrm{obs}} \right |}{\sigma_{\textrm{obs}}}$$
 
 
-$\left | T_{\textrm{mod}} - T_{\textrm{obs}} \right |$ is the absolute difference between the modelled baseline and the observed baseline, and $\sigma_{\textrm{obs}}$ is the standard deviation of the aggregate observed values. In my case, I need to use the mean and standard deviation of the annual aggregate values of our observed Toronto station data. If I want to test for $T_{\textrm{mean}}$, for instance, I would first calculate the annual average $T_{\textrm{mean}}$ for each of the 30-years in our baseline, and then take the mean and standard deviation of those 30 annual values.
+$\left | T_{\textrm{mod}} - T_{\textrm{obs}} \right |$ is the absolute difference between the modelled baseline and the observed baseline, and $\sigma_{\textrm{obs}}$ is the standard deviation of the aggregate observed values. In this case, we need to use the mean and standard deviation of the annual aggregate values of our observed Toronto station data. If we want to test for $T_{\textrm{mean}}$, for instance, we would first calculate the annual average $T_{\textrm{mean}}$ for each of the 30-years in our baseline, and then take the mean and standard deviation of those 30 annual values.
 
 ```{block, type="rmdtip"}
 If you are performing a monthly or seasonal analysis, you should use the respective aggregate values. As an example, if you are performing your analysis on winter values, $T_{\textrm{obs}}$ is the average yearly winter temperature and $\sigma_{\textrm{obs}}$ is the standard deviation of those average yearly winter temperatures. You should, of course, also have chosen seasonal output from _Conjuntool_. 
 ```
 
-**Pandas** doesn't reliably process date information in a _.csv_ file, so we need to fix the `'Date'` column.
+**pandas** doesn't reliably process date information in a _.csv_ file, so we need to fix the `'Date'` column.
 
 ```{python, deco=list()}
 tor.Date = pd.to_datetime(tor.Date)
@@ -207,7 +207,7 @@ dat_ens = dat.copy().groupby(['Scenario']).mean().reset_index()
 dat_ens
 ```
 
-You may be concerned that the baseline values are different for the difference scenarios. If you are thinking, "didn't we average the baselines between all the scenarios earlier". You're right. What we're seeing here is an inconsistency based on the number of models that provide projections for each scenario. Since we aren't doing any validation here, it doesn't really matter, but it is nice to know how many models are providing projections for each scenario and period.
+You may be concerned that the baseline values differ across scenarios. If you are thinking, "didn't we average the baselines between all the scenarios earlier". You're right. What we're seeing here is an inconsistency based on the number of models that provide projections for each scenario. Since we aren't doing any validation here, it doesn't really matter, but it is nice to know how many models are providing projections for each scenario and period.
 
 ```{python, deco=list()}
 dat.groupby(['Scenario']).count().reset_index()
@@ -221,13 +221,13 @@ The methods that we have seen above are quick and useful for pedagogy, but there
 
 ## Applying our change factors
 
-Now that we have chosen our models, let's see how we can apply these change factors to our observed data. For each period, we apply the given change factor to the daily values from our observed data. If we were to graph this, it would look a little bit like a jagged staircase, with each tridecade shifting by some fixed amount. It is not, however, the daily values that are of interest. We cannot reliably forecast daily weather far into the future. Instead, we use the past history, combined with the average tridecadal change to estimate changes in our exposure unit. Since I am looking at $T_{\textrm{mean}}$ here, I won't examine tropical nights as I did in lab 1. Here I will use summer cooling degree days and winter heating degree days for the RCP4.5 and RCP8.5 scenarios.
+Now that we have chosen our models, let's see how we can apply these change factors to our observed data. For each period, we apply the given change factor to the daily values from our observed data. If we were to graph this, it would look a little bit like a jagged staircase, with each tridecade shifting by some fixed amount. It is not, however, the daily values that are of interest. We cannot reliably forecast daily weather far into the future. Instead, we use the past history, combined with the average tridecadal change to estimate changes in our climate index. Since we are looking at $T_{\textrm{mean}}$ here, we won't examine tropical nights as we did in Lab 1. Here we will use summer cooling degree days and winter heating degree days for the RCP4.5 and RCP8.5 scenarios.
 
 ```{block, type="rmddisclaimer"}
-In these examples, I am using annual change factors to analyze seasonal exposure units. This is lazy at best and downright wrong at worst. The sections below are only meant as _code_ examples. In your research, make sure to use the appropriate change factors for your period of interest. 
+In these examples, we are using annual change factors to analyze seasonal climate indices. This is lazy at best and downright wrong at worst! The sections below are only meant as _code_ examples. In your research, make sure to use the appropriate change factors for your period of interest. 
 ```
 
-I will begin this section by showing how we can manually apply the change factors, and then I will define a function that will make this easier.
+We will begin this section by showing how we can manually apply the change factors, and then we will define a function that will make this easier.
 
 ### Using the extremes
 
@@ -245,7 +245,7 @@ anom = dat_ext.loc[dat_ext.Model == 'MIROC-ESM-CHEM', '2011-2040'].values
 anom
 ```
 
-Now I'll apply that anomaly to the daily `'MeanTemp'` values in a copy of the `tor` data frame.
+Now we apply that anomaly to the daily `'MeanTemp'` values in a copy of the `tor` data frame.
 
 ```{python, deco=list()}
 tor_ext = tor.copy()[['Date', 'MeanTemp']]
@@ -253,7 +253,7 @@ tor_ext = tor_ext.assign(hex2020s = tor.MeanTemp + anom)
 tor_ext.head()
 ```
 
-Now we can (re)calculate our exposure unit using a lambda expression just as we did in Lab 1.
+Now we can (re)calculate our climate index using a lambda expression just as we did in Lab 1.
 
 ```{python, deco=list()}
 tor_ext['CDDObs'] = tor_ext.MeanTemp.apply(lambda x: 0 if x <= 18 else x - 18)
@@ -267,15 +267,15 @@ So, what is the projected change to summertime CDD? Let's take a look.
 tor_ext[tor_ext.Date.dt.month.isin([6,7,8])].filter(regex = '^CDD').sum()
 ```
 
-It looks like we can expect an increase from `r suppressWarnings(sum(py$tor_ext$CDDObs[format(py$tor_ext$Date, format = "%m") %in% sprintf("%02d", c(6,7,8))], na.rm = TRUE))` total CDDs from the baseline to $`r suppressWarnings(sum(py$tor_ext$CDDhex2020s[format(py$tor_ext$Date, format = "%m") %in% sprintf("%02d", c(6,7,8))], na.rm = TRUE))`$ in the 2020s. This could have serious implications for energy supply for air conditioning! 
+It looks like we can expect an increase from `r suppressWarnings(round(sum(py$tor_ext$CDDObs[format(py$tor_ext$Date, format = "%m") %in% sprintf("%02d", c(6,7,8))], na.rm = TRUE), 1))` total CDDs from the baseline to `r suppressWarnings(format(round(sum(py$tor_ext$CDDhex2020s[format(py$tor_ext$Date, format = "%m") %in% sprintf("%02d", c(6,7,8))], na.rm = TRUE), 1), scientific=FALSE))` in the 2020s. This could have serious implications for energy supply for air conditioning! 
 
-Great! That's one projection down; 11 more to go to fill in our first table. This looks like it could turn out to be a monotonous process. Let's whip up a function to do the work for us! This is loosely based on [code](https://gitlab.com/ConorIA/CdeCPeru-CC/blob/master/Ejercicios/recalc_exp.R) that I put together in R in 2015. This version takes five arguments: `obs` is a two-column Data Frame containing the `'Date'` and variable column; `anoms` is the respective `dat_*` table; `stat` is the stat that we want to calculate for the exposure units, e.g. `sum`; `expr` is a lambda expression that we evaluate to calculate the exposure unit (some examples are in the Appendix of this book); finally, `month` is a list of one or more months to filter on, defaulting to `None`. If in doubt, the function has a complete docstring to help you to choose values for each parameter.
+Great! That's one projection down; 11 more to go to fill in our first table. This looks like it could turn out to be a monotonous process. Let's whip up a function to do the work for us! We will create a function that takes five arguments: `obs` is a two-column Data Frame containing the `'Date'` and variable column; `anoms` is the respective `dat_*` table; `stat` is the stat that we want to calculate for the climate index, e.g. `sum`; `expr` is a lambda expression that we evaluate to calculate the climate index (some examples are in Appendix \@ref(appendix)); finally, `month` is a list of one or more months to filter on, defaulting to `None`. If in doubt, the function has a complete docstring to help you to choose values for each parameter.
 
 ```{python, deco=list()}
 from math import isnan
 
 def recalc_exp(obs, anoms, stat, expr, month = None):
-    """Recalculate and aggregate an exposure unit using observed data
+    """Recalculate and aggregate a climate index using observed data
     and Conjuntool output.
 
     Parameters
@@ -285,10 +285,10 @@ def recalc_exp(obs, anoms, stat, expr, month = None):
     anoms : pandas.core.frame.DataFrame
         The data frame produced by Conjuntool, filtered as necessary
     stat  : builtin_function_or_method or function
-        The function to call on the calculated exposure unit, e.g. sum
+        The function to call on the calculated climate index, e.g. sum
     expr  : str
         A lambda expression to be applied to the variable column to
-        calculate the exposure unit
+        calculate the climate index
     month : list
         A list of the months to filter on (optional)
     """
@@ -360,14 +360,14 @@ pd.merge(recalc_exp(obs=tor[['Date', 'MeanTemp']],
 
 #### Bonus exercise
 
-The `recalc_exp()` function works on the daily values of each 30-year tridecade. Thus, it returns either the daily average, or the tridecadal total of a given exposure unit. These values might not be the most useful metrics for most analysts. It might be more useful to know what we might expect the _annual_ average or sum for a given metric. In our example the seasonal or annual total CDDs might be more useful to policy-makers.
+The `recalc_exp()` function works on the daily values of each 30-year tridecade. Thus, it returns either the daily average, or the tridecadal total for a given climate index. These values might not be useful metrics for most analyses. It might be more useful to know the _annual_ average or sum for a given metric. In our example the seasonal or annual total CDDs might be more useful to policy-makers.
 
 For bonus marks: modify the `recalc_exp()` function above so that it first aggregates the daily values by year (`obs.Date.dt.year`), and then applies the calculation provided by the `stat` argument. For full marks, your function should also retain the original functionality of `recalc_exp()`. (_Hint: you may need to add an extra parameter to the function_).
 
 Once you have finished changing the code, generate a patch for the original function using software such as [Pretty Diff](https://prettydiff.com/). This will highlight the changes that you made. Submit this patch along with your regular "What to submit" exercises. 
 ```
 
-What if we want to calculate winter heating degree days? We'll need to shift our Decembers up a year like we did in Lab 1. This isn't hugely necessary at the moment, since I'm looking at 30-year totals, but it is always a good habit to maintain and allows us to be more precise about the seasons in consideration. It will become especially relevant for those of your who undertake the bonus assignment in the box above.
+What if we want to calculate winter heating degree days? We'll need to shift our Decembers up a year like we did in Lab 1. This isn't strictly necessary at the moment, since we are looking at 30-year totals, but it is always a good habit to maintain and allows us to be more precise about the seasons in consideration. It will become especially relevant for those of you who undertake the bonus assignment in the box above.
 
 ```{python, deco=list()}
 tor_win = tor.copy()
@@ -403,7 +403,7 @@ dat_ens['Model'] = "Ensemble"
 dat_ens
 ```
 
-Now we can take a look at the projected changes in our exposure units.
+Now we can take a look at the projected changes in our climate indices.
 
 For CDD:
 
@@ -462,14 +462,14 @@ sns.catplot(x = "Period", y = "Heating Degree Days", hue = "Scenario", col = "Mo
             palette = "Reds", kind = "bar", ci = None, height = 7, aspect = 0.66)
 ```
 
-Great! We have now seen who we can apply GCM-projected change factors to our observed data to project changes in an exposure unit. In our next lab, we will look at more advanced downscaling methods.
+Great! We have now seen how we can apply GCM-projected change factors to our observed data to project changes in a climate index. In our next lab, we will look at more advanced downscaling methods.
 
 ## Exercises (what to submit)
 
 ```{block, type='rmdassignment'}
 - In Lab 1 (Sec. \\\@ref(lab1)) we examined the "baseline" summertime Tropical Nights and winter Heating Degree Days for Toronto. Choose either one and use the change factor method to project into the future. Go back to Conjuntool and select the relevant _seasonal_ anomaly data. Describe differences in the results when you use the annual change factors and the seasonal ones. What accounts for the differences? [2 marks]
 - Are the models that best reproduced the _annual_ baseline the same models that best reproduce the _seasonal_ baseline? If not, can we trust our validation results? [2 marks]
-- Re-calculate the changes to the exposure unit using the _seasonal_ data. What differences do you see compared to the annual data? [2 marks]
+- Re-calculate the changes to the climate index using the _seasonal_ data. What differences do you see compared to the annual data? [2 marks]
 - Is it better to use the annual data or the seasonal data for a seasonal study? Why? [2 marks]
 - Produce two multi-panel plots similar to the Figure 10.2. One figure should plot the changes projected by the top-three "validated" models. The other should plot the changes projected by the two extremes and the ensemble average. Make sure that the figures are properly labelled and properly captioned. _Hint: you may find it useful to assign a dummy `"Limit"` variable to the ensemble projections just like we assigned a dummy `"Model"` variable to `dat_ens`. You should also adjust the `id_vars` in `pd.melt()`, and adjust the `col` facet in `sns.catplot()`. If you are totally stuck, you can see an [example here](https://gitlab.com/claut/man_ccia/snippets/1830781)._ [2 marks]
 - Compare, contrast, and comment on the three model selection methods explored in this lab. What are their strengths and weaknesses? [5 marks]
