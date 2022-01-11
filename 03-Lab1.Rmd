@@ -20,23 +20,23 @@ import ec3
 ec3.find_station() # run here to suppress warning
 ```
 
-The first step of a climate change impact assessment (CCIA) is to determine the metric or metrics that we will use to understand impacts. You could choose any element or variable that is directly or indirectly affected by changes in the climate. For example, in the newest IPCC report, the term "climatic impact-driver" (CID) is used to describe "physical climate system conditions (e.g., means, events, extremes) that affect an element of society or ecosystems" [@ipcc_2021_summary]. The IPCC report groups CIDs into seven groups: heat & cold (e.g. extreme heat, frost); wet & dry (e.g. heavy precipitation, fire weather); wind (e.g. tropical cyclones); snow & ice (e.g. permafrost, hail); "other" (e.g. air pollution weather); coastal (e.g. relative sea level); and open ocean (e.g. ocean salinity). Other terms are common too, such as "indices", as used by [Climdex]([https://www.climdex.org/learn/indices/) or simply "variables" as used by [ClimateData.ca](https://climatedata.ca/variable/). 
+The first step of a climate change impact assessment (CCIA) is to determine the metric or metrics that we will use to understand impacts. You could choose any element or variable that is directly or indirectly affected by changes in the climate. For example, in the newest IPCC report, the term "climatic impact-driver" (CID) is used to describe "physical climate system conditions (e.g., means, events, extremes) that affect an element of society or ecosystems" [@ipcc_2021_summary]. The IPCC report groups CIDs into seven groups: heat & cold (e.g. extreme heat, frost); wet & dry (e.g. heavy precipitation, fire weather); wind (e.g. tropical cyclones); snow & ice (e.g. permafrost, hail); "other" (e.g. air pollution weather); coastal (e.g. relative sea level); and open ocean (e.g. ocean salinity). Other terms are common too, such as "indices", as used by [Climdex]([https://www.climdex.org/learn/indices/) or simply "variables" as used by [ClimateData.ca](https://climatedata.ca/variable/).
 
 ```{block, type="rmdcomment"}
-The examples that we listed above are all _physical_ variables, but your variable of interest could be a derived variable. For instance, perhaps you are interested in understanding whether there is a link between climate change and school continuity in a "Snowbelt" community such as Barrie, Ontario. Such a study may use an index such as annual school closures, or "snow days", to determine whether changes to physical variables such as winter temperatures and snowfall amounts have social effects. 
+The examples that we listed above are all _physical_ variables, but your variable of interest could be a derived variable. For instance, perhaps you are interested in understanding whether there is a link between climate change and school continuity in a "Snowbelt" community such as Barrie, Ontario. Such a study may use an index such as annual school closures, or "snow days", to determine whether changes to physical variables such as winter temperatures and snowfall amounts have social effects.
 ```
 
-In this lab you will acquire Canadian climate data for Toronto, Ontario, and perform a baseline analysis of multiple climatic indices. For further examples of climate indices or variables, and examples of Python functions to calculate them, refer to Appendix \@ref(appendix). 
+In this lab you will acquire Canadian climate data for Toronto, Ontario, and perform a baseline analysis of multiple climatic indices. For further examples of climate indices or variables, and examples of Python functions to calculate them, refer to Appendix \@ref(appendix).
 
 What do we mean by baseline? A baseline period is needed to define the observed climate. This observed climate information is combined with GCM output of climate change to determine the climate change impact for a given future climate scenario (e.g. Representative Concentration Pathway (RCP)). When using climate model output, the baseline also serves as the reference period from which the modelled future change in climate is calculated. Future climate change is defined by comparing climate statistics for the baseline period with similar statistics for a future period of the same length, for a given climate scenario.
 
-Environment and Climate Change Canada (ECCC) makes data available over an internet portal. You can [visit this page](http://climate.weather.gc.ca/), and download data manually, but that is a _very_ tedious process. In this lab, we will use a custom Python module to make it easier to download these data in bulk. 
+Environment and Climate Change Canada (ECCC) makes data available over an internet portal. You can [visit this page](http://climate.weather.gc.ca/), and download data manually, but that is a _very_ tedious process. In this lab, we will use a custom Python module to make it easier to download these data in bulk.
 
 ## Getting the data
 
 ECCC makes data available via a web server and gives instructions for downloading data manually via Bash and Wget. You can find instructions for using the command line to download data on [Google Drive](https://drive.google.com/drive/folders/1WJCDEU34c60IfOnG4rv5EPZ4IhhW9vZH/).
 
-For convenience, we have written a small Python module, called **ec3** to search for and download data from the ECCC archive. You can review the source code for this module on [GitLab](https://gitlab.com/ConorIA/ec3.py). **ec3** is also available as a stand-alone command-line program, so if you have a colleague who is afraid to learn how to code, they can still use **ec3** to speed up the process of downloading data from ECCC. 
+For convenience, we have written a small Python module, called **ec3** to search for and download data from the ECCC archive. You can review the source code for this module on [GitLab](https://gitlab.com/ConorIA/ec3.py). **ec3** is also available as a stand-alone command-line program, so if you have a colleague who is afraid to learn how to code, they can still use **ec3** to speed up the process of downloading data from ECCC.
 
 If you followed the instructions in Section \@ref(enviro), then you already have **ec3** installed. If you didn't, you can install it via Conda. Note that **ec3** is not available in the official Anaconda channels, and has some dependencies from the "conda-forge" channel. First, _prepend_ conda-forge to the start of your channels list so that packages get installed from there first, and _append_ Conor's personal channel to the end of the list so that it is only used for packages that are not available in any other channel.
 
@@ -53,7 +53,7 @@ import ec3
 ```
 
 The **ec3** module contains two functions: `ec3.find_station()`, and
-`ec3.get_data()`. The functions have complete docstrings, so you can check the function documentation for syntax, e.g. 
+`ec3.get_data()`. The functions have complete docstrings, so you can check the function documentation for syntax, e.g.
 
 ```{python ec3_help, deco=list()}
 print(ec3.get_data.__doc__)
@@ -71,27 +71,27 @@ The **ec3** module returns historical climate data in a data structure called a 
 
 ## Cleaning the data
 
-Now that we have the data that we need, we can start working with it. First, let's import the libraries we are going to need to manipulate our data. 
+Now that we have the data that we need, we can start working with it. First, let's import the libraries we are going to need to manipulate our data.
 
 ```{python import_libs, eval=FALSE, deco=list()}
 import numpy as np
 import pandas as pd
 ```
 
-Let's take a look at what our columns are named. 
+Let's take a look at what our columns are named.
 
 ```{python print_cols, deco=list()}
 tor.columns
 ```
 
-Hmm, some of those are a little cumbersome. Let's rename the columns we are going to use and then select only those columns. 
+Hmm, some of those are a little cumbersome. Let's rename the columns we are going to use and then select only those columns.
 
 ```{python rename_cols, deco=list()}
 tor = tor.rename(columns={'Date/Time': 'Date', 'Max Temp (°C)': 'MaxTemp', 'Min Temp (°C)': 'MinTemp', 'Mean Temp (°C)': 'MeanTemp', 'Total Precip (mm)': 'TotalPrecip'})
 tor = tor[['Date', 'MaxTemp', 'MinTemp', 'MeanTemp', 'TotalPrecip']]
 ```
 
-Great. Let's take a look at what we've got. 
+Great. Let's take a look at what we've got.
 
 ```{python tor_head, deco=list()}
 tor.head()
@@ -100,12 +100,12 @@ tor.head()
 tor.tail()
 ```
 
-Uhh ohh! It looks like we are missing all of our temperature data at the end of our baseline period. We can test this theory by using an enumerator. The following will tell us the index at which all three of our temperature variables of interest are missing for the first time. 
+Uhh ohh! It looks like we are missing all of our temperature data at the end of our baseline period. We can test this theory by using an enumerator. The following will tell us the index at which all three of our temperature variables of interest are missing for the first time.
 ```{python first_missing, deco=list()}
 next(i for i, x in enumerate(tor.loc[:, 'MaxTemp':'MeanTemp'].isnull().all(axis=1)) if x) - 1
 ```
 
-Let's take a look at the context around that index. 
+Let's take a look at the context around that index.
 
 ```{python range_missing, deco=list()}
 tor[8211:8221]
@@ -117,7 +117,7 @@ It looks like we're missing data as of July 2003! Something odd has happened. Le
 ec3.find_station(target=5051, dist=range(3))
 ```
 
-By the looks of it, "Toronto" and "Toronto City" are co-located! Indeed, in 2003 the "Toronto" station was renamed "Toronto City" and re-coded. Since that date, the daily data is available under station code 31688. 
+By the looks of it, "Toronto" and "Toronto City" are co-located! Indeed, in 2003 the "Toronto" station was renamed "Toronto City" and re-coded. Since that date, the daily data is available under station code 31688.
 
 Let's grab that data set as of 2000 and compare with station 5051.
 
@@ -132,7 +132,7 @@ tor2 = tor2.rename(columns={'Date/Time': 'Date', 'Max Temp (°C)': 'MaxTemp', 'M
 tor2 = tor2[['Date', 'MaxTemp', 'MinTemp', 'MeanTemp', 'TotalPrecip']]
 ```
 
-We can check the head and the tail of this data too. 
+We can check the head and the tail of this data too.
 
 ```{python tor2_head, deco=list()}
 tor2.head()
@@ -141,21 +141,21 @@ tor2.head()
 tor2.tail()
 ```
 
-As expected, we're missing data at the beginning of the file (before 2003). We can use a slightly modified version of our iterator from earlier. This time, we'll check for the first row for which any of the data is present. 
+As expected, we're missing data at the beginning of the file (before 2003). We can use a slightly modified version of our iterator from earlier. This time, we'll check for the first row for which any of the data is present.
 
 ```{python first_present, deco=list()}
 next(i for i, x in enumerate(tor2.loc[:, 'MaxTemp':'MeanTemp'].notnull().any(axis=1)) if x) - 1
 ```
 
-We'll take a look at that in context again. 
+We'll take a look at that in context again.
 
 ```{python range_present, deco=list()}
 tor2[880:890]
 ```
 
-It looks like our data starts as of June 04, 2002. 
+It looks like our data starts as of June 04, 2002.
 
-OK, so we know that we have data at the old station until May 30, 2002. Likewise, we have some data at the new station in May 2002. Let's take a look at the overlap and see if we can merge these files without issue. 
+OK, so we know that we have data at the old station until May 30, 2002. Likewise, we have some data at the new station in May 2002. Let's take a look at the overlap and see if we can merge these files without issue.
 
 ```{python compare1, deco=list()}
 tor[(tor.Date >= "2003-06-25") & (tor.Date <= "2003-07-05")]
@@ -170,7 +170,7 @@ The data on the overlapping days is virtually identical between the two station 
 tor = tor[tor.Date < "2003-07-01"].append(tor2[tor2.Date >= "2003-07-01"])
 ```
 
-Now we can make sure that we have a full data set from January 1981 to December 2010. 
+Now we can make sure that we have a full data set from January 1981 to December 2010.
 
 ```{python merged_head, deco=list()}
 tor.head()
@@ -199,11 +199,11 @@ from matplotlib import pyplot as plt
 import scipy.stats as stats
 ```
 
-As we mentioned in the introduction, the term "climate index" is often used to describe the variable upon which we will focus our analysis of climate change impacts. In this section, we'll calculate two climate indices, starting with a rather simple Boolean (True/False) variable. 
+As we mentioned in the introduction, the term "climate index" is often used to describe the variable upon which we will focus our analysis of climate change impacts. In this section, we'll calculate two climate indices, starting with a rather simple Boolean (True/False) variable.
 
 At the time of writing, the outside temperature was a sweltering 32 °C (36 with the humidex), so what better climate index to consider than "tropical nights", nights with a minimum temperature above 20 °C. We will limit our analysis to the summer months.
 
-This code requires that your "Date" column is recognized as such by Python. This isn't always automatic, so you will likely need to ask **pandas** to convert the column to a `datetime` object. 
+This code requires that your "Date" column is recognized as such by Python. This isn't always automatic, so you will likely need to ask **pandas** to convert the column to a `datetime` object.
 
 ```{python fix_date, deco=list()}
 tor.Date = pd.to_datetime(tor.Date)
@@ -224,14 +224,14 @@ Since our value is Boolean, we can use that column as an index. Let's double-che
 tor[tor.TropNight].head()
 ```
 
-In Python, `True` is equal to 1, and `False` is equal to zero. This means that we can easily get an annual data set by grouping our data frame by year and taking the sum of the "TropNight" column for each group. 
+In Python, `True` is equal to 1, and `False` is equal to zero. This means that we can easily get an annual data set by grouping our data frame by year and taking the sum of the "TropNight" column for each group.
 
 ```{python agg_trop, deco=list()}
 tor_trop = tor[['Date', 'TropNight']].groupby(tor.Date.dt.year).sum()
 tor_trop.head()
 ```
 
-Let's see that on a plot! 
+Let's see that on a plot!
 
 ```{python l1f1, deco=list(), results='hold', fig.cap="Total summertime tropical nights at Toronto (1981\u20122010)."}
 tor_trop.plot()
@@ -248,7 +248,7 @@ tor_trop.reset_index(level = 0, inplace = True)
 tor_trop.head()
 ```
 
-Now let's make another plot, this time with a trendline. 
+Now let's make another plot, this time with a trendline.
 
 ```{python l1f2, deco=list(), results='hold', fig.cap="Total summertime tropical nights at Toronto (1981\u20122010), with linear trend line."}
 plt.plot(tor_trop.Date, tor_trop.TropNight)
@@ -260,7 +260,7 @@ plt.ylabel("No. of Tropical Nights")
 
 ### Example: Heating degree days
 
-Let's try for a slightly more complicated climate index: Winter heating degree days (HDDs). The HDDs represent the difference between the mean temperature and the base temperature of 18 °C. Since HDDs can't be negative, they are only calculated when the mean temperature is below 18 °C. They are used as an indirect measure of energy demand. 
+Let's try for a slightly more complicated climate index: Winter heating degree days (HDDs). The HDDs represent the difference between the mean temperature and the base temperature of 18 °C. Since HDDs can't be negative, they are only calculated when the mean temperature is below 18 °C. They are used as an indirect measure of energy demand.
 
 We can apply an anonymous (lambda) function to our `MinTemp` column to capture the following pseudocode expression:
 
@@ -270,13 +270,13 @@ We can apply an anonymous (lambda) function to our `MinTemp` column to capture t
 tor['HDD'] = tor.MeanTemp.apply(lambda x: 0 if x >= 18 else 18 - x)
 ```
 
-We have one more challenge to overcome. A common mistake when performing seasonal analysis on the winter is to simply group December, January, and February by year. This is an easy logical jump to make. Remember, when we refer to winter, we mean the _continuous_ winter season that stretches from the December of the previous year to February of the current year. The easiest way to control for this is to add 1 to the year for any December. Winter 1981/82, for example will then appear with `'Year'` 1982 in the data frame. 
+We have one more challenge to overcome. A common mistake when performing seasonal analysis on the winter is to simply group December, January, and February by year. This is an easy logical jump to make. Remember, when we refer to winter, we mean the _continuous_ winter season that stretches from the December of the previous year to February of the current year. The easiest way to control for this is to add 1 to the year for any December. Winter 1981/82, for example will then appear with `'Year'` 1982 in the data frame.
 
 ```{python fix_win, deco=list()}
 tor['Year'] = tor.Date.apply(lambda x: x.year + 1 if x.month == 12 else x.year)
 ```
 
-Now we can aggregate our heating degree days. Pay close attention to the code below, as it "chains" many operations together into a single line. First, we use two conditional filters in the square brackets. The first condition (`tor.Year.isin(range(1982, 2011))`) selects all years between 1982 and 2011. We use this filter to drop the two winters that we know are incomplete: winter 1980/81 (which is missing December 1980), and winter 2010/2011, which is really just December 2010 here. (A better solution for this issue would be to download data including December 1980). The second condition (`tor.Date.dt.month.isin([12, 1, 2])`) filters out all months except for the winter months: 12, December; 1, January; and 2, February. After filtering, we select the two columns that are of interest (`'Year'` and `'HDD'`), group them by `'Year'` and aggregate by `sum()`. Finally, we reset the index. 
+Now we can aggregate our heating degree days. Pay close attention to the code below, as it "chains" many operations together into a single line. First, we use two conditional filters in the square brackets. The first condition (`tor.Year.isin(range(1982, 2011))`) selects all years between 1982 and 2011. We use this filter to drop the two winters that we know are incomplete: winter 1980/81 (which is missing December 1980), and winter 2010/2011, which is really just December 2010 here. (A better solution for this issue would be to download data including December 1980). The second condition (`tor.Date.dt.month.isin([12, 1, 2])`) filters out all months except for the winter months: 12, December; 1, January; and 2, February. After filtering, we select the two columns that are of interest (`'Year'` and `'HDD'`), group them by `'Year'` and aggregate by `sum()`. Finally, we reset the index.
 
 ```{python agg_hdd, deco=list()}
 tor_hdd = tor[tor.Year.isin(range(1982, 2011)) & tor.Date.dt.month.isin([12, 1, 2])][['Year', 'HDD']].groupby('Year').sum().reset_index()
@@ -284,22 +284,22 @@ tor_hdd.head()
 ```
 
 ```{block, type="rmdtip"}
-If the line of code above is too complicated, you can break it down into little pieces. See the comments in the code block below. 
+If the line of code above is too complicated, you can break it down into little pieces. See the comments in the code block below.
 
 <div class="decocode" style="background-color:#366994"><p><span class="decotitle" style="font-size:90%;color:#ffffff"><i class="fab fa-python"></i> <b>Python</b></span></p>
     # First, filter the Toronto data to only include years from 1982 to 2011
     # Remember that we just adjusted the year for all Decembers by + 1
     tor_hdd = tor[tor.Year.isin(range(1982, 2011))]
-    
+
     # Now filter to include only December, January and February
     tor_hdd = tor_hdd[& tor_hdd.Date.dt.month.isin([12, 1, 2])]
-    
+
     # Next, select only the 'Year' and 'HDD' columns:
     tor_hdd = tor_hdd[['Year', 'HDD']]
-    
+
     # Group the data by year, and take the sum of the 'HDD' column
     tor_hdd = tor_hdd.groupby('Year').sum()
-    
+
     # Reset the index of the data frame
     tor_hdd = tor_hdd.reset_index()
 </div>
@@ -330,13 +330,13 @@ def test_trends(years, values):
     print("The true value of the slope is then", np.round(slope, 3), "+/-",
           np.round(confidence_interval, 3),"\n")
 
-    # Get Pearson's coefficient 
+    # Get Pearson's coefficient
     pearsons_corrcoef, p_corr = stats.pearsonr(years,  values)
-    
+
     # Describe the significance level
     levels = [0.001, 0.01, 0.05, 0.1]
     lvl = [i for i in levels if p_corr < i]
-    
+
     # Print the correlation statistics
     print("The correlation is", np.round(pearsons_corrcoef, 3), "with a p-value of",
           np.round(p_corr, 5), "(not significant)\n" if lvl == [] else
@@ -354,7 +354,7 @@ Let's use this new function to see some key features of the relationship between
 test_trends(tor_trop.Date, tor_trop.TropNight)
 ```
 
-At first glance, it appears that there is a positive correlation between year and tropical nights (i.e. tropical nights are increasing over time). However, the slope of the trend is only 0.037 tropical nights per year, and the confidence intervals are very wide (0.373). The  fact that the confidence intervals cross zero and the large $p$-value tell use that there doesn't appear to be a trend after all. In fact, the $R^2$ tells us that only about 0.15% of the variance in tropical nights can be explained by the linear trend. 
+At first glance, it appears that there is a positive correlation between year and tropical nights (i.e. tropical nights are increasing over time). However, the slope of the trend is only 0.037 tropical nights per year, and the confidence intervals are very wide (0.373). The  fact that the confidence intervals cross zero and the large $p$-value tell use that there doesn't appear to be a trend after all. In fact, the $R^2$ tells us that only about 0.15% of the variance in tropical nights can be explained by the linear trend.
 
 What about heating degree days?
 
@@ -371,8 +371,11 @@ You may be asking yourself how it is that we didn't see any trends in tropical n
 ## Exercises (what to submit)
 
 ```{block, type='rmdassignment'}
-- You have been assigned a climate index. Write a brief description of the climate index, whether there were any missing or suspicious data, and how these data were treated. [2 marks] 
-- Include the time series plots with fitted trend lines for your climate index and for the relevant temperature variable, e.g. `MeanTemp` for freezing degree days. [2 marks] 
-- Include a table with the summary statistics for your climate index and temperature variable. [2 marks] 
-- Now that we know that Station 5051 was recoded sometime between 2002 and 2003, future analyses might be quicker if we simply merge the 5051 data up to 2002 and the 31688 data from 2003 onward. Does this change in the join date between the two stations change the analysis of your climate index? [2 marks] - Be sure to clearly label your plots and table and include concise figure and table captions. [2 marks]
+Write up your lab exercise in short report format.
+
+- You have been assigned a climate index. Write a brief description of the climate index, whether there were any missing or suspicious data, and how these data were treated. [2 marks]
+- Include the time series plots with fitted trend lines for your climate index and for the corresponding temperature variable, e.g. `MeanTemp` for freezing degree days. [2 marks]
+- Include a table with the summary statistics for your climate index and the corresponding temperature variable (i.e., the climatological mean and standard deviation, the slope and the 95\% confidence intervals, the correlation and the corresponding p-value and the $R^2$). Describe the results in a short paragraph. [2 marks]
+- Compare your plots and statistics with your classmates who were assigned the same climate index, but for a different time period and/or season. Consider how the different time period and/or season may influence the results. Write up your comparison in a short paragraph. [2 marks]
+- Be sure to clearly label your plots and table and include concise figure and table captions. [2 marks]
 ```
