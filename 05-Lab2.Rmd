@@ -192,7 +192,7 @@ We can drop the long-range (2101&ndash;2300) projections from our list of downlo
 files = files[~files['filename'].str.contains("210101")]
 ```
 
-You will notice that we have multiple URLs for the same file. We don't need to download each file multiple times, so you can choose to drop the duplicates using `files[['filename']].drop_duplicates()`.
+You will notice that we have multiple URLs for the same file. We don't need to download each file multiple times, so you can choose to drop the duplicates using `files.drop_duplicates('filename')`.
 
 You may also choose to _keep_ the extra URLs as backup sources in case one of the downloads fails. Our download function, below, contains code to check if the file size is as expected, however it does not currently include any code to handle cases when the size is not correct.  
 
